@@ -73,7 +73,9 @@ public class File {
     }
 
     public void setMaxSize(double maxSize) {
-        this.maxSize = maxSize;
+        if (!isFolder) {
+            this.maxSize = maxSize;
+        }
     }
 
     public void setParentId(int parentId) {
