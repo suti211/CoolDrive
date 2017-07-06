@@ -8,4 +8,13 @@ import { Component } from '@angular/core';
 
 export class LoginComponent {
   title = 'Login';
+  username: String;
+  password: String;
+
+  xxx(){
+    console.log(this.username, this.password);
+  }
+
 }
+
+
