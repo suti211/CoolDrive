@@ -14,7 +14,7 @@ public class File {
     private double maxSize;
     private final boolean isFolder;
     private final int ownerId;
-    private final int parentId;
+    private int parentId;
 
     public File(int id, String path, double size, Date uploadDate, String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
         this.id = id;
@@ -76,4 +76,7 @@ public class File {
         this.maxSize = maxSize;
     }
 
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
 }
