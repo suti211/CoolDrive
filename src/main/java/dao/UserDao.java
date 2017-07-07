@@ -1,6 +1,6 @@
 package dao;
 
-import object.User;
+import dto.User;
 
 /**
  * Created by David Szilagyi on 2017. 07. 07..

@@ -1,4 +1,4 @@
-package object;
+package dto;
 
 /**
  * Created by David Szilagyi on 2017. 07. 06..
