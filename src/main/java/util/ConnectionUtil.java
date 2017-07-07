@@ -9,7 +9,6 @@ import java.sql.SQLException;
  */
 public final class ConnectionUtil {
 
-
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DATABASE_HOST = "192.168.150.86";
     private static final String DATABASE_USER = "void";
@@ -29,7 +28,6 @@ public final class ConnectionUtil {
         }
     }
 
-
     public static String getUrl(DatabaseName databaseName) {
         return String.format(
                 "jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=%s&serverTimezone=%s&useSSL=true",
@@ -43,9 +41,7 @@ public final class ConnectionUtil {
 
     public static Connection getConnection() {
         return getConnection(null);
-
     }
-
 
     public static Connection getConnection(DatabaseName databaseName) {
         try {

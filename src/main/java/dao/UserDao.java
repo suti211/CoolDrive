@@ -7,7 +7,7 @@ import object.User;
  */
 public interface UserDao {
     User getUser();
-    double getUsage();
+    double getUsage(int id);
     void registerUser(User user);
     void deleteUser(int id);
     void modifyUser(int id, String[] change);
