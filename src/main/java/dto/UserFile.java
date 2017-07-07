@@ -5,7 +5,7 @@ import java.sql.Date;
 /**
  * Created by David Szilagyi on 2017. 07. 06..
  */
-public class File {
+public class UserFile {
     private final int id;
     private String path;
     private final double size;
@@ -16,7 +16,7 @@ public class File {
     private final int ownerId;
     private int parentId;
 
-    public File(int id, String path, double size, Date uploadDate, String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
+    public UserFile(int id, String path, double size, Date uploadDate, String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
         this.id = id;
         this.path = path;
         this.size = size;
