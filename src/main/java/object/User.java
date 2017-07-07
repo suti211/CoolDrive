@@ -12,10 +12,10 @@ public class User {
     private String firstName;
     private String lastName;
     private final boolean admin;
-    private int quantity;
-    private int usage;
+    private double quantity;
+    private double usage;
 
-    public User(int id, String userName, String pass, String email, boolean validated, String firstName, String lastName, boolean admin, int quantity, int usage) {
+    public User(int id, String userName, String pass, String email, boolean validated, String firstName, String lastName, boolean admin, double quantity, double usage) {
         this.id = id;
         this.userName = userName;
         this.pass = pass;
@@ -60,11 +60,11 @@ public class User {
         return admin;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
-    public int getUsage() {
+    public double getUsage() {
         return usage;
     }
 
