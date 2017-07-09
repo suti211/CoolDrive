@@ -1,8 +1,12 @@
 
 
 export class Status{
-    constructor(
-        public operation: String,
-        public success: boolean
-    ){}
+
+    operation: String;
+    succes: boolean;
+
+    constructor( operation: String, success: boolean){
+        this.operation = operation;
+        this.succes = success;
+    }
 }
