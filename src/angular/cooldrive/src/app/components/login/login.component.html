@@ -15,11 +15,11 @@
                             <div class="input-group mb-4">
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span>
                                 </span>
-                                <input (keyup)="xxx()" type="password" class="form-control" placeholder="Password" [(ngModel)]="password">
+                                <input type="password" class="form-control" placeholder="Password" [(ngModel)]="password">
                             </div>
                             <div class="row">
                                 <div class="col-6">
-                                    <button type="button" class="btn btn-primary px-4">Login</button>
+                                    <button (click)="login()" type="button" class="btn btn-primary px-4">Login</button>
                                 </div>
                                 <div class="col-6 text-right">
                                     <button type="button" class="btn btn-link px-0">Forgot password?</button>

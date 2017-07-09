@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { LoginService } from '../../service/login.service';
+import { Observable } from 'rxjs/Rx';
+import { User } from '../../model/user.model';
+import { Status } from '../../model/status.model'
 
 @Component({
   selector: 'login',
@@ -7,12 +11,23 @@ import { Component } from '@angular/core';
 })
 
 export class LoginComponent {
+
+  constructor (private loginService: LoginService){
+
+  }
+
   title = 'Login';
   username: String;
   password: String;
+  user: User;
 
-  xxx(){
-    console.log(this.username, this.password);
+  login(){
+    console.log("Login Attempt!");
+    this.user = new User(this.username, this.password);
+    let loginOperation: Observable<Status>;
+
+    loginOperation = this.loginService.sendLoginData(this.user);
+    loginOperation.subscribe();
   }
 
 }
