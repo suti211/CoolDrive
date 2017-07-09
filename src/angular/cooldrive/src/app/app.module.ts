@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginService } from './service/login.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 
 @NgModule({
@@ -17,6 +19,7 @@ import { LoginService } from './service/login.service';
     RegisterComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
     HttpModule,

@@ -3,17 +3,25 @@ import { LoginService } from '../../service/login.service';
 import { Observable } from 'rxjs/Rx';
 import { User } from '../../model/user.model';
 import { Status } from '../../model/status.model'
+import { slideInOutAnimation } from '../../_animations/slide/slide.animation';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+
+  // make fade in animation available to this component
+  animations: [slideInOutAnimation],
+ 
+  // attach the fade in animation to the host (root) element of this component
+  host: { '[@slideInOutAnimation]': '' }
 })
 
 export class LoginComponent{
 
-  constructor (private loginService: LoginService){
-
+  constructor (private loginService: LoginService, private route: ActivatedRoute, private router: Router){
+        
   }
 
   username: String;
@@ -47,6 +55,11 @@ export class LoginComponent{
     } else {
       return false;
     }
+  }
+
+  register(){
+    // redirect to users view
+    this.router.navigate(['register']);
   }
 }
 
