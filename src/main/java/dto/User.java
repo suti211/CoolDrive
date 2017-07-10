@@ -4,14 +4,14 @@ package dto;
  * Created by David Szilagyi on 2017. 07. 06..
  */
 public class User {
-    private final int id;
-    private final String userName;
+    private int id;
+    private String userName;
     private String pass;
     private String email;
     private boolean validated;
     private String firstName;
     private String lastName;
-    private final boolean admin;
+    private boolean admin;
     private double quantity;
     private double usage;
 
@@ -26,6 +26,14 @@ public class User {
         this.admin = admin;
         this.quantity = quantity;
         this.usage = usage;
+    }
+
+    public User(String userName, String pass, String email, String firstName, String lastName) {
+        this.userName = userName;
+        this.pass = pass;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public int getId() {
