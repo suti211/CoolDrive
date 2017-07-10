@@ -21,5 +21,4 @@ public interface UserDao {
     boolean changeValidation(int id, boolean validate);
 
     int checkUser(String userName, String pass);
-
 }
