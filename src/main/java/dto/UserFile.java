@@ -6,14 +6,14 @@ import java.sql.Date;
  * Created by David Szilagyi on 2017. 07. 06..
  */
 public class UserFile {
-    private final int id;
+    private int id;
     private String path;
-    private final double size;
-    private final Date uploadDate;
+    private double size;
+    private Date uploadDate;
     private String fileName;
     private double maxSize;
-    private final boolean isFolder;
-    private final int ownerId;
+    private boolean isFolder;
+    private int ownerId;
     private int parentId;
 
     public UserFile(int id, String path, double size, Date uploadDate, String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
