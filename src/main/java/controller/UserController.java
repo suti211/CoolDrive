@@ -55,15 +55,44 @@ public class UserController implements UserDao {
     }
 
     public void deleteUser(int id) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("DELETE FROM Users WHERE id = ?");
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void modifyUser(int id, String[] change) {
     }
 
     public void quantityChange(int id, double quantity) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("UPDATE Users SET quantity = ? WHERE id = ?");
+            ps.setDouble(1, quantity);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public boolean loginCheck(String userName, String pass) {
-        return false;
+    public int checkUser(String userName, String pass) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("SELECT * FROM Users WHERE username = ? AND pass = ?");
+            ps.setString(1, userName);
+            ps.setString(2, pass);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() != false) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 }
