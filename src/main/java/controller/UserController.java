@@ -52,6 +52,22 @@ public class UserController implements UserDao {
     }
 
     public void registerUser(User user) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?");
+            ps.setString(1, user.getUserName());
+            ps.setString(2, user.getPass());
+            ps.setString(3, user.getEmail());
+            ps.setBoolean(4, false);
+            ps.setString(5, user.getFirstName());
+            ps.setString(6, user.getLastName());
+            ps.setBoolean(7, false);
+            ps.setDouble(8, 0.0);
+            ps.setDouble(9, 0.0);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteUser(int id) {
