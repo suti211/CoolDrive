@@ -44,7 +44,7 @@ public class UserController implements UserDao {
 		return 0;
 	}
 
-	public boolean registerUser(User user) {
+	public int registerUser(User user) {
 		PreparedStatement ps = null;
 		try {
 			ps = con.prepareStatement(
@@ -59,11 +59,11 @@ public class UserController implements UserDao {
 			ps.setDouble(8, 0);
 			ps.setDouble(9, 0);
 			ps.executeUpdate();
-			return true;
+			return checkUser(user.getUserName(), user.getPass());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return -1;
 	}
 
 	public boolean deleteUser(int id) {
