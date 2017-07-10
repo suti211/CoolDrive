@@ -18,6 +18,6 @@ public interface UserDao {
 
     void quantityChange(int id, double quantity);
 
-    boolean loginCheck(String userName, String pass);
+    int checkUser(String userName, String pass);
 
 }
