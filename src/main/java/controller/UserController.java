@@ -51,7 +51,7 @@ public class UserController implements UserDao {
         return 0;
     }
 
-    public void registerUser(User user) {
+    public boolean registerUser(User user) {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?");
@@ -65,35 +65,63 @@ public class UserController implements UserDao {
             ps.setDouble(8, 0.0);
             ps.setDouble(9, 0.0);
             ps.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
-    public void deleteUser(int id) {
+    public boolean deleteUser(int id) {
+        return changeValidation(id, false);
+    }
+
+    public boolean modifyUser(int id, User user) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("DELETE FROM Users WHERE id = ?");
-            ps.setInt(1, id);
+            ps = con.prepareStatement("UPDATE Users SET pass = ?," +
+                    "email = ?," +
+                    "firstname = ?," +
+                    "lastname =? WHERE id = ?");
+            ps.setString(1, user.getPass());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getFirstName());
+            ps.setString(4, user.getLastName());
+            ps.setInt(5, id);
             ps.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
-    public void modifyUser(int id, String[] change) {
-    }
-
-    public void quantityChange(int id, double quantity) {
+    public boolean quantityChange(int id, double quantity) {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement("UPDATE Users SET quantity = ? WHERE id = ?");
             ps.setDouble(1, quantity);
             ps.setInt(2, id);
             ps.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
+    }
+
+    public boolean changeValidation(int id, boolean validate) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("UPDATE Users SET validated = ? WHERE id = ?");
+            ps.setBoolean(1, validate);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public int checkUser(String userName, String pass) {
