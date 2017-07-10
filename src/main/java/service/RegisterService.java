@@ -19,12 +19,22 @@ public class RegisterService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Status getUser(User input) {
 		System.out.println(input.toString());
-		return new Status(Operation.REGISTER, false, "A kurva anyád!");
+		
+		UserController userController = new UserController();
+		
+		int userID = userController.checkUser(input.getUserName(), input.getPass());
+		
+		if(userID == -1){
+			return new Status(Operation.REGISTER, true, "User successfully registered!");
+		} else {
+			return new Status(Operation.REGISTER, false, "User already Exists!");
+		}
+		
 	}
 
-	@GET
-	public String test() {
-		return "<h1>aha</h1>";
-	}
+//	@GET
+//	public String test() {
+//		return "<h1>aha</h1>";
+//	}
 
 }
