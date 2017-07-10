@@ -5,6 +5,8 @@ html, body {
 
 .jumbotron{
   background-color: rgba(0,0,0,0.0);
+  padding-top: 48px;
+  padding-bottom: 48px;
 }
 
 .card{
@@ -13,5 +15,25 @@ html, body {
 
 .btn-success{
   background-color: #20a8d8;
+}
 
+@media (min-width: 768px){
+  .col-md-6 {
+    flex: 0 0 80%;
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 992px) {
+  .col-md-6 {
+    flex: 0 0 60%;
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .col-md-6 {
+    flex: 0 0 80%;
+    max-width: 540px;
+  }
 }
