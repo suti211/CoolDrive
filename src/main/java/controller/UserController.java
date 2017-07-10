@@ -122,7 +122,7 @@ public class UserController implements UserDao {
 			ps.setString(1, userName);
 			ps.setString(2, pass);
 			ResultSet rs = ps.executeQuery();
-			if (rs.next() != false) {
+			if (rs.next()) {
 				return rs.getInt("id");
 			}
 		} catch (SQLException e) {
