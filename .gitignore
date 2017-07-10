@@ -188,7 +188,7 @@ buildNumber.properties
 /app/**/*.js.map
 
 # dependencies
-/node_modules
+src/angular/cooldrive/node_modules
 /bower_components
 
 # IDEs and editors
