@@ -20,7 +20,7 @@ public class UserController implements UserDao {
     public User getUser(int id) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SELECT * FROM USER WHERE id = ?");
+            ps = con.prepareStatement("SELECT * FROM Users WHERE id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             return new User(rs.getInt("id"),
@@ -42,7 +42,7 @@ public class UserController implements UserDao {
     public double getUsage(int id) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SELECT * FROM USER WHERE id = ?");
+            ps = con.prepareStatement("SELECT * FROM Users WHERE id = ?");
             ps.setInt(1, id);
             return ps.executeQuery().getDouble("usage");
         } catch (SQLException e) {
