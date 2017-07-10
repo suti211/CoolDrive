@@ -6,27 +6,28 @@
           <div class="card-block p-4">
             <h1>Register</h1>
             <p class="text-muted">Create your account</p>
+            <div id="alert"></div>
             <div class="input-group mb-3">
               <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-              <input type="text" class="form-control" placeholder="Username">
+              <input id="username" type="text" class="form-control" (click)="resetFieldBackgroundColor('username')" [(ngModel)]="username" placeholder="Username">
             </div>
 
             <div class="input-group mb-3">
               <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
-              <input type="text" class="form-control" placeholder="Email">
+              <input id="email" name="email" type="email" class="form-control" (click)="resetFieldBackgroundColor('email')" [(ngModel)]="email" placeholder="Email">
             </div>
 
             <div class="input-group mb-3">
               <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-              <input type="password" class="form-control" placeholder="Password">
+              <input id="pwd" type="password" class="form-control" (click)="resetFieldBackgroundColor('pwd')" [(ngModel)]="password" placeholder="Password">
             </div>
 
             <div class="input-group mb-4">
               <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-              <input type="password" class="form-control" placeholder="Repeat password">
+              <input id="repeatedPwdField" type="password" class="form-control" (click)="resetFieldBackgroundColor('repeatedPwdField')" placeholder="Repeat password" [(ngModel)]="repeat">
             </div>
 
-            <button type="button" class="btn btn-block btn-success">Create Account</button>
+            <button type="button" class="btn btn-block btn-success" (click)="finalize()" >Create Account</button>
           </div>
         </div>
       </div>
