@@ -10,13 +10,15 @@ public interface UserDao {
 
     double getUsage(int id);
 
-    void registerUser(User user);
+    boolean registerUser(User user);
 
-    void deleteUser(int id);
+    boolean deleteUser(int id);
 
-    void modifyUser(int id, String[] change);
+    boolean modifyUser(int id, User user);
 
-    void quantityChange(int id, double quantity);
+    boolean quantityChange(int id, double quantity);
+
+    boolean changeValidation(int id, boolean validate);
 
     int checkUser(String userName, String pass);
 
