@@ -6,7 +6,7 @@ import dto.User;
  * Created by David Szilagyi on 2017. 07. 07..
  */
 public interface UserDao {
-    User getUser();
+    User getUser(int id);
 
     double getUsage(int id);
 
@@ -18,6 +18,6 @@ public interface UserDao {
 
     void quantityChange(double quantity);
 
-    void loginCheck(String userName, String pass);
+    boolean loginCheck(String userName, String pass);
 
 }
