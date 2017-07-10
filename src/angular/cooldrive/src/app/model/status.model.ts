@@ -1,10 +1,11 @@
-export class Status{
-
+export class Status {
     operation: String;
-    succes: boolean;
+    success: boolean;
+    message: String;
 
-    constructor( operation: String, success: boolean){
+    constructor( operation: String, success: boolean, message: String){
         this.operation = operation;
-        this.succes = success;
+        this.success = success;
+        this.message = message;
     }
 }

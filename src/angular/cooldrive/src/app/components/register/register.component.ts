@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { slideInOutAnimation } from '../../_animations/slide/slide.animation';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Rx';
+import { Status } from '../../model/status.model'
+import {RegisterService} from '../../service/register.service';
+import {Register} from '../../model/register.model';
 
 @Component({
   selector: 'app-register',
@@ -12,11 +16,17 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class RegisterComponent {
   username = '';
+  firstname = '';
+  lastname = '';
   email = '';
   password = '';
   repeat = '';
   alertMsg = '';
 
+  registerData: Register;
+
+  constructor(private registerService: RegisterService, private route: ActivatedRoute, private router: Router) {
+  }
 
   addAlertMsg(msg) {
     this.alertMsg += msg + '<br>';
@@ -27,6 +37,11 @@ export class RegisterComponent {
 
     if (type === 'success') {
       alertElement.className = 'alert alert-success';
+      alertElement.innerHTML = this.alertMsg;
+    }
+
+    if (type === 'warning') {
+      alertElement.className = 'alert alert-warning';
       alertElement.innerHTML = this.alertMsg;
     }
 
@@ -60,13 +75,32 @@ export class RegisterComponent {
       success = false;
     }
     if (success) {
-      this.addAlertMsg('Registration was successfull!');
-      this.addAlertMsg('You will be redirected in a moment...');
-      this.setAlert('success');
+      this.addAlertMsg('Creating your account...');
+      this.setAlert('warning');
+      this.sendRegisterData();
     }else {
       this.setAlert('alert');
     }
 
+  }
+
+  sendRegisterData() {
+    this.registerData = new Register(this.username, this.firstname, this.lastname, this.email, this.password);
+    let registerOperation: Observable<Status>;
+
+    registerOperation = this.registerService.sendLoginData(this.registerData);
+    registerOperation.subscribe((status: Status) => {
+      if (status.success) {
+        this.addAlertMsg('Registration is complete!');
+        this.addAlertMsg('You will be redirected in a moment...');
+        this.setAlert('success');
+      }else {
+        this.addAlertMsg('Registration failed!');
+        this.addAlertMsg(status.message);
+        this.setAlert('alert');
+      }
+      console.log(status);
+    });
   }
 
   checkUserNameLength() {

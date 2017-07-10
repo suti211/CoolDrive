@@ -13,6 +13,12 @@
             </div>
 
             <div class="input-group mb-3">
+              <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+              <input id="firstName" name="firstName" type="text" class="form-control" [(ngModel)]="firstname" placeholder="First Name">
+              <input id="lastName" name="firstName" type="text" class="form-control" [(ngModel)]="lastname" placeholder="Last Name">
+            </div>
+
+            <div class="input-group mb-3">
               <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
               <input id="email" name="email" type="email" class="form-control" (click)="resetFieldBackgroundColor('email')" [(ngModel)]="email" placeholder="Email">
             </div>
