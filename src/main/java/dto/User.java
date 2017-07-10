@@ -4,103 +4,119 @@ package dto;
  * Created by David Szilagyi on 2017. 07. 06..
  */
 public class User {
-    private int id;
-    private String userName;
-    private String pass;
-    private String email;
-    private boolean validated;
-    private String firstName;
-    private String lastName;
-    private boolean admin;
-    private double quantity;
-    private double usage;
+	private int id;
+	private String userName;
+	private String pass;
+	private String email;
+	private boolean validated;
+	private String firstName;
+	private String lastName;
+	private boolean admin;
+	private double quantity;
+	private double usage;
+	
+	public User(){
+		
+	}
 
-    public User(int id, String userName, String pass, String email, boolean validated, String firstName, String lastName, boolean admin, double quantity, double usage) {
-        this.id = id;
-        this.userName = userName;
-        this.pass = pass;
-        this.email = email;
-        this.validated = validated;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.admin = admin;
-        this.quantity = quantity;
-        this.usage = usage;
-    }
+	public User(int id, String userName, String pass, String email, boolean validated, String firstName,
+			String lastName, boolean admin, double quantity, double usage) {
+		this.id = id;
+		this.userName = userName;
+		this.pass = pass;
+		this.email = email;
+		this.validated = validated;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.admin = admin;
+		this.quantity = quantity;
+		this.usage = usage;
+	}
 
-    public User(String userName, String pass, String email, String firstName, String lastName) {
-        this.userName = userName;
-        this.pass = pass;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
+	public User(String userName, String firstName, String lastName, String email, String pass) {
+		this.userName = userName;
+		this.pass = pass;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
-    public String getUserName() {
-        return userName;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public String getPass() {
-        return pass;
-    }
+	public String getUserName() {
+		return userName;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getPass() {
+		return pass;
+	}
 
-    public boolean isValidated() {
-        return validated;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getFirstName() {
-        return firstName;
-    }
+	public boolean isValidated() {
+		return validated;
+	}
 
-    public String getLastName() {
-        return lastName;
-    }
+	public String getFirstName() {
+		return firstName;
+	}
 
-    public boolean isAdmin() {
-        return admin;
-    }
+	public String getLastName() {
+		return lastName;
+	}
 
-    public double getQuantity() {
-        return quantity;
-    }
+	public boolean isAdmin() {
+		return admin;
+	}
 
-    public double getUsage() {
-        return usage;
-    }
+	public double getQuantity() {
+		return quantity;
+	}
 
-    public void setPass(String pass) {
-        this.pass = pass;
-    }
+	public double getUsage() {
+		return usage;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
 
-    public void setValidated(boolean validated) {
-        this.validated = validated;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	public void setValidated(boolean validated) {
+		this.validated = validated;
+	}
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
-    public void setUsage(int usage) {
-        this.usage = usage;
-    }
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public void setUsage(int usage) {
+		this.usage = usage;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", userName=" + userName + ", pass=" + pass + ", email=" + email + ", validated="
+				+ validated + ", firstName=" + firstName + ", lastName=" + lastName + ", admin=" + admin + ", quantity="
+				+ quantity + ", usage=" + usage + "]";
+	}
 }
