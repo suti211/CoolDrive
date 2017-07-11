@@ -89,7 +89,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
     public boolean deleteUserFile(int id) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("DELETE FROM Permissions WHERE id = ?");
+            ps = con.prepareStatement("DELETE FROM Files WHERE id = ?");
             ps.setInt(1, id);
             int success = ps.executeUpdate();
             return success > 0;
