@@ -6,11 +6,15 @@ import dto.UserFile;
  * Created by David Szilagyi on 2017. 07. 07..
  */
 public interface UserFileDao {
-    UserFile getUserFile();
+    UserFile getUserFile(int id);
 
-    void addNewUserFile(UserFile userFile);
+    boolean addNewUserFile(UserFile userFile);
 
-    void modifyUserFile(int id, String[] change);
+    boolean modifyUserFile(int id, UserFile userFile);
 
-    void deleteUserFile(int id);
+    boolean changeFolderSize(int id, double maxSize);
+
+    boolean deleteUserFile(int id);
+
+    boolean checkUserFile(UserFile userFile);
 }
