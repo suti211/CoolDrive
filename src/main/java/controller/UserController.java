@@ -20,9 +20,11 @@ public class UserController extends DatabaseController implements UserDao {
 			ps = con.prepareStatement("SELECT * FROM Users WHERE id = ?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
-			return new User(rs.getInt("id"), rs.getString("username"), rs.getString("pass"), rs.getString("email"),
-					rs.getBoolean("validated"), rs.getString("firstname"), rs.getString("lastname"),
-					rs.getBoolean("admin"), rs.getDouble("quantity"), rs.getDouble("usage"));
+			if(rs.next()) {
+				return new User(rs.getInt("id"), rs.getString("username"), rs.getString("pass"), rs.getString("email"),
+						rs.getBoolean("validated"), rs.getString("firstname"), rs.getString("lastname"),
+						rs.getBoolean("admin"), rs.getDouble("quantity"), rs.getDouble("usage"));
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
