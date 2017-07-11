@@ -3,8 +3,7 @@ package util;
 import java.util.UUID;
 
 public class TokenGenerator {
-	
-	public String createToken(){
+	public static String createToken(){
 		return UUID.randomUUID().toString();
 	}
 }
