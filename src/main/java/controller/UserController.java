@@ -34,7 +34,7 @@ public class UserController implements UserDao {
 	public double getUsage(int id) {
 		PreparedStatement ps = null;
 		try {
-			ps = con.prepareStatement("SELECT * FROM Users WHERE id = ?");
+			ps = con.prepareStatement("SELECT `usage` FROM Users WHERE id = ?");
 			ps.setInt(1, id);
 			return ps.executeQuery().getDouble("usage");
 		} catch (SQLException e) {
@@ -118,7 +118,7 @@ public class UserController implements UserDao {
 	public int checkUser(String userName, String pass) {
 		PreparedStatement ps = null;
 		try {
-			ps = con.prepareStatement("SELECT * FROM Users WHERE username = ? AND pass = ?");
+			ps = con.prepareStatement("SELECT id FROM Users WHERE username = ? AND pass = ?");
 			ps.setString(1, userName);
 			ps.setString(2, pass);
 			ResultSet rs = ps.executeQuery();
