@@ -26,8 +26,11 @@ public class RegisterService {
 		int userID = userController.checkUser(input.getUserName(), input.getPass());
 		
 		if(userID == -1){
-			userController.registerUser(input);
-			return new Status(Operation.REGISTER, true, "User successfully registered!");
+			if(userController.registerUser(input)){
+				return new Status(Operation.REGISTER, true, "User successfully registered!");
+			} else {
+				return new Status(Operation.REGISTER, false, "Failed to add user to DB!");
+			}
 		} else {
 			return new Status(Operation.REGISTER, false, "User already Exists!");
 		}
