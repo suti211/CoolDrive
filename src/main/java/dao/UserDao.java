@@ -10,7 +10,7 @@ public interface UserDao {
 
     double getUsage(int id);
 
-    int registerUser(User user);
+    boolean registerUser(User user);
 
     boolean deleteUser(int id);
 
