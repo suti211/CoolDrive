@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { LoginService } from '../../service/login.service';
 import { Observable } from 'rxjs/Rx';
-import { User } from '../../model/user.model';
+import { Register } from '../../model/register.model';
 import { Status } from '../../model/status.model'
 import { slideInOutAnimation } from '../../_animations/slide/slide.animation';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -26,7 +26,10 @@ export class LoginComponent{
 
   username: String;
   password: String;
-  user: User;
+  lastname = "";
+  firstname = "";
+  email = "";
+  user: Register;
   status: Status;
 
   login(){
@@ -35,7 +38,7 @@ export class LoginComponent{
 
       console.log(this.username, this.password);
       console.log("Login Attempt!");
-      this.user = new User(this.username, this.password);
+      this.user = new Register(this.username, this.firstname, this.lastname, this.email, this.password);
       let loginOperation: Observable<Status>;
 
       loginOperation = this.loginService.sendLoginData(this.user);

@@ -8,7 +8,7 @@ import 'rxjs/add/operator/catch'
 
 @Injectable()
 export class LoginService {
-    loginUrl = "http://localhost:8080/CoolDrive/rest/members/login";
+    loginUrl = "http://localhost:8080/CoolDrive/login";
     //loginUrl = "http://demo1158757.mockable.io/loginTest";
 
     constructor(private http:Http){

@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -19,7 +20,8 @@ import util.ConnectionUtil;
 public class LoginService {
 
 	UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-
+	
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Status authenticateUser(User input, @Context HttpServletRequest request) {
@@ -30,7 +32,14 @@ public class LoginService {
 			User user = userController.getUser(userId);
 			HttpSession session = request.getSession(true);
 			session.setAttribute("user", user);
-			return new Status(Operation.LOGIN, true, user.getUserName() + " logged in succesfully!");
+			
+			//test sysout REMOVE LATER
+			System.out.println(((User)session.getAttribute("user")).toString());
+			if(user.isValidated()){
+				return new Status(Operation.LOGIN, true, user.getUserName() + " logged in succesfully!");
+			} else {
+				return new Status(Operation.LOGIN, false, "User is not validated yet!");
+			}
 		} else {
 			return new Status(Operation.LOGIN, false, "Username or password is SHIT!");
 		}
