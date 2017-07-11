@@ -77,8 +77,8 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setString(3, user.getFirstName());
 			ps.setString(4, user.getLastName());
 			ps.setInt(5, id);
-			int succes = ps.executeUpdate();
-			return succes > 0;
+			int success = ps.executeUpdate();
+			return success > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -91,8 +91,8 @@ public class UserController extends DatabaseController implements UserDao {
 			ps = con.prepareStatement("UPDATE Users SET quantity = ? WHERE id = ?");
 			ps.setDouble(1, quantity);
 			ps.setInt(2, id);
-			int succes = ps.executeUpdate();
-			return succes > 0;
+			int success = ps.executeUpdate();
+			return success > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -105,8 +105,8 @@ public class UserController extends DatabaseController implements UserDao {
 			ps = con.prepareStatement("UPDATE Users SET validated = ? WHERE id = ?");
 			ps.setBoolean(1, validate);
 			ps.setInt(2, id);
-			int succes = ps.executeUpdate();
-			return succes > 0;
+			int success = ps.executeUpdate();
+			return success > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
