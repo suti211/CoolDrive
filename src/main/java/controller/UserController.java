@@ -8,13 +8,11 @@ import java.sql.*;
 /**
  * Created by David Szilagyi on 2017. 07. 10..
  */
-public class UserController implements UserDao {
-
-	private Connection con = null;
+public class UserController extends DatabaseController implements UserDao {
 
 	public UserController(ConnectionUtil.DatabaseName database) {
-		this.con = ConnectionUtil.getConnection(database);
-	}
+	    super(database);
+    }
 
 	public User getUser(int id) {
 		PreparedStatement ps = null;
