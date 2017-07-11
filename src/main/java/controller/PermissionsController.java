@@ -15,12 +15,12 @@ public class PermissionsController extends DatabaseController implements Permiss
         super(database);
     }
 
-    public boolean addFileToUser(int userId, int fileId) {
+    public boolean addFileToUser(int fileId, int userId) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("INSERT INTO Permissions(userId, fileId) VALUES (?, ?)");
-            ps.setInt(1, userId);
-            ps.setInt(2, fileId);
+            ps = con.prepareStatement("INSERT INTO Permissions(fileId, userId) VALUES (?, ?)");
+            ps.setInt(1, fileId);
+            ps.setInt(2, userId);
             int success = ps.executeUpdate();
             return success > 0;
         } catch (SQLException e) {
@@ -29,12 +29,12 @@ public class PermissionsController extends DatabaseController implements Permiss
         return false;
     }
 
-    public boolean removeFileFromUser(int userId, int fileId) {
+    public boolean removeFileFromUser(int fileId, int userId) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("DELETE FROM Permissions WHERE userId = ? AND fileId = ?");
-            ps.setInt(1, userId);
-            ps.setInt(2, fileId);
+            ps = con.prepareStatement("DELETE FROM Permissions WHERE fileId = ? AND userId = ?");
+            ps.setInt(1, fileId);
+            ps.setInt(2, userId);
             int success = ps.executeUpdate();
             return success > 0;
         } catch (SQLException e) {
