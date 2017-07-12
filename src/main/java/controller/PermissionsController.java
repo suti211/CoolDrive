@@ -1,6 +1,8 @@
 package controller;
 
 import dao.PermissionsDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
 
 import java.sql.PreparedStatement;
@@ -10,6 +12,8 @@ import java.sql.SQLException;
  * Created by David Szilagyi on 2017. 07. 11..
  */
 public class PermissionsController extends DatabaseController implements PermissionsDao{
+
+    private static final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
 
     public PermissionsController(ConnectionUtil.DatabaseName database) {
         super(database);
@@ -22,10 +26,15 @@ public class PermissionsController extends DatabaseController implements Permiss
             ps.setInt(1, fileId);
             ps.setInt(2, userId);
             int success = ps.executeUpdate();
-            return success > 0;
+            if (success > 0){
+                LOG.info("Add file to user is succeeded(fileId: {}, userId: {)",fileId,userId);
+                return true;
+            }
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Add file to user is failed with Exception",e);
         }
+        LOG.debug("Add file to user is failed(fileId: {), userId: {}",fileId,userId);
         return false;
     }
 
@@ -36,10 +45,14 @@ public class PermissionsController extends DatabaseController implements Permiss
             ps.setInt(1, fileId);
             ps.setInt(2, userId);
             int success = ps.executeUpdate();
-            return success > 0;
+            if(success > 0){
+                LOG.info("Remove file frome user is succeeded(fileId: {}, userId: {)",fileId,userId);
+                return true;
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Remove file from user is failed with Exception",e);
         }
+        LOG.debug("Remove file from user is failed(fileId: {), userId: {}",fileId,userId);
         return false;
     }
 }

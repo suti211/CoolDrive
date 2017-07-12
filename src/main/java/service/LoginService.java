@@ -14,18 +14,20 @@ import controller.UserController;
 import dto.Operation;
 import dto.Status;
 import dto.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
 
 @Path("/login")
 public class LoginService {
-
+	private static final Logger LOG = LoggerFactory.getLogger(LoginService.class);
 	UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Status authenticateUser(User input, @Context HttpServletRequest request) {
-		
+		LOG.info("LoginService Post method is called with username: {} from: {}",input.getUserName(),request.getRemoteAddr());
 		int userId = userController.checkUser(input.getUserName(), input.getPass());
 		
 		if(userId != -1){
