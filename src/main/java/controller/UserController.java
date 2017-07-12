@@ -2,6 +2,8 @@ package controller;
 
 import dao.UserDao;
 import dto.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
 import java.sql.*;
 
@@ -9,7 +11,7 @@ import java.sql.*;
  * Created by David Szilagyi on 2017. 07. 10..
  */
 public class UserController extends DatabaseController implements UserDao {
-
+	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 	public UserController(ConnectionUtil.DatabaseName database) {
 	    super(database);
     }
@@ -21,24 +23,37 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) {
-				return new User(rs.getInt("id"), rs.getString("username"), rs.getString("pass"), rs.getString("email"),
-						rs.getBoolean("validated"), rs.getString("firstname"), rs.getString("lastname"),
-						rs.getBoolean("admin"), rs.getDouble("quantity"), rs.getDouble("usage"));
+				LOG.info("Find user with this id: {} User(username: {}, email: {})",id, rs.getString("username"),rs.getString("email"));
+				return new User(
+						rs.getInt("id"),
+						rs.getString("username"),
+						rs.getString("pass"),
+						rs.getString("email"),
+						rs.getBoolean("validated"),
+						rs.getString("firstname"),
+						rs.getString("lastname"),
+						rs.getBoolean("admin"),
+						rs.getDouble("quantity"),
+						rs.getDouble("usage")
+				);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("getUser if failed with Exceotion",e);
 		}
 		return null;
 	}
 
 	public double getUsage(int id) {
+		double result;
 		PreparedStatement ps = null;
 		try {
 			ps = con.prepareStatement("SELECT `usage` FROM Users WHERE id = ?");
 			ps.setInt(1, id);
-			return ps.executeQuery().getDouble("usage");
+			result = ps.executeQuery().getDouble("usage");
+			LOG.info("Find usage with this id: {} usage is {}",id,result);
+			return result;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("get usage is failed with Exception",e);
 		}
 		return 0;
 	}
@@ -58,14 +73,18 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setDouble(8, 0);
 			ps.setDouble(9, 0);
 			int success = ps.executeUpdate();
-			return success > 0;
+			if (success > 0){
+				LOG.info("User(username: {}, email: {) succesfully registered",user.getUserName(),user.getEmail());
+				return true;
+			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("register user is failed with Exception",e);
 		}
 		return false;
 	}
 
 	public boolean deleteUser(int id) {
+		LOG.info("User with this id: {} is succesfully deleted",id);
 		return changeValidation(id, false);
 	}
 
@@ -80,9 +99,12 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setString(4, user.getLastName());
 			ps.setInt(5, id);
 			int success = ps.executeUpdate();
-			return success > 0;
+			if (success > 0){
+				LOG.info("User(username: {}, email: {)with this id: {} succesfully modified",user.getUserName(),user.getEmail(),id);
+				return true;
+			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Modify user is failed with Exception",e);
 		}
 		return false;
 	}
@@ -94,9 +116,12 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setDouble(1, quantity);
 			ps.setInt(2, id);
 			int success = ps.executeUpdate();
-			return success > 0;
+			if(success > 0){
+				LOG.info("User quantity is succesfully changed with this id: {} new quantity is : {}",id,quantity);
+				return true;
+			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("quantity change is failed with Exception",e);
 		}
 		return false;
 	}
@@ -108,9 +133,12 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setBoolean(1, validate);
 			ps.setInt(2, id);
 			int success = ps.executeUpdate();
-			return success > 0;
+			if (success > 0){
+				LOG.info("Validation is succesfully changed with this id: {} validated: {}",id,validate);
+				return true;
+			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Change validation is failed with Exception",e);
 		}
 		return false;
 	}
@@ -123,10 +151,11 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setString(2, pass);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
+				LOG.info("User checking is succeeded(username: {})",userName);
 				return rs.getInt("id");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("User checking is failed with Exception",e);
 		}
 		return -1;
 	}
