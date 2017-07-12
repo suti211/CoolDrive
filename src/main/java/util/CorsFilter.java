@@ -1,6 +1,5 @@
 package util;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
