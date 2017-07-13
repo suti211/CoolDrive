@@ -36,7 +36,7 @@ public class LoginService {
 			HttpSession session = request.getSession(true);
 			
 			//test sysout REMOVE LATER
-			System.out.println(((User)session.getAttribute("user")).toString());
+//			System.out.println(((User)session.getAttribute("user")).toString());
 			
 			if(user.isValidated()){			
 				return new Status(Operation.LOGIN, true, user.getUserName() + " " + sendToken());

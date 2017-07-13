@@ -51,6 +51,10 @@ export class LoginComponent{
         console.log(this.status);
         console.log(this.token);
         localStorage.setItem(this.username, this.token.token);
+
+        if(this.status.success){
+          setTimeout(this.router.navigate(['dashboard']), 1000);
+        }
       });
 
     } else {
