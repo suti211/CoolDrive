@@ -14,13 +14,14 @@ public class User {
 	private boolean admin;
 	private double quantity;
 	private double usage;
+	private String token;
 	
 	public User(){
 		
 	}
 
 	public User(int id, String userName, String pass, String email, boolean validated, String firstName,
-			String lastName, boolean admin, double quantity, double usage) {
+			String lastName, boolean admin, double quantity, double usage, String token) {
 		this.id = id;
 		this.userName = userName;
 		this.pass = pass;
@@ -31,6 +32,7 @@ public class User {
 		this.admin = admin;
 		this.quantity = quantity;
 		this.usage = usage;
+		this.token = token;
 	}
 
 	public User(String userName, String firstName, String lastName, String email, String pass) {
@@ -72,6 +74,8 @@ public class User {
 	public String getLastName() {
 		return lastName;
 	}
+
+	public String getToken() { return token; }
 
 	public boolean isAdmin() {
 		return admin;
