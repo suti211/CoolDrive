@@ -34,7 +34,7 @@ public class PermissionsController extends DatabaseController implements Permiss
         } catch (SQLException e) {
             LOG.error("Add file to user is failed with Exception",e);
         }
-        LOG.debug("Add file to user is failed(fileId: {), userId: {}",fileId,userId);
+        LOG.debug("Add file to user is failed(fileId: {), userId: {} in addFiletoUser method",fileId,userId);
         return false;
     }
 
@@ -52,7 +52,7 @@ public class PermissionsController extends DatabaseController implements Permiss
         } catch (SQLException e) {
             LOG.error("Remove file from user is failed with Exception",e);
         }
-        LOG.debug("Remove file from user is failed(fileId: {), userId: {}",fileId,userId);
+        LOG.debug("Remove file from user is failed(fileId: {), userId: {} in removeFileFromUser",fileId,userId);
         return false;
     }
 }
