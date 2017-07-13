@@ -38,8 +38,9 @@ public class UserController extends DatabaseController implements UserDao {
 				);
 			}
 		} catch (SQLException e) {
-			LOG.error("getUser if failed with Exceotion",e);
+			LOG.error("getUser if failed with Exception",e);
 		}
+		LOG.debug("User not found with this id: {} in getUser method",id);
 		return null;
 	}
 
@@ -55,6 +56,7 @@ public class UserController extends DatabaseController implements UserDao {
 		} catch (SQLException e) {
 			LOG.error("get usage is failed with Exception",e);
 		}
+		LOG.debug("User not found with this id: {} in getUsage method",id);
 		return 0;
 	}
 
@@ -106,6 +108,7 @@ public class UserController extends DatabaseController implements UserDao {
 		} catch (SQLException e) {
 			LOG.error("Modify user is failed with Exception",e);
 		}
+		LOG.debug("User not found with this id: {} in modifyUser method",id);
 		return false;
 	}
 
@@ -123,6 +126,7 @@ public class UserController extends DatabaseController implements UserDao {
 		} catch (SQLException e) {
 			LOG.error("quantity change is failed with Exception",e);
 		}
+		LOG.debug("User not found with this id: {} in quantityChange method",id);
 		return false;
 	}
 
@@ -140,6 +144,7 @@ public class UserController extends DatabaseController implements UserDao {
 		} catch (SQLException e) {
 			LOG.error("Change validation is failed with Exception",e);
 		}
+		LOG.debug("User not found with this id: {} in changeValidation method",id);
 		return false;
 	}
 
@@ -157,6 +162,7 @@ public class UserController extends DatabaseController implements UserDao {
 		} catch (SQLException e) {
 			LOG.error("User checking is failed with Exception",e);
 		}
+		LOG.debug("Wrong username: {} and/or pass in checkUser method",userName );
 		return -1;
 	}
 }

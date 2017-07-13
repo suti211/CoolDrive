@@ -40,6 +40,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
         } catch (SQLException e) {
             LOG.error("Get user file is failed with Exception",e);
         }
+        LOG.debug("File not found with this id: {} in getUserFile method",id);
         return null;
     }
 
@@ -85,6 +86,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
         } catch (SQLException e) {
             LOG.error("modify userfile is failed with Exception",e);
         }
+        LOG.debug("File not found with this id: {} in modifyUserFile method",id);
         return false;
     }
 
@@ -103,6 +105,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
         } catch (SQLException e) {
             LOG.error("Change folder size is failed with Exception",e);
         }
+        LOG.debug("File not found with this id: {} in changeFolderSize method",id);
         return false;
     }
 
@@ -120,6 +123,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
         } catch (SQLException e) {
             LOG.error("Delete userfile is failed with Exception",e);
         }
+        LOG.debug("File not found with this id: {} in deleteUserFile method",id);
         return false;
     }
 
