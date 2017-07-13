@@ -2,6 +2,8 @@ package controller;
 
 import dao.UserFileDao;
 import dto.UserFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +13,7 @@ import java.sql.SQLException;
  * Created by David Szilagyi on 2017. 07. 11..
  */
 public class UserFileController extends DatabaseController implements UserFileDao {
+    private static final Logger LOG = LoggerFactory.getLogger(UserFileController.class);
 
     public UserFileController(ConnectionUtil.DatabaseName database) {
         super(database);
@@ -22,13 +25,22 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps = con.prepareStatement("SELECT * FROM Users WHERE id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            return new UserFile(rs.getInt("id"), rs.getString("path"),
-                    rs.getDouble("size"), rs.getDate("uploadDate"),
-                    rs.getString("filename"), rs.getDouble("maxSize"),
-                    rs.getBoolean("isFolder"), rs.getInt("ownerId"), rs.getInt("parentId"));
+            LOG.info("File(filename: {}, path: {}) found with this id: {}",rs.getString("filename"),rs.getString("filename"),id);
+            return new UserFile(
+                    rs.getInt("id"),
+                    rs.getString("filename"),
+                    rs.getDouble("size"),
+                    rs.getDate("uploadDate"),
+                    rs.getString("filename"),
+                    rs.getDouble("maxSize"),
+                    rs.getBoolean("isFolder"),
+                    rs.getInt("ownerId"),
+                    rs.getInt("parentId")
+            );
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Get user file is failed with Exception",e);
         }
+        LOG.debug("File not found with this id: {} in getUserFile method",id);
         return null;
     }
 
@@ -46,9 +58,12 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps.setInt(7, userFile.getOwnerId());
             ps.setInt(8, userFile.getParentId());
             int success = ps.executeUpdate();
-            return success > 0;
+            if(success > 0){
+                LOG.info("Add new file(filename: {}, path: {}) is succesfully created",userFile.getFileName(),userFile.getPath());
+                return true;
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Add new userfile is failed with Exception",e);
         }
         return false;
     }
@@ -64,10 +79,14 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps.setInt(5, userFile.getParentId());
             ps.setInt(5, id);
             int success = ps.executeUpdate();
-            return success > 0;
+            if (success > 0){
+                LOG.info("Userfile(filename: {}, path: {}) is succesfully modified with this id: {}",userFile.getFileName(),userFile.getPath(),id);
+                return true;
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("modify userfile is failed with Exception",e);
         }
+        LOG.debug("File not found with this id: {} in modifyUserFile method",id);
         return false;
     }
 
@@ -79,10 +98,14 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps.setDouble(1, maxSize);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
-            return success > 0;
+            if(success > 0){
+                LOG.info("Folder size is succfully changed with his id: {} new size is: {}",id,maxSize);
+                return true;
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Change folder size is failed with Exception",e);
         }
+        LOG.debug("File not found with this id: {} in changeFolderSize method",id);
         return false;
     }
 
@@ -92,10 +115,15 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps = con.prepareStatement("DELETE FROM Files WHERE id = ?");
             ps.setInt(1, id);
             int success = ps.executeUpdate();
-            return success > 0;
+            if (success > 0){
+                LOG.info("Userfile is succesfully deleted with this id: {}",id);
+                return true;
+
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Delete userfile is failed with Exception",e);
         }
+        LOG.debug("File not found with this id: {} in deleteUserFile method",id);
         return false;
     }
 
@@ -106,10 +134,13 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps.setString(1, userFile.getPath());
             ps.setString(2, userFile.getFileName());
             int success = ps.executeUpdate();
-            return success > 0;
+            if (success > 0){
+                LOG.info("Userfile(filename: {}, path: {}) is successfully checked",userFile.getFileName(),userFile.getPath());
+                return true;
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            LOG.error("check userfile is failed with Exception",e);
+    }
         return false;
     }
 }

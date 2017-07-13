@@ -94,6 +94,7 @@ CREATE TABLE `Users` (
   `admin` tinyint(1) DEFAULT NULL,
   `quantity` double DEFAULT NULL,
   `usage` double DEFAULT NULL,
+  `token` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Users_id_uindex` (`id`),
   UNIQUE KEY `Users_username_uindex` (`username`),

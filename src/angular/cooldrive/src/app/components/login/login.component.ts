@@ -5,6 +5,7 @@ import { Register } from '../../model/register.model';
 import { Status } from '../../model/status.model'
 import { slideInOutAnimation } from '../../_animations/slide/slide.animation';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Token } from '../../model/token.model';
 
 @Component({
   selector: 'login',
@@ -24,18 +25,20 @@ export class LoginComponent{
         
   }
 
-  username: String;
-  password: String;
+  username: string;
+  password: string;
   lastname = "";
   firstname = "";
   email = "";
   user: Register;
   status: Status;
+  token: Token;
 
   login(){
 
     if(this.isThereInput()){
-
+      
+      
       console.log(this.username, this.password);
       console.log("Login Attempt!");
       this.user = new Register(this.username, this.firstname, this.lastname, this.email, this.password);
@@ -44,7 +47,10 @@ export class LoginComponent{
       loginOperation = this.loginService.sendLoginData(this.user);
       loginOperation.subscribe((status: Status) => {
         this.status = status;
+        this.token = new Token(this.status.message.split(" ")[1]);
         console.log(this.status);
+        console.log(this.token);
+        localStorage.setItem(this.username, this.token.token);
       });
 
     } else {

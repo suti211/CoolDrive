@@ -15,7 +15,6 @@ public final class ConnectionUtil {
     private static final String DATABASE_USER = "void";
     private static final String DATABASE_PASSWORD = "void";
     private static final int DATABASE_PORT = 3306;
-
     public enum DatabaseName{
         CoolDrive,
         CoolDrive_Test
