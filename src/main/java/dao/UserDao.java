@@ -21,4 +21,8 @@ public interface UserDao {
     boolean changeValidation(int id, boolean validate);
 
     int checkUser(String userName, String pass);
+
+    boolean setToken(String userName);
+
+    boolean deleteToken(String userName);
 }

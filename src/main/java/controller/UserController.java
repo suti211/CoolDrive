@@ -5,6 +5,8 @@ import dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
+import util.TokenGenerator;
+
 import java.sql.*;
 
 /**
@@ -34,7 +36,8 @@ public class UserController extends DatabaseController implements UserDao {
 						rs.getString("lastname"),
 						rs.getBoolean("admin"),
 						rs.getDouble("quantity"),
-						rs.getDouble("usage")
+						rs.getDouble("usage"),
+						rs.getString("token")
 				);
 			}
 		} catch (SQLException e) {
@@ -62,7 +65,7 @@ public class UserController extends DatabaseController implements UserDao {
 		PreparedStatement ps = null;
 		try {
 			ps = con.prepareStatement(
-					"INSERT INTO Users(username, pass, email, validated, firstname, lastname, admin, quantity, `usage`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					"INSERT INTO Users(username, pass, email, validated, firstname, lastname, admin, quantity, `usage`, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			ps.setString(1, user.getUserName());
 			ps.setString(2, user.getPass());
 			ps.setString(3, user.getEmail());
@@ -72,6 +75,7 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setBoolean(7, false);
 			ps.setDouble(8, 0);
 			ps.setDouble(9, 0);
+			ps.setString(10, user.getToken());
 			int success = ps.executeUpdate();
 			if (success > 0){
 				LOG.info("User(username: {}, email: {) succesfully registered",user.getUserName(),user.getEmail());
@@ -158,5 +162,40 @@ public class UserController extends DatabaseController implements UserDao {
 			LOG.error("User checking is failed with Exception",e);
 		}
 		return -1;
+	}
+
+	public boolean setToken(String userName) {
+		String token = TokenGenerator.createToken();
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement("UPDATE Users SET token = ? WHERE username = ?");
+			ps.setString(1, token);
+			ps.setString(2, userName);
+			int success = ps.executeUpdate();
+			if (success > 0){
+				LOG.info("Token successfully added to user: {}",userName);
+				return true;
+			}
+		} catch (SQLException e) {
+			LOG.error("Token failed to added with Exception",e);
+		}
+		return false;
+	}
+
+	public boolean deleteToken(String userName) {
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement("UPDATE Users SET token = ? WHERE username = ?");
+			ps.setString(1, null);
+			ps.setString(2, userName);
+			int success = ps.executeUpdate();
+			if (success > 0) {
+				LOG.info("Token successfully deleted from user: {}", userName);
+				return true;
+			}
+		} catch (SQLException e) {
+			LOG.error("Token failed to deleted with Exception", e);
+		}
+		return false;
 	}
 }
