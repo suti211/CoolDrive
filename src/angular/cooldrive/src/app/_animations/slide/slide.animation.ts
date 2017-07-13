@@ -42,7 +42,7 @@ export const slideInOutAnimation =
         // route 'leave' transition
         transition(':leave', [
             // animation and styles at end of transition
-            animate('.5s ease-in-out', style({
+            animate('.1s ease-in-out', style({
                 // transition the right position to -400% which slides the content out of view
                 right: '-400%',
  
