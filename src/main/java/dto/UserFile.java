@@ -17,13 +17,13 @@ public class UserFile {
     private int ownerId;
     private int parentId;
 
-    public UserFile(int id, String path, double size, Date uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId) {
+    public UserFile(int id, String path, double size, Date uploadDate, String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
         this.id = id;
         this.path = path;
         this.size = size;
         this.uploadDate = uploadDate;
         this.fileName = fileName;
-        this.extension = extension;
+        this.extension = fileName.substring(fileName.lastIndexOf('.'));
         this.maxSize = maxSize;
         this.isFolder = isFolder;
         this.ownerId = ownerId;
