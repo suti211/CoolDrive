@@ -95,6 +95,7 @@ CREATE TABLE `Users` (
   `quantity` double DEFAULT NULL,
   `usage` double DEFAULT NULL,
   `token` varchar(45) DEFAULT NULL,
+  `registerdate` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Users_id_uindex` (`id`),
   UNIQUE KEY `Users_username_uindex` (`username`),
