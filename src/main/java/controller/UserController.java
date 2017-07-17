@@ -37,7 +37,8 @@ public class UserController extends DatabaseController implements UserDao {
 						rs.getBoolean("admin"),
 						rs.getDouble("quantity"),
 						rs.getDouble("usage"),
-						rs.getString("token")
+						rs.getString("token"),
+						rs.getDate("registerdate")
 				);
 			}
 		} catch (SQLException e) {
@@ -67,7 +68,7 @@ public class UserController extends DatabaseController implements UserDao {
 		PreparedStatement ps = null;
 		try {
 			ps = con.prepareStatement(
-					"INSERT INTO Users(username, pass, email, validated, firstname, lastname, admin, quantity, `usage`, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					"INSERT INTO Users(username, pass, email, validated, firstname, lastname, admin, quantity, `usage`, token, registerdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_DATE)");
 			ps.setString(1, user.getUserName());
 			ps.setString(2, user.getPass());
 			ps.setString(3, user.getEmail());
