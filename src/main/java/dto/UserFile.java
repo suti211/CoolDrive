@@ -36,6 +36,17 @@ public class UserFile {
         this.size = (new File(fileName).length() / 1024) / 1024;
         this.fileName = fileName;
         this.extension = fileName.substring(fileName.lastIndexOf('.'));
+        this.isFolder = false;
+        this.ownerId = ownerId;
+        this.parentId = parentId;
+    }
+
+    public UserFile(String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
+        this.path = fileName.substring(0, fileName.lastIndexOf('/'));
+        this.size = (new File(fileName).length() / 1024) / 1024;
+        this.fileName = fileName;
+        this.maxSize = maxSize;
+        this.isFolder = isFolder;
         this.ownerId = ownerId;
         this.parentId = parentId;
     }
