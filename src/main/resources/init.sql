@@ -26,7 +26,7 @@ CREATE TABLE `Files` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `path` varchar(210) NOT NULL,
   `size` double NOT NULL,
-  `uploadDate` date DEFAULT NULL,
+  `uploadDate` datetime DEFAULT NULL,
   `filename` varchar(70) DEFAULT NULL,
   `maxSize` double DEFAULT NULL,
   `isFolder` tinyint(1) DEFAULT NULL,
