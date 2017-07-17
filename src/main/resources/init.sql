@@ -28,6 +28,7 @@ CREATE TABLE `Files` (
   `size` double NOT NULL,
   `uploadDate` datetime DEFAULT NULL,
   `filename` varchar(70) DEFAULT NULL,
+  `extension` varchar(45) DEFAULT NULL,
   `maxSize` double DEFAULT NULL,
   `isFolder` tinyint(1) DEFAULT NULL,
   `ownerId` int(11) DEFAULT NULL,
