@@ -35,9 +35,6 @@ public class LoginService {
 			User user = userController.getUser(userId);
 			HttpSession session = request.getSession(true);
 			
-			//test sysout REMOVE LATER
-//			System.out.println(((User)session.getAttribute("user")).toString());
-			
 			if(user.isValidated()){			
 				return new Status(Operation.LOGIN, true, user.getUserName() + " " + sendToken());
 			} else {
