@@ -11,13 +11,15 @@ import { LoginService } from './service/login.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterService } from './service/register.service';
 import { LoginGuard } from './guard/login.guard';
+import { FilesComponent } from './components/files/files.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    DashboardComponent
+    DashboardComponent,
+    FilesComponent
   ],
   imports: [
     BrowserAnimationsModule,
