@@ -1,5 +1,6 @@
 package dto;
 
+import java.io.File;
 import java.sql.Date;
 
 /**
@@ -17,15 +18,24 @@ public class UserFile {
     private int ownerId;
     private int parentId;
 
-    public UserFile(int id, String path, double size, Date uploadDate, String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
+    public UserFile(int id, String path, double size, Date uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId) {
         this.id = id;
         this.path = path;
         this.size = size;
         this.uploadDate = uploadDate;
         this.fileName = fileName;
-        this.extension = fileName.substring(fileName.lastIndexOf('.'));
+        this.extension = extension;
         this.maxSize = maxSize;
         this.isFolder = isFolder;
+        this.ownerId = ownerId;
+        this.parentId = parentId;
+    }
+
+    public UserFile(String fileName, int ownerId, int parentId) {
+        this.path = fileName.substring(0, fileName.lastIndexOf('/'));
+        this.size = (new File(fileName).length() / 1024) / 1024;
+        this.fileName = fileName;
+        this.extension = fileName.substring(fileName.lastIndexOf('.'));
         this.ownerId = ownerId;
         this.parentId = parentId;
     }
