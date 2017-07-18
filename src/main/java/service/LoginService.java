@@ -35,6 +35,7 @@ public class LoginService {
 			userController.setToken(input.getUserName());
 			User user = userController.getUser(userId);
 			
+
 			if(user.isValidated()){
 				return new Status(Operation.LOGIN, true, user.getUserName() + " " + user.getToken());
 			} else {
