@@ -1,6 +1,6 @@
 <h1>Your files
   <div class="progress">
-    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25/100MB</div>
+    <div id="progress-bar" class="progress-bar" role="progressbar" [style.width]="percentageStyle">{{usage}}/{{quantity}} MB</div>
   </div>
 </h1>
 
@@ -21,7 +21,7 @@
 
     <tbody id="FileListDisplay">
 
-    <tr *ngFor="let file of files.files">
+    <tr *ngFor="let file of files">
       <td>
         <div *ngIf="file.ifFolder == false"> <span class="glyphicon glyphicon-file"></span> {{file.filename}}</div>
         <div *ngIf="file.ifFolder == true"> <span class="glyphicon glyphicon-folder-close"></span> {{file.filename}}</div>
@@ -31,9 +31,18 @@
       <td>{{file.lastmodify}}</td>
       <td>{{file.label}}</td>
       <td>
-        <button type="button" class="btn btn-default btn-sm" >
-          <span class="glyphicon glyphicon-menu-hamburger"></span> More
+        <div class="dropdown">
+        <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          More
         </button>
+        <div id="floatingButtonDropdown" class="dropdown-menu">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Separated link</a>
+        </div>
+        </div>
       </td>
     </tr>
 
