@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterService } from './service/register.service';
 import { LoginGuard } from './guard/login.guard';
 import { FilesComponent } from './components/files/files.component';
+import {FileService} from './service/files.service';
 
 @NgModule({
   declarations: [
@@ -29,10 +30,13 @@ import { FilesComponent } from './components/files/files.component';
     RouterModule.forRoot([
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard] }
+      { path: 'dashboard', component: DashboardComponent,
+        children: [
+          {path: 'files', component: FilesComponent}
+        ]}
     ])
   ],
-  providers: [LoginService, RegisterService, LoginGuard],
+  providers: [LoginService, RegisterService, LoginGuard, FileService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
