@@ -12,7 +12,7 @@ export class LoginService {
     //loginUrl = "http://demo1158757.mockable.io/loginTest";
 
     constructor(private http:Http){
-        localStorage.clear();
+        
      }
 
     sendLoginData(body: Object): Observable<Status>{
