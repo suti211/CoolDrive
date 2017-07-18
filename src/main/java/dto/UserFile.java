@@ -32,11 +32,22 @@ public class UserFile {
         this.label = label;
     }
 
-    public UserFile(String path, double size, String fileName, String extension, boolean isFolder, int ownerId, int parentId) {
-        this.path = path;
-        this.size = size;
-        this.fileName = fileName;
-        this.extension = extension;
+
+    public UserFile(String fileName, int ownerId, int parentId) {
+        this.path = ""; //created by FileManager
+        this.size = 0; //get by FileManager
+        this.fileName = ""; //created by FileManager
+        this.extension = ""; //created by FileManager
+        this.isFolder = false;
+        this.ownerId = ownerId;
+        this.parentId = parentId;
+    }
+
+    public UserFile(String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
+        this.path = ""; //created by FileManager
+        this.size = 0; //get by FileManager
+        this.fileName = ""; //created by FileManager
+        this.maxSize = maxSize;
         this.isFolder = isFolder;
         this.ownerId = ownerId;
         this.parentId = parentId;
