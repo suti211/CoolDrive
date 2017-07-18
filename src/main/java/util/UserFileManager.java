@@ -1,20 +1,19 @@
 package util;
 
 import controller.UserController;
-import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.rmi.runtime.Log;
 
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,23 +26,18 @@ public class UserFileManager {
 
 
     public static boolean saveUserFile(MultipartFormDataInput input,String token) {
-        String fileName;
         Map<String,List<InputPart>> uploadForm = input.getFormDataMap();
         List<InputPart>inputParts = uploadForm.get("uploadedFile");
+        Map<String, InputStream> streams = new HashMap<>();
         for(InputPart inputPart : inputParts) {
             try {
-                MultivaluedMap<String, String> header = inputPart.getHeaders();
-                fileName = getFileName(header);
-                InputStream inputStream = inputPart.getBody(InputStream.class, null);
-                byte []bytes = IOUtils.toByteArray(inputStream);
-
-
-
-
-            }catch (IOException e){
+                streams.put(getFileName(inputPart.getHeaders()), inputPart.getBody(new GenericType<>(InputStream.class)));
+            }   catch (IOException e){
                 LOG.error("save user file failed with Exception",e);
             }
         }
+        streams.entrySet().parallelStream()
+                .forEach(e -> writeFile(e.getKey(), e.getValue()));
         return false;
     }
 
@@ -59,7 +53,7 @@ public class UserFileManager {
 
             }
         }
-        return "unkown";
+        return "unknown";
      }
 
      public static boolean createFolder(String path,String folderName){
@@ -69,15 +63,26 @@ public class UserFileManager {
          return file.mkdirs();
      }
 
-     private static void writeFile(byte[] content, String filename)throws IOException{
-         File file = new File(filename);
-         if (!file.exists()){
-             file.createNewFile();
+     private static void writeFile(String filename, InputStream inputStream) {
+         try {
+             File file = new File(filename);
+             if (!file.exists()) {
+                 file.createNewFile();
+             }
+             FileOutputStream fileOutputStream = new FileOutputStream(file);
+             byte[] bytes = new byte[1024];
+             int content;
+             while ((content = inputStream.read(bytes)) != -1) {
+                 LOG.debug("writing {} bytes to {}", content, filename);
+                 fileOutputStream.write(content);
+                 fileOutputStream.flush();
+             }
+
+
+             fileOutputStream.close();
+         } catch (IOException e) {
+             LOG.error("error when reading remote stream upload",e);
          }
-         FileOutputStream fileOutputStream = new FileOutputStream(file);
-         fileOutputStream.write(content);
-         fileOutputStream.flush();
-         fileOutputStream.close();
      }
      public static boolean deleteFile(String path)throws IOException{
          File file = new File(path);
