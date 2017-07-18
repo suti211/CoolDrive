@@ -24,7 +24,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
     public UserFile getUserFile(int id) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SELECT * FROM Users WHERE id = ?");
+            ps = con.prepareStatement("SELECT * FROM Files WHERE id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             LOG.info("File(filename: {}, path: {}) found with this id: {}",rs.getString("filename"),rs.getString("filename"),id);
@@ -138,7 +138,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
         List<UserFile> userFiles = new ArrayList<>();
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SELECT * FROM Users WHERE id = ?");
+            ps = con.prepareStatement("SELECT * FROM Files WHERE id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
