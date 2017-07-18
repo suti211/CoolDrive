@@ -11,7 +11,7 @@ import {RegisterComponent} from "../components/register/register.component";
 export class RegisterService {
   //loginUrl = "locahost:8080/CoolDrive/rest/members/login";
   //loginUrl = "http://demo3422681.mockable.io/registerTest";
-  loginUrl = "http://192.168.150.49:8080/CoolDrive/register";
+  loginUrl = "http://localhost:8080/CoolDrive/register";
   serviceError = false;
 
   constructor(private http: Http) {

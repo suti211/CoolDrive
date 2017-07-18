@@ -11,18 +11,30 @@ public class UserFile {
     private double size;
     private Date uploadDate;
     private String fileName;
+    private String extension;
     private double maxSize;
     private boolean isFolder;
     private int ownerId;
     private int parentId;
 
-    public UserFile(int id, String path, double size, Date uploadDate, String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
+    public UserFile(int id, String path, double size, Date uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId) {
         this.id = id;
         this.path = path;
         this.size = size;
         this.uploadDate = uploadDate;
         this.fileName = fileName;
+        this.extension = extension;
         this.maxSize = maxSize;
+        this.isFolder = isFolder;
+        this.ownerId = ownerId;
+        this.parentId = parentId;
+    }
+
+    public UserFile(String path, double size, String fileName, String extension, boolean isFolder, int ownerId, int parentId) {
+        this.path = path;
+        this.size = size;
+        this.fileName = fileName;
+        this.extension = extension;
         this.isFolder = isFolder;
         this.ownerId = ownerId;
         this.parentId = parentId;
@@ -62,6 +74,10 @@ public class UserFile {
 
     public int getParentId() {
         return parentId;
+    }
+
+    public String getExtension() {
+        return extension;
     }
 
     public void setPath(String path) {

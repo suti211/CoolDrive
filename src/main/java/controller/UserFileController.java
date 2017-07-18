@@ -32,6 +32,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
                     rs.getDouble("size"),
                     rs.getDate("uploadDate"),
                     rs.getString("filename"),
+                    rs.getString("extension"),
                     rs.getDouble("maxSize"),
                     rs.getBoolean("isFolder"),
                     rs.getInt("ownerId"),
@@ -48,18 +49,18 @@ public class UserFileController extends DatabaseController implements UserFileDa
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "INSERT INTO Files(path, `size`, uploadDate, filename, maxSize, isFolder, ownerId, parentId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                    "INSERT INTO Files(path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?)");
             ps.setString(1, userFile.getPath());
             ps.setDouble(2, userFile.getSize());
-            ps.setDate(3, userFile.getUploadDate());
-            ps.setString(4, userFile.getFileName());
+            ps.setString(3, userFile.getFileName());
+            ps.setString(4, userFile.getExtension());
             ps.setDouble(5, userFile.getMaxSize());
             ps.setBoolean(6, userFile.isFolder());
             ps.setInt(7, userFile.getOwnerId());
             ps.setInt(8, userFile.getParentId());
             int success = ps.executeUpdate();
             if(success > 0){
-                LOG.info("Add new file(filename: {}, path: {}) is succesfully created",userFile.getFileName(),userFile.getPath());
+                LOG.info("Add new file(filename: {}, path: {}) is successfully created",userFile.getFileName(),userFile.getPath());
                 return true;
             }
         } catch (SQLException e) {

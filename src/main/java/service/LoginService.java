@@ -32,11 +32,12 @@ public class LoginService {
 		int userId = userController.checkUser(input.getUserName(), input.getPass());
 		
 		if(userId != -1){
+			userController.setToken(input.getUserName());
 			User user = userController.getUser(userId);
-			HttpSession session = request.getSession(true);
 			
-			if(user.isValidated()){			
-				return new Status(Operation.LOGIN, true, user.getUserName() + " " + sendToken());
+
+			if(user.isValidated()){
+				return new Status(Operation.LOGIN, true, user.getUserName() + " " + user.getToken());
 			} else {
 				return new Status(Operation.LOGIN, false, "User is not validated yet!");
 			}
@@ -48,10 +49,5 @@ public class LoginService {
 	@GET
 	public String test() {
 		return "<h1>aha</h1>";
-	}
-	
-	private String sendToken(){
-		TokenGenerator generator = new TokenGenerator();
-		return generator.createToken();
 	}
 }
