@@ -16,8 +16,9 @@ public class UserFile {
     private boolean isFolder;
     private int ownerId;
     private int parentId;
+    private String label;
 
-    public UserFile(int id, String path, double size, Date uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId) {
+    public UserFile(int id, String path, double size, Date uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label) {
         this.id = id;
         this.path = path;
         this.size = size;
@@ -28,6 +29,7 @@ public class UserFile {
         this.isFolder = isFolder;
         this.ownerId = ownerId;
         this.parentId = parentId;
+        this.label = label;
     }
 
     public UserFile(String path, double size, String fileName, String extension, boolean isFolder, int ownerId, int parentId) {
@@ -80,6 +82,10 @@ public class UserFile {
         return extension;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -96,5 +102,9 @@ public class UserFile {
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

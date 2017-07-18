@@ -33,6 +33,7 @@ CREATE TABLE `Files` (
   `isFolder` tinyint(1) DEFAULT NULL,
   `ownerId` int(11) DEFAULT NULL,
   `parentId` int(11) DEFAULT NULL,
+  `label` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Files_id_uindex` (`id`),
   KEY `Files_Users_id_fk` (`ownerId`),

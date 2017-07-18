@@ -36,7 +36,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
                     rs.getDouble("maxSize"),
                     rs.getBoolean("isFolder"),
                     rs.getInt("ownerId"),
-                    rs.getInt("parentId")
+                    rs.getInt("parentId"),
+                    rs.getString("label")
             );
         } catch (SQLException e) {
             LOG.error("Get user file is failed with Exception",e);
@@ -49,7 +50,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "INSERT INTO Files(path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?)");
+                    "INSERT INTO Files(path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId, label) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)");
             ps.setString(1, userFile.getPath());
             ps.setDouble(2, userFile.getSize());
             ps.setString(3, userFile.getFileName());
@@ -58,6 +59,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps.setBoolean(6, userFile.isFolder());
             ps.setInt(7, userFile.getOwnerId());
             ps.setInt(8, userFile.getParentId());
+            ps.setString(9, userFile.getLabel());
             int success = ps.executeUpdate();
             if(success > 0){
                 LOG.info("Add new file(filename: {}, path: {}) is successfully created",userFile.getFileName(),userFile.getPath());
@@ -73,15 +75,16 @@ public class UserFileController extends DatabaseController implements UserFileDa
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "UPDATE Files SET path = ?, filename = ?, ownerId = ?, parentId = ? WHERE id = ?");
+                    "UPDATE Files SET path = ?, filename = ?, ownerId = ?, parentId = ?, label = ? WHERE id = ?");
             ps.setString(1, userFile.getPath());
             ps.setString(2, userFile.getFileName());
             ps.setInt(3, userFile.getOwnerId());
             ps.setInt(5, userFile.getParentId());
             ps.setInt(5, id);
+            ps.setString(6, userFile.getLabel());
             int success = ps.executeUpdate();
             if (success > 0){
-                LOG.info("Userfile(filename: {}, path: {}) is succesfully modified with this id: {}",userFile.getFileName(),userFile.getPath(),id);
+                LOG.info("Userfile(filename: {}, path: {}) is successfully modified with this id: {}",userFile.getFileName(),userFile.getPath(),id);
                 return true;
             }
         } catch (SQLException e) {
@@ -117,7 +120,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps.setInt(1, id);
             int success = ps.executeUpdate();
             if (success > 0){
-                LOG.info("Userfile is succesfully deleted with this id: {}",id);
+                LOG.info("Userfile is successfully deleted with this id: {}",id);
                 return true;
 
             }
