@@ -18,13 +18,14 @@ public class User {
     private double usage;
     private String token;
     private Date registerDate;
+    private int userHomeId;
 
     public User() {
 
     }
 
     public User(int id, String userName, String pass, String email, boolean validated, String firstName,
-                String lastName, boolean admin, double quantity, double usage, String token, Date registerDate) {
+                String lastName, boolean admin, double quantity, double usage, String token, Date registerDate, int userHomeId) {
         this.id = id;
         this.userName = userName;
         this.pass = pass;
@@ -37,6 +38,7 @@ public class User {
         this.usage = usage;
         this.token = token;
         this.registerDate = registerDate;
+        this.userHomeId = userHomeId;
     }
 
     public User(String userName, String firstName, String lastName, String email, String pass) {
@@ -85,6 +87,10 @@ public class User {
 
     public Date getRegisterDate() {
         return registerDate;
+    }
+
+    public int getUserHomeId() {
+        return userHomeId;
     }
 
     public boolean isAdmin() {

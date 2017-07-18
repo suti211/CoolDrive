@@ -98,10 +98,12 @@ CREATE TABLE `Users` (
   `usage` double DEFAULT NULL,
   `token` varchar(45) DEFAULT NULL,
   `registerdate` date DEFAULT NULL,
+  `userhomeid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Users_id_uindex` (`id`),
   UNIQUE KEY `Users_username_uindex` (`username`),
-  UNIQUE KEY `Users_email_uindex` (`email`)
+  UNIQUE KEY `Users_email_uindex` (`email`),
+  CONSTRAINT `Users_Files_id_fk` FOREIGN KEY (`userhomeid`) REFERENCES `Files` (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

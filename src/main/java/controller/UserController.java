@@ -37,7 +37,8 @@ public class UserController extends DatabaseController implements UserDao {
 						rs.getDouble("quantity"),
 						rs.getDouble("usage"),
 						rs.getString("token"),
-						rs.getDate("registerdate")
+						rs.getDate("registerdate"),
+						rs.getInt("userhomeid")
 				);
 			}
 		} catch (SQLException e) {
@@ -67,7 +68,8 @@ public class UserController extends DatabaseController implements UserDao {
 						rs.getDouble("quantity"),
 						rs.getDouble("usage"),
 						rs.getString("token"),
-						rs.getDate("registerdate")
+						rs.getDate("registerdate"),
+						rs.getInt("userhomeid")
 				);
 			}
 		} catch (SQLException e) {
