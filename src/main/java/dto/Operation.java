@@ -1,5 +1,5 @@
 package dto;
 
 public enum Operation {
-	LOGIN, REGISTER, TOKENVALIDATION
+	LOGIN, REGISTER, TOKENVALIDATION, USERFILE
 }
