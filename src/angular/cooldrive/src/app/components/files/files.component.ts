@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import {File} from '../../model/file.model';
 import {FileService} from '../../service/files.service';
+import {StorageInfo} from '../../model/storage-info';
+import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
 
 @Component({
@@ -11,13 +13,23 @@ import {FileService} from '../../service/files.service';
 })
 export class FilesComponent implements OnInit {
 
+  usage: number;
+  quantity: number;
+  percentageStyle: string;
   files: File[];
 
   constructor(private fileService: FileService) { }
 
   ngOnInit() {
-    let getFilesOperation: Observable<File[]>;
+    let getStorageInfoOperation: Observable<StorageInfo>;
+    getStorageInfoOperation = this.fileService.getStorageInfo();
+    getStorageInfoOperation.subscribe((info: StorageInfo) => {
+      this.usage = info.usage;
+      this.quantity = info.quantity;
+      this.percentageStyle = info.usage / info.quantity * 100 + "%";
+    });
 
+    let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles();
     getFilesOperation.subscribe((newFiles: File[]) => {
       this.files = newFiles;
