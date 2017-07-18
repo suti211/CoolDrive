@@ -8,6 +8,8 @@ import util.ConnectionUtil;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by David Szilagyi on 2017. 07. 11..
@@ -94,6 +96,25 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return false;
     }
 
+    public boolean changeFolderCurrSize(int id, double size) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement(
+                    "UPDATE Files SET `size` = ? WHERE id = ?");
+            ps.setDouble(1, size);
+            ps.setInt(2, id);
+            int success = ps.executeUpdate();
+            if (success > 0){
+                LOG.info("Userfile(size: {}) is successfully modified with this id: {}",size,id);
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("modify userfile is failed with Exception",e);
+        }
+        LOG.debug("File not found with this id: {} in modifyUserFile method",id);
+        return false;
+    }
+
     public boolean changeFolderSize(int id, double maxSize) {
         PreparedStatement ps = null;
         try {
@@ -111,6 +132,36 @@ public class UserFileController extends DatabaseController implements UserFileDa
         }
         LOG.debug("File not found with this id: {} in changeFolderSize method",id);
         return false;
+    }
+
+    public List<UserFile> getAllFilesFromFolder(int id) {
+        List<UserFile> userFiles = new ArrayList<>();
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("SELECT * FROM Users WHERE id = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                userFiles.add(new UserFile(
+                        rs.getInt("id"),
+                        rs.getString("filename"),
+                        rs.getDouble("size"),
+                        rs.getDate("uploadDate"),
+                        rs.getString("filename"),
+                        rs.getString("extension"),
+                        rs.getDouble("maxSize"),
+                        rs.getBoolean("isFolder"),
+                        rs.getInt("ownerId"),
+                        rs.getInt("parentId"),
+                        rs.getString("label")));
+            }
+            LOG.info("Folder found with this id: {}",id);
+
+        } catch (SQLException e) {
+            LOG.error("getAllFilesFromFolder is failed with Exception",e);
+        }
+        LOG.debug("Folder not found with this id: {} in getAllFilesFromFolder method",id);
+        return userFiles;
     }
 
     public boolean deleteUserFile(int id) {
