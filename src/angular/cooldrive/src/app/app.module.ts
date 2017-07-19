@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterService } from './service/register.service';
 import { LoginGuard } from './guard/login.guard';
 import { TokenService } from './service/token.service';
+import { LogoutService } from './service/logout.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { TokenService } from './service/token.service';
       { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard] }
     ])
   ],
-  providers: [LoginService, RegisterService, LoginGuard, TokenService],
+  providers: [LoginService, RegisterService, LoginGuard, TokenService, LogoutService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
