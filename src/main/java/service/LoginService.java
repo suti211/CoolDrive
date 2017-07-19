@@ -17,7 +17,6 @@ import dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
-import util.TokenGenerator;
 
 @Path("/login")
 public class LoginService {
@@ -33,25 +32,19 @@ public class LoginService {
 		
 		if(userId != -1){
 			User user = userController.getUser(userId);
-			HttpSession session = request.getSession(true);
 			
-			if(user.isValidated()){			
-				return new Status(Operation.LOGIN, true, user.getUserName() + " " + sendToken());
+			if(user.getToken() == null){
+				userController.setToken(input.getUserName());
+				user = userController.getUser(userId);
+			}
+
+			if(user.isValidated()){
+				return new Status(Operation.LOGIN, true, user.getUserName() + " " + user.getToken());
 			} else {
 				return new Status(Operation.LOGIN, false, "User is not validated yet!");
 			}
 		} else {
 			return new Status(Operation.LOGIN, false, "Username or password is SHIT!");
 		}
-	}
-	
-	@GET
-	public String test() {
-		return "<h1>aha</h1>";
-	}
-	
-	private String sendToken(){
-		TokenGenerator generator = new TokenGenerator();
-		return generator.createToken();
 	}
 }

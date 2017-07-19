@@ -7,6 +7,7 @@ import { slideInOutAnimation } from '../../_animations/slide/slide.animation';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Token } from '../../model/token.model';
 
+
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
@@ -38,9 +39,9 @@ export class LoginComponent{
 
     if(this.isThereInput()){
       
-      
-      console.log(this.username, this.password);
-      console.log("Login Attempt!");
+      localStorage.clear();
+      //console.log(this.username, this.password);
+      //console.log("Login Attempt!");
       this.user = new Register(this.username, this.firstname, this.lastname, this.email, this.password);
       let loginOperation: Observable<Status>;
 
@@ -48,17 +49,18 @@ export class LoginComponent{
       loginOperation.subscribe((status: Status) => {
         this.status = status;
         this.token = new Token(this.status.message.split(" ")[1]);
-        console.log(this.status);
-        console.log(this.token);
+        //console.log("Login Component: (status) " + this.status.operation, this.status.success, this.status.message);
+        //console.log("Login Component: (token) " + this.token.token);
         localStorage.setItem(this.username, this.token.token);
 
         if(this.status.success){
-          setTimeout(this.router.navigate(['dashboard']), 1000);
+          //console.log("Login Component: Successful login!");
+          this.router.navigate(['dashboard']);
         }
       });
 
     } else {
-      console.log("Üres az a sok szar te fasz!");
+      console.log("Login Component: " + "Üres az a sok szar te fasz!");
     }
   }
 

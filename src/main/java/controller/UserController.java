@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
 import util.TokenGenerator;
-
 import java.sql.*;
 
 /**
@@ -37,13 +36,46 @@ public class UserController extends DatabaseController implements UserDao {
 						rs.getBoolean("admin"),
 						rs.getDouble("quantity"),
 						rs.getDouble("usage"),
-						rs.getString("token")
+						rs.getString("token"),
+						rs.getDate("registerdate"),
+						rs.getInt("userhomeid")
 				);
 			}
 		} catch (SQLException e) {
-			LOG.error("getUser if failed with Exceotion",e);
+			LOG.error("getUser(id) if failed with Exception",e);
 		}
-		LOG.debug("User not found with this id: {} in getUser method",id);
+		LOG.debug("User not found with this id: {} in getUser(id) method",id);
+		return null;
+	}
+
+	public User getUser(String token) {
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement("SELECT * FROM Users WHERE token = ?");
+			ps.setString(1, token);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				LOG.info("Find user with this token: {} User(username: {}, email: {})",token, rs.getString("username"),rs.getString("email"));
+				return new User(
+						rs.getInt("id"),
+						rs.getString("username"),
+						rs.getString("pass"),
+						rs.getString("email"),
+						rs.getBoolean("validated"),
+						rs.getString("firstname"),
+						rs.getString("lastname"),
+						rs.getBoolean("admin"),
+						rs.getDouble("quantity"),
+						rs.getDouble("usage"),
+						rs.getString("token"),
+						rs.getDate("registerdate"),
+						rs.getInt("userhomeid")
+				);
+			}
+		} catch (SQLException e) {
+			LOG.error("getUser(token) if failed with Exception",e);
+		}
+		LOG.debug("User not found with this token: {} in getUser(token) method",token);
 		return null;
 	}
 
@@ -67,7 +99,7 @@ public class UserController extends DatabaseController implements UserDao {
 		PreparedStatement ps = null;
 		try {
 			ps = con.prepareStatement(
-					"INSERT INTO Users(username, pass, email, validated, firstname, lastname, admin, quantity, `usage`, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					"INSERT INTO Users(username, pass, email, validated, firstname, lastname, admin, quantity, `usage`, token, registerdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_DATE)");
 			ps.setString(1, user.getUserName());
 			ps.setString(2, user.getPass());
 			ps.setString(3, user.getEmail());
@@ -80,7 +112,7 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setString(10, user.getToken());
 			int success = ps.executeUpdate();
 			if (success > 0){
-				LOG.info("User(username: {}, email: {) succesfully registered",user.getUserName(),user.getEmail());
+				LOG.info("User(username: {}, email: {) successfully registered",user.getUserName(),user.getEmail());
 				return true;
 			}
 		} catch (SQLException e) {
@@ -90,7 +122,7 @@ public class UserController extends DatabaseController implements UserDao {
 	}
 
 	public boolean deleteUser(int id) {
-		LOG.info("User with this id: {} is succesfully deleted",id);
+		LOG.info("User with this id: {} is successfully deleted",id);
 		return changeValidation(id, false);
 	}
 
@@ -124,7 +156,7 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setInt(2, id);
 			int success = ps.executeUpdate();
 			if(success > 0){
-				LOG.info("User quantity is succesfully changed with this id: {} new quantity is : {}",id,quantity);
+				LOG.info("User quantity is successfully changed with this id: {} new quantity is : {}",id,quantity);
 				return true;
 			}
 		} catch (SQLException e) {
@@ -142,7 +174,7 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setInt(2, id);
 			int success = ps.executeUpdate();
 			if (success > 0){
-				LOG.info("Validation is succesfully changed with this id: {} validated: {}",id,validate);
+				LOG.info("Validation is successfully changed with this id: {} validated: {}",id,validate);
 				return true;
 			}
 		} catch (SQLException e) {

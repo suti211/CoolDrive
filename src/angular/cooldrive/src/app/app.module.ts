@@ -13,6 +13,8 @@ import { RegisterService } from './service/register.service';
 import { LoginGuard } from './guard/login.guard';
 import { FilesComponent } from './components/files/files.component';
 import {FileService} from './service/files.service';
+import { TokenService } from './service/token.service';
+import { LogoutService } from './service/logout.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import {FileService} from './service/files.service';
         ]}
     ])
   ],
-  providers: [LoginService, RegisterService, LoginGuard, FileService],
+  
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

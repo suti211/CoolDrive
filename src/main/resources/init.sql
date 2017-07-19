@@ -26,12 +26,14 @@ CREATE TABLE `Files` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `path` varchar(210) NOT NULL,
   `size` double NOT NULL,
-  `uploadDate` date DEFAULT NULL,
+  `uploadDate` datetime DEFAULT NULL,
   `filename` varchar(70) DEFAULT NULL,
+  `extension` varchar(45) DEFAULT NULL,
   `maxSize` double DEFAULT NULL,
   `isFolder` tinyint(1) DEFAULT NULL,
   `ownerId` int(11) DEFAULT NULL,
   `parentId` int(11) DEFAULT NULL,
+  `label` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Files_id_uindex` (`id`),
   KEY `Files_Users_id_fk` (`ownerId`),
@@ -95,10 +97,13 @@ CREATE TABLE `Users` (
   `quantity` double DEFAULT NULL,
   `usage` double DEFAULT NULL,
   `token` varchar(45) DEFAULT NULL,
+  `registerdate` date DEFAULT NULL,
+  `userhomeid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Users_id_uindex` (`id`),
   UNIQUE KEY `Users_username_uindex` (`username`),
-  UNIQUE KEY `Users_email_uindex` (`email`)
+  UNIQUE KEY `Users_email_uindex` (`email`),
+  CONSTRAINT `Users_Files_id_fk` FOREIGN KEY (`userhomeid`) REFERENCES `Files` (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

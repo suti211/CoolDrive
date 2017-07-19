@@ -11,17 +11,42 @@ public class UserFile {
     private double size;
     private Date uploadDate;
     private String fileName;
+    private String extension;
     private double maxSize;
     private boolean isFolder;
     private int ownerId;
     private int parentId;
+    private String label;
 
-    public UserFile(int id, String path, double size, Date uploadDate, String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
+    public UserFile(int id, String path, double size, Date uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label) {
         this.id = id;
         this.path = path;
         this.size = size;
         this.uploadDate = uploadDate;
         this.fileName = fileName;
+        this.extension = extension;
+        this.maxSize = maxSize;
+        this.isFolder = isFolder;
+        this.ownerId = ownerId;
+        this.parentId = parentId;
+        this.label = label;
+    }
+
+
+    public UserFile(String fileName, int ownerId, int parentId) {
+        this.path = ""; //created by FileManager
+        this.size = 0; //get by FileManager
+        this.fileName = ""; //created by FileManager
+        this.extension = ""; //created by FileManager
+        this.isFolder = false;
+        this.ownerId = ownerId;
+        this.parentId = parentId;
+    }
+
+    public UserFile(String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
+        this.path = ""; //created by FileManager
+        this.size = 0; //get by FileManager
+        this.fileName = ""; //created by FileManager
         this.maxSize = maxSize;
         this.isFolder = isFolder;
         this.ownerId = ownerId;
@@ -64,6 +89,14 @@ public class UserFile {
         return parentId;
     }
 
+    public String getExtension() {
+        return extension;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -80,5 +113,9 @@ public class UserFile {
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }
