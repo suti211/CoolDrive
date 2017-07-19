@@ -31,8 +31,10 @@ public class UserFileService {
     public List<UserFile> getAllFilesFromFolder(Token token, @Context HttpServletRequest request) {
         String userToken = token.getToken();
         int fileId = token.getId();
+        System.out.println(userToken);
+        System.out.println(fileId);
         LOG.info("getAllFilesFromFolder post method is called with token:{}, id: {}, from: {}", userToken, fileId, request.getRemoteAddr());
-        if (fileId != -1 || fileId == 0) {
+        if (fileId <= 0) {
             fileId = userController.getUser(userToken).getUserHomeId();
         }
         return userFileController.getAllFilesFromFolder(fileId);

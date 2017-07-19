@@ -134,17 +134,17 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return false;
     }
 
-    public List<UserFile> getAllFilesFromFolder(int id) {
+    public List<UserFile> getAllFilesFromFolder(int parentId) {
         List<UserFile> userFiles = new ArrayList<>();
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SELECT * FROM Files WHERE id = ?");
-            ps.setInt(1, id);
+            ps = con.prepareStatement("SELECT * FROM Files WHERE parentId = ?");
+            ps.setInt(1, parentId);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 userFiles.add(new UserFile(
                         rs.getInt("id"),
-                        rs.getString("filename"),
+                        rs.getString("path"),
                         rs.getDouble("size"),
                         rs.getDate("uploadDate"),
                         rs.getString("filename"),
@@ -155,12 +155,12 @@ public class UserFileController extends DatabaseController implements UserFileDa
                         rs.getInt("parentId"),
                         rs.getString("label")));
             }
-            LOG.info("Folder found with this id: {}",id);
+            LOG.info("Folder found with this id: {}", parentId);
 
         } catch (SQLException e) {
             LOG.error("getAllFilesFromFolder is failed with Exception",e);
         }
-        LOG.debug("Folder not found with this id: {} in getAllFilesFromFolder method",id);
+        LOG.debug("Folder not found with this id: {} in getAllFilesFromFolder method", parentId);
         return userFiles;
     }
 
