@@ -17,44 +17,26 @@ export class FileService {
 
   }
 
-  getStorageInfo(): Observable<StorageInfo> {
-
-    let headers = new Headers({'Content-Type' : 'application/json'});
-    let options = new RequestOptions({headers : headers});
-
-    return this.http.post(this.filesUrl + 'getStorageInfo', '', options)
-      .map((res: Response) => res.json())
-      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
-  }
-
-  getFiles(): Observable<File[]> {
-
-    let headers = new Headers({'Content-Type' : 'application/json'});
-    let options = new RequestOptions({headers : headers});
-    return this.http.post(this.filesUrl + 'getfiles', '', options)
-      .map((res: Response) => res.json())
-      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
-  }
-
-/*
-  getStorageInfo2(token: Token): Observable<StorageInfo> {
+  getStorageInfo(token: Token): Observable<StorageInfo> {
+  let bodyString = JSON.stringify(token);
 
   let headers = new Headers({'Content-Type' : 'application/json'});
   let options = new RequestOptions({headers : headers});
 
-  return this.http.post(this.filesUrl + 'getStorageInfo', token, options)
+  return this.http.post(this.filesUrl + 'getStorageInfo', bodyString, options)
   .map((res: Response) => res.json())
   .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
-  getFiles2(token: Token): Observable<File[]> {
+  getFiles(token: Token): Observable<File[]> {
+    let bodyString = JSON.stringify(token);
 
   let headers = new Headers({'Content-Type' : 'application/json'});
   let options = new RequestOptions({headers : headers});
-  return this.http.post(this.filesUrl + 'getFiles', token, options)
+  return this.http.post(this.filesUrl + 'getFiles', bodyString, options)
   .map((res: Response) => res.json())
   .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
-*/
+
 
 }

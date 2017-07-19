@@ -3,6 +3,7 @@ import { Observable } from 'rxjs/Rx';
 import {File} from '../../model/file.model';
 import {FileService} from '../../service/files.service';
 import {StorageInfo} from '../../model/storage-info';
+import {Token} from "../../model/token.model";
 
 
 @Component({
@@ -20,8 +21,13 @@ export class FilesComponent implements OnInit {
   constructor(private fileService: FileService) { }
 
   ngOnInit() {
+  //  let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = localStorage.getItem(localStorage.key(0));
+    let newToken = new Token(tokenID);
+    newToken.setID(-1);
+
     let getStorageInfoOperation: Observable<StorageInfo>;
-    getStorageInfoOperation = this.fileService.getStorageInfo();
+    getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
     getStorageInfoOperation.subscribe((info: StorageInfo) => {
       this.usage = info.usage;
       this.quantity = info.quantity;
@@ -29,7 +35,7 @@ export class FilesComponent implements OnInit {
     });
 
     let getFilesOperation: Observable<File[]>;
-    getFilesOperation = this.fileService.getFiles();
+    getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
       this.files = newFiles;
       console.log(this.files);
