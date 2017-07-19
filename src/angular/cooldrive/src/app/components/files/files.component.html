@@ -11,7 +11,7 @@
       <th>Filename</th>
       <th>Extension</th>
       <th>Size</th>
-      <th>Last Modify</th>
+      <th>Upload Date</th>
       <th>Label</th>
       <th>Functions</th>
     </tr>
@@ -23,12 +23,15 @@
 
     <tr *ngFor="let file of files">
       <td>
-        <div *ngIf="file.ifFolder == false"> <span class="glyphicon glyphicon-file"></span> {{file.filename}}</div>
-        <div *ngIf="file.ifFolder == true"> <span class="glyphicon glyphicon-folder-close"></span> {{file.filename}}</div>
+        <div *ngIf="file.folder == false"> <span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
+        <div *ngIf="file.folder == true"> <span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
       </td>
       <td>{{file.extension}}</td>
-      <td>{{file.size}} MB</td>
-      <td>{{file.lastmodify}}</td>
+      <td>
+        <div *ngIf="file.folder == false">{{file.size}} MB</div>
+        <div *ngIf="file.folder == true">{{file.size}}/{{file.maxSize}} MB</div>
+      </td>
+      <td>{{file.uploadDate}}</td>
       <td>{{file.label}}</td>
       <td>
         <div class="dropdown">
