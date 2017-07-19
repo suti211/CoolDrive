@@ -3,7 +3,6 @@ import { Observable } from 'rxjs/Rx';
 import {File} from '../../model/file.model';
 import {FileService} from '../../service/files.service';
 import {StorageInfo} from '../../model/storage-info';
-import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
 
 @Component({
