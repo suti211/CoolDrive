@@ -5,10 +5,10 @@ import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class UserFileController extends DatabaseController implements UserFileDao {
     private static final Logger LOG = LoggerFactory.getLogger(UserFileController.class);
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public UserFileController(ConnectionUtil.DatabaseName database) {
         super(database);
@@ -34,7 +35,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
                         rs.getInt("id"),
                         rs.getString("filename"),
                         rs.getDouble("size"),
-                        rs.getDate("uploadDate"),
+                        sdf.format(rs.getTimestamp("uploadDate")),
                         rs.getString("filename"),
                         rs.getString("extension"),
                         rs.getDouble("maxSize"),
@@ -149,7 +150,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
                         rs.getInt("id"),
                         rs.getString("filename"),
                         rs.getDouble("size"),
-                        rs.getDate("uploadDate"),
+                        sdf.format(rs.getTimestamp("uploadDate")),
                         rs.getString("filename"),
                         rs.getString("extension"),
                         rs.getDouble("maxSize"),

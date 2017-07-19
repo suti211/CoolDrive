@@ -9,7 +9,7 @@ public class UserFile {
     private int id;
     private String path;
     private double size;
-    private Date uploadDate;
+    private String uploadDate;
     private String fileName;
     private String extension;
     private double maxSize;
@@ -18,7 +18,7 @@ public class UserFile {
     private int parentId;
     private String label;
 
-    public UserFile(int id, String path, double size, Date uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label) {
+    public UserFile(int id, String path, double size, String uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label) {
         this.id = id;
         this.path = path;
         this.size = size;
@@ -65,7 +65,7 @@ public class UserFile {
         return size;
     }
 
-    public Date getUploadDate() {
+    public String getUploadDate() {
         return uploadDate;
     }
 
