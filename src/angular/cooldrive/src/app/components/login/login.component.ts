@@ -76,6 +76,11 @@ export class LoginComponent{
     // redirect to users view
     this.router.navigate(['register']);
   }
+
+  gecisfasz(){
+    this.router.navigate(['dashboard']);
+    console.log("fasz");
+  }
 }
 
 
