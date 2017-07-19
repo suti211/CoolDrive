@@ -11,6 +11,8 @@ import { LoginService } from './service/login.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterService } from './service/register.service';
 import { LoginGuard } from './guard/login.guard';
+import { FilesComponent } from './components/files/files.component';
+import {FileService} from './service/files.service';
 import { TokenService } from './service/token.service';
 import { LogoutService } from './service/logout.service';
 
@@ -19,7 +21,8 @@ import { LogoutService } from './service/logout.service';
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    DashboardComponent
+    DashboardComponent,
+    FilesComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -29,10 +32,14 @@ import { LogoutService } from './service/logout.service';
     RouterModule.forRoot([
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard] }
+      { path: 'dashboard', component: DashboardComponent,
+        children: [
+          {path: 'files', component: FilesComponent}
+        ]}
     ])
   ],
-  providers: [LoginService, RegisterService, LoginGuard, TokenService, LogoutService],
+  
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,0 +1,69 @@
+<!-- FLOATING BUTTON -->
+<div id="floatingButton" class="btn-group dropup">
+  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    New
+  </button>
+  <div id="floatingButtonDropdown" class="dropdown-menu">
+    <a class="dropdown-item" href="#">Action</a>
+    <a class="dropdown-item" href="#">Another action</a>
+    <a class="dropdown-item" href="#">Something else here</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="#">Separated link</a>
+  </div>
+</div>
+
+<h1>Your files
+  <div class="progress">
+    <div id="progress-bar" class="progress-bar" role="progressbar" [style.width]="percentageStyle">{{usage}}/{{quantity}} MB</div>
+  </div>
+</h1>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Filename</th>
+      <th>Extension</th>
+      <th>Size</th>
+      <th>Upload Date</th>
+      <th>Label</th>
+      <th>Functions</th>
+    </tr>
+    </thead>
+
+
+
+    <tbody id="FileListDisplay">
+
+    <tr *ngFor="let file of files">
+      <td>
+        <div *ngIf="file.folder == false"> <span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
+        <div *ngIf="file.folder == true"> <span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
+      </td>
+      <td>{{file.extension}}</td>
+      <td>
+        <div *ngIf="file.folder == false">{{file.size}} MB</div>
+        <div *ngIf="file.folder == true">{{file.size}}/{{file.maxSize}} MB</div>
+      </td>
+      <td>{{file.uploadDate}}</td>
+      <td>{{file.label}}</td>
+      <td>
+        <div class="dropdown">
+        <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          More
+        </button>
+        <div id="floatingButtonDropdown" class="dropdown-menu">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Separated link</a>
+        </div>
+        </div>
+      </td>
+    </tr>
+
+    </tbody>
+
+  </table>
+</div>
