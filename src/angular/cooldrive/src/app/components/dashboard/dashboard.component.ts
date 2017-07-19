@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { slideInOutAnimation } from '../../_animations/slide/slide.animation';
+import { LogoutService } from '../../service/logout.service';
+import { Observable } from 'rxjs/Rx';
+import { Status } from '../../model/status.model';
+import { Token } from '../../model/token.model';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,11 +13,23 @@ import { slideInOutAnimation } from '../../_animations/slide/slide.animation';
 })
 export class DashboardComponent implements OnInit {
 
-userName : String = localStorage.key(0);
+  userName : string = localStorage.key(0);
+  userToken: Token = new Token(localStorage.getItem(this.userName));
+  logoutOperation: Observable<Status>;
 
-  constructor() {}
+  constructor(private logoutService: LogoutService, private router: Router) {}
 
   ngOnInit() {
+  }
+
+  logout(){
+    this.logoutOperation = this.logoutService.sendLogoutRequest(this.userToken);
+    this.logoutOperation.subscribe((status: Status) => {
+      if(status.success){
+        localStorage.clear();
+        this.router.navigate(['login']);
+      }
+    });
   }
 
 }
