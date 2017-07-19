@@ -28,7 +28,7 @@ export class TokenService{
 
     validateToken(token: Token): Observable<Status>{
         let bodyString = JSON.stringify(token);
-        console.log("body JSON: " + bodyString);
+        //console.log("body JSON: " + bodyString);
 
         let headers = new Headers({'Content-Type' : 'application/json'});
         let options = new RequestOptions({headers : headers});
