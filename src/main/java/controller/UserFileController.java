@@ -185,20 +185,21 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return false;
     }
 
-    public boolean checkUserFile(UserFile userFile) {
+    public int checkUserFile(UserFile userFile) {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement("SELECT id FROM Files WHERE path = ? AND filename = ?");
             ps.setString(1, userFile.getPath());
             ps.setString(2, userFile.getFileName());
-            int success = ps.executeUpdate();
-            if (success > 0) {
-                LOG.info("Userfile(filename: {}, path: {}) is successfully checked", userFile.getFileName(), userFile.getPath());
-                return true;
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                LOG.info("UserFile(filename: {}, path: {}) is found. id: {}", userFile.getFileName(), userFile.getPath(), id);
+                return id;
             }
         } catch (SQLException e) {
-            LOG.error("check userfile is failed with Exception", e);
+            LOG.error("check UserFile is failed with Exception", e);
         }
-        return false;
+        return -1;
     }
 }
