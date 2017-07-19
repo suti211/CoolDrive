@@ -1,6 +1,8 @@
 package util;
 
 import controller.UserController;
+import controller.UserFileController;
+import dto.User;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
@@ -13,6 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +27,13 @@ import java.util.Map;
 public class UserFileManager {
     private static final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
     private static UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-
+    private static UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
+    private  static String folderName;
 
     public static boolean saveUserFile(MultipartFormDataInput input,String token) {
+        User user = userController.getUser(token);
+        folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
+
         Map<String,List<InputPart>> uploadForm = input.getFormDataMap();
         List<InputPart>inputParts = uploadForm.get("uploadedFile");
         Map<String, InputStream> streams = new HashMap<>();
@@ -57,7 +65,8 @@ public class UserFileManager {
      }
 
      public static boolean createFolder(String path,String folderName){
-         File file = new File(path+"/"+ folderName);
+         Path realPath = Paths.get(path,folderName);
+         File file = realPath.toFile();
          if(file.exists() && file.isDirectory())
              return false;
          return file.mkdirs();
@@ -65,7 +74,8 @@ public class UserFileManager {
 
      private static void writeFile(String filename, InputStream inputStream) {
          try {
-             File file = new File(filename);
+             Path path = Paths.get(folderName,filename);
+             File file = path.toFile();
              if (!file.exists()) {
                  file.createNewFile();
              }
@@ -85,7 +95,7 @@ public class UserFileManager {
          }
      }
      public static boolean deleteFile(String path)throws IOException{
-         File file = new File(path);
+         File file = Paths.get(path).toFile();
          if (file.exists()){
              Files.delete(file.toPath());
              return true;
