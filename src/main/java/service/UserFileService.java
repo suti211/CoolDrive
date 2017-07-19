@@ -1,14 +1,13 @@
 package service;
 
-import com.google.gson.Gson;
 import controller.UserController;
 import controller.UserFileController;
+import dto.StorageInfo;
 import dto.Token;
 import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -27,16 +26,29 @@ public class UserFileService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getfiles")
+    @Path("/getFiles")
     public List<UserFile> getAllFilesFromFolder(Token token, @Context HttpServletRequest request) {
+        LOG.info("getAllFilesFromFolder method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
+        return userFileController.getAllFilesFromFolder(getFileId(token, "getAllFilesFromFolder"));
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getStorageInfo")
+    public StorageInfo getStorageInfo(Token token, @Context HttpServletRequest request) {
+        LOG.info("getStorageInfo method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
+        UserFile uf = userFileController.getUserFile(getFileId(token, "getStorageInfo"));
+        return new StorageInfo(uf.getSize(), uf.getMaxSize());
+    }
+
+    private int getFileId(Token token, String methodName) {
         String userToken = token.getToken();
         int fileId = token.getId();
-        System.out.println(userToken);
-        System.out.println(fileId);
-        LOG.info("getAllFilesFromFolder post method is called with token:{}, id: {}, from: {}", userToken, fileId, request.getRemoteAddr());
+        LOG.info("getFileId method is called with token:{}, id: {}, from: {}", userToken, fileId, methodName);
         if (fileId <= 0) {
             fileId = userController.getUser(userToken).getUserHomeId();
         }
-        return userFileController.getAllFilesFromFolder(fileId);
+        return fileId;
     }
 }
