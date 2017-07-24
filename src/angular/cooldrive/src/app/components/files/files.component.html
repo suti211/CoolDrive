@@ -4,7 +4,7 @@
     New
   </button>
   <div id="floatingButtonDropdown" class="dropdown-menu">
-    <a class="dropdown-item" href="#">Action</a>
+    <a class="dropdown-item" href="" data-toggle="modal" data-target="#uploadModal">Upload</a>
     <a class="dropdown-item" href="#">Another action</a>
     <a class="dropdown-item" href="#">Something else here</a>
     <div class="dropdown-divider"></div>
@@ -17,6 +17,30 @@
     <div id="progress-bar" class="progress-bar" role="progressbar" [style.width]="percentageStyle">{{usage}}/{{quantity}} MB</div>
   </div>
 </h1>
+
+<!-- UPLOAD MODAL -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel">Upload</h4>
+      </div>
+      <form action="/action_page.php">
+      <div class="modal-body">
+        <input id="uploadedFiles" type="file" formenctype="multipart/form-data" multiple (change)="listUploadedFiles()"><br>
+        <div *ngFor="let file of uploadedFilesList">
+          {{file.name}} : {{file.size/1024000 | number:0 }} MB
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <input type="button" class="btn btn-primary" value="Upload">
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 <div class="table-responsive">
   <table class="table table-striped">

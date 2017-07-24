@@ -17,8 +17,14 @@ export class FilesComponent implements OnInit {
   quantity: number;
   percentageStyle: string;
   files: File[];
+  uploadedFilesList: any;
 
   constructor(private fileService: FileService) { }
+
+  listUploadedFiles(){
+    this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
+    console.log(this.uploadedFilesList);
+  }
 
   ngOnInit() {
   //  let tokenID = localStorage.getItem(localStorage.key(0));
