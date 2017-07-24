@@ -1,8 +1,10 @@
--- MySQL dump 10.13  Distrib 5.7.18, for Linux (x86_64)
+CREATE DATABASE  IF NOT EXISTS `CoolDrive` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `CoolDrive`;
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: cooldrive
+-- Host: 192.168.150.86    Database: CoolDrive
 -- ------------------------------------------------------
--- Server version	5.7.18-0ubuntu0.16.04.1
+-- Server version	5.5.54-0+deb8u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -40,7 +42,7 @@ CREATE TABLE `Files` (
   KEY `Files_Files_id_fk` (`parentId`),
   CONSTRAINT `Files_Files_id_fk` FOREIGN KEY (`parentId`) REFERENCES `Files` (`id`),
   CONSTRAINT `Files_Users_id_fk` FOREIGN KEY (`ownerId`) REFERENCES `Users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,6 +81,37 @@ LOCK TABLES `Permissions` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Transactions`
+--
+
+DROP TABLE IF EXISTS `Transactions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Transactions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `zip` varchar(45) NOT NULL,
+  `city` varchar(45) NOT NULL,
+  `address1` varchar(45) NOT NULL,
+  `address2` varchar(45) DEFAULT NULL,
+  `phone` varchar(45) NOT NULL,
+  `bought` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId_Users.id_idx` (`userId`),
+  CONSTRAINT `userId_Users.id` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Transactions`
+--
+
+LOCK TABLES `Transactions` WRITE;
+/*!40000 ALTER TABLE `Transactions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Transactions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Users`
 --
 
@@ -87,24 +120,24 @@ DROP TABLE IF EXISTS `Users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) NOT NULL,
-  `pass` varchar(70) NOT NULL,
-  `email` varchar(70) NOT NULL,
+  `username` varchar(30) CHARACTER SET latin1 NOT NULL,
+  `pass` varchar(70) CHARACTER SET latin1 NOT NULL,
+  `email` varchar(70) CHARACTER SET latin1 NOT NULL,
   `validated` tinyint(1) NOT NULL,
-  `firstname` varchar(70) DEFAULT NULL,
-  `lastname` varchar(70) DEFAULT NULL,
+  `firstname` varchar(70) CHARACTER SET latin1 DEFAULT NULL,
+  `lastname` varchar(70) CHARACTER SET latin1 DEFAULT NULL,
   `admin` tinyint(1) DEFAULT NULL,
   `quantity` double DEFAULT NULL,
   `usage` double DEFAULT NULL,
-  `token` varchar(45) DEFAULT NULL,
+  `token` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
   `registerdate` date DEFAULT NULL,
   `userhomeid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Users_id_uindex` (`id`),
   UNIQUE KEY `Users_username_uindex` (`username`),
   UNIQUE KEY `Users_email_uindex` (`email`),
-  CONSTRAINT `Users_Files_id_fk` FOREIGN KEY (`userhomeid`) REFERENCES `Files` (`id`),
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `userhomeid_idx` (`userhomeid`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,4 +158,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-05 12:02:08
+-- Dump completed on 2017-07-24 13:56:05
