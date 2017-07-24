@@ -90,12 +90,15 @@ DROP TABLE IF EXISTS `Transactions`;
 CREATE TABLE `Transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
+  `firstname` varchar(70) CHARACTER SET latin1 DEFAULT NULL,
+  `lastname` varchar(70) CHARACTER SET latin1 DEFAULT NULL,
   `zip` varchar(45) NOT NULL,
   `city` varchar(45) NOT NULL,
   `address1` varchar(45) NOT NULL,
   `address2` varchar(45) DEFAULT NULL,
   `phone` varchar(45) NOT NULL,
   `bought` varchar(45) NOT NULL,
+  `boughtDate` datetime NOT NULL ,
   PRIMARY KEY (`id`),
   KEY `userId_Users.id_idx` (`userId`),
   CONSTRAINT `userId_Users.id` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
