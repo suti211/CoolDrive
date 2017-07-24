@@ -27,6 +27,10 @@ public class TransactionsController extends DatabaseController implements Transa
         return null;
     }
 
+    public List<Transaction> getAllTransaction() {
+        return null;
+    }
+
     public boolean addTransaction(Transaction transaction) {
         return false;
     }

@@ -13,5 +13,7 @@ public interface TransactionsDao {
 
     List<Transaction> getAllTransaction(int userId);
 
+    List<Transaction> getAllTransaction();
+
     boolean addTransaction(Transaction transaction);
 }
