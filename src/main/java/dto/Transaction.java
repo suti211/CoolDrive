@@ -30,6 +30,19 @@ public class Transaction {
         this.boughtDate = boughtDate;
     }
 
+    public Transaction(int userId, String firstName, String lastName, String zip, String city, String address1, String address2, String phone, String bought, String boughtDate) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.zip = zip;
+        this.city = city;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.phone = phone;
+        this.bought = bought;
+        this.boughtDate = boughtDate;
+    }
+
     public int getId() {
         return id;
     }
