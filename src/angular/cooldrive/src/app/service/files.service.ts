@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
-import { File } from '../model/file.model';
+import {Injectable} from '@angular/core';
+import {Http, Response, Headers, RequestOptions} from '@angular/http';
+import {Observable} from 'rxjs/Rx';
+import {File} from '../model/file.model';
 
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
@@ -12,9 +12,7 @@ import {Token} from '../model/token.model';
 export class FileService {
   files: File[] = [];
   filteredFiles: File[] = [];
-  //filesUrl = "http://demo3422681.mockable.io/";
-  filesUrl = "http://192.168.150.109:8080/CoolDrive/files/";
-  //filesUrl = "http://localhost:8080/CoolDrive/files/";
+  filesUrl = "http://localhost:8080/CoolDrive/files/";
 
   constructor(private http: Http) {
   }
@@ -23,29 +21,29 @@ export class FileService {
     return this.files;
   }
 
-  getFilteredFilesArray(): File[]{
+  getFilteredFilesArray(): File[] {
     return this.filteredFiles;
   }
 
   getStorageInfo(token: Token): Observable<StorageInfo> {
     let bodyString = JSON.stringify(token);
 
-    let headers = new Headers({'Content-Type' : 'application/json'});
-    let options = new RequestOptions({headers : headers});
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
 
     return this.http.post(this.filesUrl + 'getStorageInfo', bodyString, options)
-    .map((res: Response) => res.json())
-    .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
   getFiles(token: Token): Observable<File[]> {
     let bodyString = JSON.stringify(token);
 
-    let headers = new Headers({'Content-Type' : 'application/json'});
-    let options = new RequestOptions({headers : headers});
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
     return this.http.post(this.filesUrl + 'getFiles', bodyString, options)
-    .map((res: Response) => res.json())
-    .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
 
