@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 /**
  * Created by David Szilagyi on 2017. 07. 18..
  */
@@ -164,6 +163,7 @@ public class UserFileManager {
              }
              zipOutputStream.close();
          }catch (IOException e){
+             LOG.error("The downloadUserFiles method was failed due to an exception",e);
 
          }
          }
