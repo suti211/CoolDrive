@@ -100,6 +100,7 @@ CREATE TABLE `Transactions` (
   `bought` varchar(45) NOT NULL,
   `boughtDate` datetime NOT NULL ,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `Transactions_id_uindex` (`id`),
   KEY `userId_Users.id_idx` (`userId`),
   CONSTRAINT `userId_Users.id` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
