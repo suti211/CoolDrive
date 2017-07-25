@@ -13,9 +13,9 @@
   </div>
 </div>
 
-<h1>Your files
+<h1>{{currentFolderName}}
   <div class="progress">
-    <div id="progress-bar" class="progress-bar" role="progressbar" [style.width]="percentageStyle">
+    <div id="progress-bar" ngClass="progress-bar" role="progressbar" [style.width]="percentageStyle">
       {{usage}}/{{quantity}} MB
     </div>
   </div>
@@ -62,7 +62,7 @@
     <tr *ngFor="let file of filteredFiles">
       <td>
         <div *ngIf="file.folder == false"><span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
-        <div *ngIf="file.folder == true"><span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
+        <div *ngIf="file.folder == true" (dblclick)="openFolder(file.id, file.fileName)"><span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
       </td>
       <td>{{file.extension}}</td>
       <td>
@@ -72,7 +72,7 @@
       <td>{{file.uploadDate}}</td>
       <td>{{file.label}}</td>
       <td>
-        <div class="dropdown">
+        <div *ngIf="file.id > 0" class="dropdown">
           <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false">
             More

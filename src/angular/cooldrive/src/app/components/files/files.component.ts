@@ -12,12 +12,15 @@ import {Token} from '../../model/token.model';
 })
 export class FilesComponent implements OnInit {
 
+  currentFolderName: string = "";
   usage: number;
   quantity: number;
   percentageStyle: string;
   files: File[];
   uploadedFilesList: any;
   filteredFiles: File[] = [];
+  homeFolderSize: number;
+  homeFolderMaxSize: number;
 
   constructor(private fileService: FileService) {
     this.files = fileService.getFilesArray();
@@ -40,6 +43,46 @@ export class FilesComponent implements OnInit {
     }
   }
 
+
+
+  openFolder(id: number, name: string){
+    if(name === "..."){
+      this.currentFolderName = "Your files";
+    }else{
+      this.currentFolderName = name;
+    }
+
+    this.files.length = 0;
+    this.filteredFiles.length = 0;
+    let tokenID = localStorage.getItem(localStorage.key(0));
+    let newToken = new Token(tokenID);
+    newToken.setID(id);
+
+    let getStorageInfoOperation: Observable<StorageInfo>;
+    getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
+    getStorageInfoOperation.subscribe((info: StorageInfo) => {
+      this.usage = info.usage;
+      this.quantity = info.quantity;
+      this.percentageStyle = info.usage / info.quantity * 100 + "%";
+    });
+
+    let getFilesOperation: Observable<File[]>;
+    getFilesOperation = this.fileService.getFiles(newToken);
+    getFilesOperation.subscribe((newFiles: File[]) => {
+      let backButton = new File(-1,"...", "",this.homeFolderSize,this.homeFolderMaxSize,"","",true);
+      if(id > 0){
+        this.files.push(backButton);
+        this.filteredFiles.push(backButton);
+      }
+
+      for (let file of newFiles) {
+        this.files.push(file);
+        this.filteredFiles.push(file);
+      }
+      console.log(this.files);
+    });
+  }
+
   listUploadedFiles(){
     this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
     console.log(this.uploadedFilesList);
@@ -51,12 +94,19 @@ export class FilesComponent implements OnInit {
     let newToken = new Token(tokenID);
     newToken.setID(-1);
 
+    this.currentFolderName = "Your files";
+
     let getStorageInfoOperation: Observable<StorageInfo>;
     getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
     getStorageInfoOperation.subscribe((info: StorageInfo) => {
       this.usage = info.usage;
       this.quantity = info.quantity;
       this.percentageStyle = info.usage / info.quantity * 100 + "%";
+      this.homeFolderSize = info.usage;
+      this.homeFolderMaxSize = info.quantity;
+
+      let progbar = document.getElementById("progress-bar");
+
     });
 
     let getFilesOperation: Observable<File[]>;
