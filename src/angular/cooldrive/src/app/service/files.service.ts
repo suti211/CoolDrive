@@ -10,32 +10,41 @@ import {Token} from '../model/token.model';
 
 @Injectable()
 export class FileService {
+  files: File[] = [];
+  filteredFiles: File[] = [];
   filesUrl = "http://demo3422681.mockable.io/";
   //filesUrl = "http://192.168.150.29:8080/CoolDrive/files/";
 
   constructor(private http: Http) {
+  }
 
+  getFilesArray(): File[] {
+    return this.files;
+  }
+
+  getFilteredFilesArray(): File[]{
+    return this.filteredFiles;
   }
 
   getStorageInfo(token: Token): Observable<StorageInfo> {
-  let bodyString = JSON.stringify(token);
+    let bodyString = JSON.stringify(token);
 
-  let headers = new Headers({'Content-Type' : 'application/json'});
-  let options = new RequestOptions({headers : headers});
+    let headers = new Headers({'Content-Type' : 'application/json'});
+    let options = new RequestOptions({headers : headers});
 
-  return this.http.post(this.filesUrl + 'getStorageInfo', bodyString, options)
-  .map((res: Response) => res.json())
-  .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+    return this.http.post(this.filesUrl + 'getStorageInfo', bodyString, options)
+    .map((res: Response) => res.json())
+    .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
   getFiles(token: Token): Observable<File[]> {
     let bodyString = JSON.stringify(token);
 
-  let headers = new Headers({'Content-Type' : 'application/json'});
-  let options = new RequestOptions({headers : headers});
-  return this.http.post(this.filesUrl + 'getFiles', bodyString, options)
-  .map((res: Response) => res.json())
-  .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+    let headers = new Headers({'Content-Type' : 'application/json'});
+    let options = new RequestOptions({headers : headers});
+    return this.http.post(this.filesUrl + 'getFiles', bodyString, options)
+    .map((res: Response) => res.json())
+    .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
 
