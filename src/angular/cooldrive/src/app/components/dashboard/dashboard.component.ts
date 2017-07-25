@@ -5,11 +5,13 @@ import { Observable } from 'rxjs/Rx';
 import { Status } from '../../model/status.model';
 import { Token } from '../../model/token.model';
 import { Router, ActivatedRoute } from '@angular/router';
+import {FilesComponent} from '../files/files.component';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  providers: [FilesComponent]
 })
 export class DashboardComponent implements OnInit {
 
@@ -17,10 +19,17 @@ export class DashboardComponent implements OnInit {
   userToken: Token = new Token(localStorage.getItem(this.userName));
   logoutOperation: Observable<Status>;
 
-  constructor(private logoutService: LogoutService, private router: Router) {}
+  filter: string;
+
+  constructor(private logoutService: LogoutService, private router: Router, private filesComponent: FilesComponent) {}
 
   ngOnInit() {
   }
+
+  sendSearchData(){
+    this.filesComponent.filterFiles(this.filter);
+  }
+
 
   logout(){
     this.logoutOperation = this.logoutService.sendLogoutRequest(this.userToken);
