@@ -32,6 +32,22 @@ export class FilesComponent implements OnInit {
   filterFiles(filt: string) {
     let filter = filt.toLowerCase();
     this.filteredFiles.length = 0;
+
+    if (filt.length === 0) {
+      for (let file of this.files) {
+        if (file.folder) {
+          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
+            this.filteredFiles.push(file);
+          }
+        } else {
+          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
+            this.filteredFiles.push(file);
+          }
+        }
+      }
+      return;
+    }
+
     for (let file of this.files) {
       if (file.folder) {
         if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
@@ -46,11 +62,10 @@ export class FilesComponent implements OnInit {
   }
 
 
-
-  openFolder(id: number, name: string){
-    if(name === "..."){
+  openFolder(id: number, name: string) {
+    if (name === "...") {
       this.currentFolderName = "Your files";
-    }else{
+    } else {
       this.currentFolderName = name;
     }
 
@@ -73,8 +88,8 @@ export class FilesComponent implements OnInit {
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-      let backButton = new File(-1,"...", "",this.homeFolderSize,this.homeFolderMaxSize,"","",true);
-      if(id > 0){
+      let backButton = new File(-1, "...", "", this.homeFolderSize, this.homeFolderMaxSize, "", "", true);
+      if (id > 0) {
         this.files.push(backButton);
         this.filteredFiles.push(backButton);
       }
@@ -87,18 +102,18 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  listUploadedFiles(){
+  listUploadedFiles() {
     this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
     console.log(this.uploadedFilesList);
   }
 
-  setProgressBarStyle(){
-    if(this.percentage.valueOf() <= 60){
+  setProgressBarStyle() {
+    if (this.percentage.valueOf() <= 60) {
       this.progressBarSytle = "progress-bar";
-    }else{
-      if(this.percentage.valueOf() <= 85){
+    } else {
+      if (this.percentage.valueOf() <= 85) {
         this.progressBarSytle = "progress-bar bg-warning";
-      }else{
+      } else {
         this.progressBarSytle = "progress-bar bg-danger";
       }
     }

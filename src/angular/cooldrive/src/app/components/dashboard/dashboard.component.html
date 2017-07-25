@@ -29,15 +29,19 @@
       <div>
         <!-- Search field and button -->
         <form class="form-inline mt-2 mt-md-0">
-          <input class="form-control mr-sm-2" width="30%" type="text" placeholder="Search" (keyup)="sendSearchData()" [ngModelOptions]="{standalone: true}" [(ngModel)] = "filter">
+          <input class="form-control mr-sm-2" width="30%" type="text" placeholder="Search"
+                 (keyup)="sendSearchData(filter)" [ngModelOptions]="{standalone: true}" [(ngModel)]="filter">
+          <button type="button" class="btn btn-outline-success" (click)="filter =''; sendSearchData('')">Clear</button>
         </form>
+
       </div>
     </ul>
 
     <!-- navbar right align -->
     <ul class="nav navbar-nav navbar-right">
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+           aria-expanded="false">
           <!-- UserProfile logo and username-->
           <img src="http://fundacionrosario.org.ar/wp-content/uploads/2017/03/personal-05.png" class="img-avatar">{{userName}}
         </a>
