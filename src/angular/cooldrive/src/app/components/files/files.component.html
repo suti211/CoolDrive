@@ -15,7 +15,7 @@
 
 <h1>{{currentFolderName}}
   <div class="progress">
-    <div id="progress-bar" ngClass="progress-bar" role="progressbar" [style.width]="percentageStyle">
+    <div id="progress-bar" ngClass="{{progressBarSytle}}" role="progressbar" [style.width]="percentage+'%'">
       {{usage}}/{{quantity}} MB
     </div>
   </div>

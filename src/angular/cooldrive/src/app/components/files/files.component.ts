@@ -15,12 +15,14 @@ export class FilesComponent implements OnInit {
   currentFolderName: string = "";
   usage: number;
   quantity: number;
-  percentageStyle: string;
+  percentage: number;
   files: File[];
   uploadedFilesList: any;
   filteredFiles: File[] = [];
   homeFolderSize: number;
   homeFolderMaxSize: number;
+
+  progressBarSytle: string = "progress-bar";
 
   constructor(private fileService: FileService) {
     this.files = fileService.getFilesArray();
@@ -63,7 +65,9 @@ export class FilesComponent implements OnInit {
     getStorageInfoOperation.subscribe((info: StorageInfo) => {
       this.usage = info.usage;
       this.quantity = info.quantity;
-      this.percentageStyle = info.usage / info.quantity * 100 + "%";
+      this.percentage = info.usage / info.quantity * 100;
+
+      this.setProgressBarStyle();
     });
 
     let getFilesOperation: Observable<File[]>;
@@ -88,6 +92,18 @@ export class FilesComponent implements OnInit {
     console.log(this.uploadedFilesList);
   }
 
+  setProgressBarStyle(){
+    if(this.percentage.valueOf() <= 60){
+      this.progressBarSytle = "progress-bar";
+    }else{
+      if(this.percentage.valueOf() <= 85){
+        this.progressBarSytle = "progress-bar bg-warning";
+      }else{
+        this.progressBarSytle = "progress-bar bg-danger";
+      }
+    }
+  }
+
   ngOnInit() {
     //  let tokenID = localStorage.getItem(localStorage.key(0));
     let tokenID = localStorage.getItem(localStorage.key(0));
@@ -101,12 +117,11 @@ export class FilesComponent implements OnInit {
     getStorageInfoOperation.subscribe((info: StorageInfo) => {
       this.usage = info.usage;
       this.quantity = info.quantity;
-      this.percentageStyle = info.usage / info.quantity * 100 + "%";
+      this.percentage = info.usage / info.quantity * 100
       this.homeFolderSize = info.usage;
       this.homeFolderMaxSize = info.quantity;
 
-      let progbar = document.getElementById("progress-bar");
-
+      this.setProgressBarStyle();
     });
 
     let getFilesOperation: Observable<File[]>;
