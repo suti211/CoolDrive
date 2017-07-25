@@ -12,8 +12,9 @@ import {Token} from '../model/token.model';
 export class FileService {
   files: File[] = [];
   filteredFiles: File[] = [];
-  filesUrl = "http://demo3422681.mockable.io/";
-  //filesUrl = "http://192.168.150.29:8080/CoolDrive/files/";
+  //filesUrl = "http://demo3422681.mockable.io/";
+  filesUrl = "http://192.168.150.109:8080/CoolDrive/files/";
+  //filesUrl = "http://localhost:8080/CoolDrive/files/";
 
   constructor(private http: Http) {
   }
