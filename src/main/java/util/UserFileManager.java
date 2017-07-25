@@ -51,7 +51,7 @@ public class UserFileManager {
                 fileId = createUserFile(fileName, user, parentId, isFolder, maxSize, body);
                 streams.put(String.valueOf(fileId), body);
             }   catch (IOException e){
-                LOG.error("save user file failed with Exception",e);
+                LOG.error("The save user method was failed due to an exception",e);
             }
         }
         streams.entrySet().parallelStream().forEach(e ->{
@@ -180,12 +180,7 @@ public class UserFileManager {
          return result;
      }
 
-     private static String[]getPathFromUserFolders(int[]userFolderIds){
-         for (int i = 0; i <userFolderIds.length ; i++) {
-             List<UserFile> userFiles =  userFileController.getAllFilesFromFolder(userFolderIds[i]);
-         }
 
-     }
 
 
 }
