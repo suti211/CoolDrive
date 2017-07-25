@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface TransactionsDao {
 
-    Transaction getTransaction (int userId);
+    Transaction getTransaction (int transactionId);
 
     List<Transaction> getAllTransaction(int userId);
 
