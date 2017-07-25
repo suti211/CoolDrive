@@ -223,9 +223,8 @@ public class UserController extends DatabaseController implements UserDao {
 	public boolean deleteToken(String userName) {
 		PreparedStatement ps = null;
 		try {
-			ps = con.prepareStatement("UPDATE Users SET token = ? WHERE username = ?");
-			ps.setString(1, null);
-			ps.setString(2, userName);
+			ps = con.prepareStatement("UPDATE Users SET token = NULL WHERE username = ?");
+			ps.setString(1, userName);
 			int success = ps.executeUpdate();
 			if (success > 0) {
 				LOG.info("Token successfully deleted from user: {}", userName);
