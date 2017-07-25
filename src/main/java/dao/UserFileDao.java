@@ -21,5 +21,5 @@ public interface UserFileDao {
 
     boolean deleteUserFile(int id);
 
-    boolean checkUserFile(UserFile userFile);
+    int checkUserFile(UserFile userFile);
 }

@@ -31,6 +31,7 @@ public class UserFileService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getfiles")
+
     public List<UserFile> getAllFilesFromFolder(String token, int id, @Context HttpServletRequest request) {
         LOG.info("getAllFilesFromFolder post method is called with token:{}, id: {}, from: {}", token, id, request.getRemoteAddr());
         int fileId = id;
