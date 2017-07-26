@@ -9,9 +9,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import controller.UserController;
+import controller.UserFileController;
 import dto.Operation;
 import dto.Status;
 import dto.User;
+import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
@@ -27,11 +29,16 @@ public class RegisterService {
 		LOG.info("RegisterService post method is called with username: {}, from: {}",input.getUserName(),request.getRemoteAddr());
 		
 		UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
+		UserFileController ufc = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
 		
 		int userID = userController.checkUser(input.getUserName(), input.getPass());
 		
 		if(userID == -1){
-			if(userController.registerUser(input)){
+			int startQuantity = 10;
+			int parentId = 1;
+			int userId = userController.registerUser(input);
+			int userHomeId = ufc.addNewUserFile(new UserFile("D:\\CoolDrive\\Users\\", 0, input.getUserName(), "dir", startQuantity, true, userId, parentId));
+			if(userController.setHomeId(userId, userHomeId)){
 				return new Status(Operation.REGISTER, true, "User successfully registered!");
 			} else {
 				return new Status(Operation.REGISTER, false, "Failed to add user to DB!");

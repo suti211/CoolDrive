@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserFileDao {
     UserFile getUserFile(int id);
 
-    boolean addNewUserFile(UserFile userFile);
+    int addNewUserFile(UserFile userFile);
 
     boolean modifyUserFile(int id, UserFile userFile);
 
