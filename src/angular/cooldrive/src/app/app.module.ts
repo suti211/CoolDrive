@@ -18,6 +18,7 @@ import { LogoutService } from './service/logout.service';
 import { ExtensionComponent } from './components/storage_extension/extension.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { TransactionService } from './service/transaction.service';
+import { CheckoutService } from './service/checkout.service';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,7 @@ import { TransactionService } from './service/transaction.service';
     ])
   ],
   
-  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService],
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
