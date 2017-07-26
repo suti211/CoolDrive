@@ -29,8 +29,9 @@ export class ExtensionComponent{
 
     firstName: string = "";
     lastName: string = "";
-    zipCode: number;
+    zipCode: string = "";
     city: string = "";
+    phone: string = "";
     address: string= "";
 
     constructor(private router: Router, private transService: TransactionService){
@@ -73,6 +74,7 @@ export class ExtensionComponent{
         let lNameField = document.getElementById("lNameField");
         let cityNameField = document.getElementById("cityNameField");
         let zipField = document.getElementById("zipField");
+        let phoneField = document.getElementById("phoneField");
         let addressField = document.getElementById("addressField");
 
         if(this.firstName == ""){
@@ -91,7 +93,7 @@ export class ExtensionComponent{
              lNameField.style.backgroundColor = '#dff0d8';
         }
 
-        if (this.zipCode == 0 || this.zipCode == null ){
+        if (this.zipCode == ""){
             zipField.style.backgroundColor = '#f2dede';
             this.showWarningPanel = true;
             isValid = false;
@@ -105,6 +107,14 @@ export class ExtensionComponent{
             isValid = false;
         } else {
             cityNameField.style.backgroundColor = '#dff0d8';
+        }
+
+        if (this.phone == ""){
+            phoneField.style.backgroundColor = '#f2dede';
+            this.showWarningPanel = true;
+            isValid = false;
+        } else {
+            phoneField.style.backgroundColor = '#dff0d8';
         }
 
         if (this.address == ""){
@@ -133,12 +143,14 @@ export class ExtensionComponent{
             this.showWarningPanel = false;
             this.showStorageWarning = false;
             this.showSuccessPanel = true;
-            this.transaction = new Transaction(localStorage.key(0), this.firstName, this.lastName, this.zipCode, this.city, this.address, this.storage);
+            this.transaction = new Transaction(localStorage.getItem(localStorage.key(0)), this.firstName, this.lastName, this.zipCode, this.city, this.phone, this.address, this.storage);
             this.transactionResult = this.transService.newTransaction(this.transaction);
             console.log(this.transaction);
             this.transactionResult.subscribe((status : Status) => {
+                console.log(status);
                 if(status.success){
                     console.log("siker");
+                    this.router.navigate(['dashboard/checkout', status.message])
                 }
             });
         }
