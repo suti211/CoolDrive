@@ -4,6 +4,7 @@ import {File} from '../../model/file.model';
 import {FileService} from '../../service/files.service';
 import {StorageInfo} from '../../model/storage-info';
 import {Token} from '../../model/token.model';
+import {Status} from "../../model/status.model";
 
 @Component({
   selector: 'app-files',
@@ -12,10 +13,17 @@ import {Token} from '../../model/token.model';
 })
 export class FilesComponent implements OnInit {
 
+  currentFolderId: number;
   currentFolderName: string = "";
+
+  selectedFileName: string;
+  selectedFileLabel: string;
+  selectedFileisFolder: boolean;
+
   usage: number;
   quantity: number;
   percentage: number;
+
   files: File[];
   uploadedFilesList: any;
   filteredFiles: File[] = [];
@@ -102,10 +110,26 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  listUploadedFiles() {
-    this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
-    console.log(this.uploadedFilesList);
+  deleteFile(id: number){
+    let tokenID = localStorage.getItem(localStorage.key(0));
+    let newToken = new Token(tokenID);
+    newToken.setID(id);
+
+    let deleteFileOperation: Observable<Status>;
+    deleteFileOperation = this.fileService.deleteFile(newToken);
+    deleteFileOperation.subscribe((status: Status) => {
+      console.log(status.message);
+    });
+
+    this.listFiles(this.currentFolderId);
   }
+
+  setSelectedFile(fileName: string, label: string, isFolder: boolean){
+    this.selectedFileName = fileName;
+    this.selectedFileLabel = label;
+    this.selectedFileisFolder = isFolder;
+  }
+
 
   setProgressBarStyle() {
     if (this.percentage.valueOf() <= 60) {
@@ -119,12 +143,38 @@ export class FilesComponent implements OnInit {
     }
   }
 
+  listUploadedFiles() {
+    this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
+    console.log(this.uploadedFilesList);
+  }
+
+  listFiles(id: number){
+    this.files.length = 0;
+    this.filteredFiles.length = 0;
+
+    let tokenID = localStorage.getItem(localStorage.key(0));
+    let newToken = new Token(tokenID);
+    newToken.setID(id);
+
+    let getFilesOperation: Observable<File[]>;
+    getFilesOperation = this.fileService.getFiles(newToken);
+    getFilesOperation.subscribe((newFiles: File[]) => {
+      for (let file of newFiles) {
+        this.files.push(file);
+        this.filteredFiles.push(file);
+      }
+      console.log(this.files);
+    });
+
+  }
+
   ngOnInit() {
     //  let tokenID = localStorage.getItem(localStorage.key(0));
     let tokenID = localStorage.getItem(localStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(-1);
 
+    this.currentFolderId = -1;
     this.currentFolderName = "Your files";
 
     let getStorageInfoOperation: Observable<StorageInfo>;
@@ -139,15 +189,7 @@ export class FilesComponent implements OnInit {
       this.setProgressBarStyle();
     });
 
-    let getFilesOperation: Observable<File[]>;
-    getFilesOperation = this.fileService.getFiles(newToken);
-    getFilesOperation.subscribe((newFiles: File[]) => {
-      for (let file of newFiles) {
-        this.files.push(file);
-        this.filteredFiles.push(file);
-      }
-      console.log(this.files);
-    });
+    this.listFiles(this.currentFolderId);
   }
 
 }
