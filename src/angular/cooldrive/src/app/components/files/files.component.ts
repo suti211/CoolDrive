@@ -20,6 +20,8 @@ export class FilesComponent implements OnInit {
 
   infoPanelDisplayed: boolean;
 
+  test: any;
+
   usage: number;
   quantity: number;
   percentage: number;
@@ -140,6 +142,20 @@ export class FilesComponent implements OnInit {
         this.progressBarSytle = "progress-bar bg-danger";
       }
     }
+  }
+
+  uploadFile(){
+    this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
+
+    let tokenID = localStorage.getItem(localStorage.key(0));
+    let newToken = new Token(tokenID);
+    newToken.setID(222);
+
+    let uploadFileOperation: Observable<Status>;
+    uploadFileOperation = this.fileService.uploadFile(newToken, this.uploadedFilesList[0]);
+    uploadFileOperation.subscribe((status: Status) => {
+      console.log(status.message);
+    });
   }
 
   listUploadedFiles() {

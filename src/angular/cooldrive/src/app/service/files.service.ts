@@ -36,6 +36,21 @@ export class FileService {
       .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
+  uploadFile(token: Token, file): Observable<Status>{
+    let fd = new FormData();
+    fd.append('file', file);
+    fd.append('token', token.token);
+    fd.append('parendId', token.id.toString());
+
+    let headers = new Headers({'Content-Type': 'multipart/form-data'});
+    let options = new RequestOptions({headers: headers});
+
+    console.log(fd);
+    return this.http.post(this.filesUrl + 'upload', fd, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw('Server Error'));
+  }
+
   getStorageInfo(token: Token): Observable<StorageInfo> {
     let bodyString = JSON.stringify(token);
 
