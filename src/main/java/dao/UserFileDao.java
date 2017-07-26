@@ -11,9 +11,7 @@ public interface UserFileDao {
 
     int addNewUserFile(UserFile userFile);
 
-    boolean modifyUserFile(int id, UserFile userFile);
-
-    boolean changeFolderSize(int id, double maxSize);
+    boolean modifyUserFile(UserFile userFile);
 
     boolean changeFolderCurrSize(int id, double size);
 

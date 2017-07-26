@@ -34,7 +34,7 @@ public class RegisterService {
 		int userID = userController.checkUser(input.getUserName(), input.getPass());
 		
 		if(userID == -1){
-			int startQuantity = 10;
+			int startQuantity = 50;
 			int parentId = 1;
 			int userId = userController.registerUser(input);
 			int userHomeId = ufc.addNewUserFile(new UserFile("D:\\CoolDrive\\Users\\", 0, input.getUserName(), "dir", startQuantity, true, userId, parentId));
