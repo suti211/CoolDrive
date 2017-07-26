@@ -36,7 +36,7 @@ public class UserFileManager {
     private static Path rootPath = Paths.get("d:\\");
     private static Path tempPath = Paths.get("d:\\temp");
 
-    public static void saveUserFile(MultipartFormDataInput input,String token,int parentId,boolean isFolder,double maxSize) {
+    public static void saveUserFile(MultipartFormDataInput input, String token, int parentId,boolean isFolder,double maxSize) {
         User user = userController.getUser(token);
         folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
         Map<String,List<InputPart>> uploadForm = input.getFormDataMap();
@@ -61,10 +61,7 @@ public class UserFileManager {
             } catch (IOException e1) {
                 LOG.error("error when reading remote stream upload",e1);
             }
-
         });
-
-
     }
 
      private static String getFileName(MultivaluedMap<String, String> header){
