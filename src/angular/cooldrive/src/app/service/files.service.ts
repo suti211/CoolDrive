@@ -26,7 +26,15 @@ export class FileService {
     return this.filteredFiles;
   }
 
- 
+  deleteFile(token: Token): Observable<Status>{
+    let bodyString = JSON.stringify(token);
+
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.filesUrl + 'deleteFile', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+  }
 
   getStorageInfo(token: Token): Observable<StorageInfo> {
     let bodyString = JSON.stringify(token);
