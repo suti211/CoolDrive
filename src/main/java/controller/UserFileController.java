@@ -5,9 +5,11 @@ import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +54,11 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return null;
     }
 
-    public boolean addNewUserFile(UserFile userFile) {
+    public int addNewUserFile(UserFile userFile) {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "INSERT INTO Files(path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId, label) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)");
+                    "INSERT INTO Files(path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId, label) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, userFile.getPath());
             ps.setDouble(2, userFile.getSize());
             ps.setString(3, userFile.getFileName());
@@ -69,12 +71,15 @@ public class UserFileController extends DatabaseController implements UserFileDa
             int success = ps.executeUpdate();
             if (success > 0) {
                 LOG.info("Add new file(filename: {}, path: {}) is successfully created", userFile.getFileName(), userFile.getPath());
-                return true;
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
             }
         } catch (SQLException e) {
             LOG.error("Add new userfile is failed with Exception", e);
         }
-        return false;
+        return -1;
     }
 
     public boolean modifyUserFile(int id, UserFile userFile) {
@@ -192,16 +197,16 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps = con.prepareStatement("SELECT id FROM Files WHERE path = ? AND filename = ?");
             ps.setString(1, userFile.getPath());
             ps.setString(2, userFile.getFileName());
-            int success  = ps.executeUpdate();
-            if (success > 0){
+            int success = ps.executeUpdate();
+            if (success > 0) {
                 ResultSet rs = ps.executeQuery();
-                LOG.info("Userfile(filename: {}, path: {}) is successfully checked",userFile.getFileName(),userFile.getPath());
+                LOG.info("Userfile(filename: {}, path: {}) is successfully checked", userFile.getFileName(), userFile.getPath());
                 rs.first();
                 return rs.getInt("id");
             }
         } catch (SQLException e) {
-            LOG.error("check userfile is failed with Exception",e);
-    }
+            LOG.error("check userfile is failed with Exception", e);
+        }
         return 0;
     }
 }

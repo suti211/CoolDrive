@@ -1,15 +1,19 @@
 package controller;
 
-import dao.TransactionsDao;
-import dto.Transaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import util.ConnectionUtil;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mysql.cj.api.jdbc.Statement;
+
+import dao.TransactionsDao;
+import dto.Transaction;
+import util.ConnectionUtil;
 
 /**
  * Created by David Szilagyi on 2017. 07. 24..
@@ -101,10 +105,11 @@ public class TransactionsController extends DatabaseController implements Transa
         return transactionList;
     }
 
-    public boolean addTransaction(Transaction transaction) {
+    public int addTransaction(Transaction transaction) {
         PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
-            ps = con.prepareStatement("INSERT INTO (userId, firstname, lastname, zip, city, address1, address2, phone, bought, boughtDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            ps = con.prepareStatement("INSERT INTO Transactions(userId, firstname, lastname, zip, city, address1, address2, phone, bought, boughtDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, transaction.getUserId());
             ps.setString(2, transaction.getFirstName());
             ps.setString(3, transaction.getLastName());
@@ -117,14 +122,16 @@ public class TransactionsController extends DatabaseController implements Transa
             ps.setString(10, transaction.getBoughtDate());
             int success = ps.executeUpdate();
             if (success > 0){
-                LOG.info("Add transaction to transactions is succeeded(userId: {}, bought {}, date: {)",transaction.getUserId(), transaction.getBought(), transaction.getBoughtDate());
-                return true;
+                LOG.info("Add transaction to transactions is succeeded(userId: {}, bought {}, date: {})",transaction.getUserId(), transaction.getBought(), transaction.getBoughtDate());
+                rs = ps.getGeneratedKeys();
+                rs.next();
+                return rs.getInt(1);
             }
 
         } catch (SQLException e) {
             LOG.error("Add transaction to transactions is failed with Exception",e);
         }
-        LOG.debug("Add transaction to transactions is failed(userId: {}, bought {}, date: {)",transaction.getUserId(), transaction.getBought(), transaction.getBoughtDate());
-        return false;
+        LOG.debug("Add transaction to transactions is failed(userId: {}, bought {}, date: {})",transaction.getUserId(), transaction.getBought(), transaction.getBoughtDate());
+        return -1;
     }
 }

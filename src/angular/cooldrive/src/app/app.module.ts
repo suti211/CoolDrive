@@ -41,9 +41,12 @@ import { TransactionService } from './service/transaction.service';
        [
           { path: 'files', component: FilesComponent},
           { path: 'storage', component: ExtensionComponent},
-          { path: 'checkout:id', component: CheckoutComponent}
+          { path: 'checkout/:id', component: CheckoutComponent}
         ]
-      }
+      },
+      //{path: "**", component: LoginComponent}
+
+      
     ])
   ],
   
