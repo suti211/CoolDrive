@@ -17,6 +17,8 @@ import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
+import util.PathUtil;
+import util.UserFileManager;
 
 @Path("/register")
 public class RegisterService {
@@ -37,8 +39,9 @@ public class RegisterService {
 			int startQuantity = 50;
 			int parentId = 1;
 			int userId = userController.registerUser(input);
-			int userHomeId = ufc.addNewUserFile(new UserFile("D:\\CoolDrive\\Users\\", 0, input.getUserName(), "dir", startQuantity, true, userId, parentId));
+			int userHomeId = ufc.addNewUserFile(new UserFile(PathUtil.ROOT_PATH, 0, input.getUserName(), "dir", startQuantity, true, userId, parentId));
 			if(userController.setHomeId(userId, userHomeId)){
+				UserFileManager.saveFolder(input.getUserName());
 				return new Status(Operation.REGISTER, true, "User successfully registered!");
 			} else {
 				return new Status(Operation.REGISTER, false, "Failed to add user to DB!");

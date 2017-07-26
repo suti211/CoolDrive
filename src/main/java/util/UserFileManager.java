@@ -33,8 +33,8 @@ public class UserFileManager {
     private static UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
     private static UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
     private static String folderName;
-    private static Path rootPath = Paths.get("d:\\");
-    private static Path tempPath = Paths.get("d:\\temp");
+    private static Path rootPath = Paths.get(PathUtil.ROOT_PATH);
+    private static Path tempPath = Paths.get(PathUtil.TEMP_PATH);
 
     public static void saveUserFile(MultipartFormDataInput input, String token, int parentId,boolean isFolder,double maxSize) {
         User user = userController.getUser(token);
@@ -70,10 +70,8 @@ public class UserFileManager {
 
         for (String word : contentDisPosition){
             if ((word.trim().startsWith("filename"))){
-
                 String[]name = word.split("=");
                 return name[1].trim().replaceAll("\"","");
-
             }
         }
         return "unknown";
