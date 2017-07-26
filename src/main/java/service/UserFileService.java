@@ -67,9 +67,9 @@ public class UserFileService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/modify")
-    public Status modifyFile (UserFile userFile, @Context HttpServletRequest request) {
+    public Status modifyFile(UserFile userFile, @Context HttpServletRequest request) {
         LOG.info("modifyFile method is called with id: {}, from: {}", userFile.getId(), request.getRemoteAddr());
-        if(userFileController.modifyUserFile(userFile)) {
+        if (userFileController.modifyUserFile(userFile)) {
             LOG.info("modifyFile method is succeeded with id: {}", userFile.getId());
             return new Status(Operation.USERFILE, true, "success");
         }

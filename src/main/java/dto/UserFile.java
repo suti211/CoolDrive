@@ -1,7 +1,5 @@
 package dto;
 
-import java.util.Date;
-
 /**
  * Created by David Szilagyi on 2017. 07. 06..
  */
