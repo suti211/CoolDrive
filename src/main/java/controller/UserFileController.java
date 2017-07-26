@@ -189,4 +189,23 @@ public class UserFileController extends DatabaseController implements UserFileDa
         }
         return 0;
     }
+
+    public boolean checkAvailableSpace(int id, int fileSize) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("SELECT `size` FROM Files WHERE id = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                if(rs.getInt("size") > fileSize) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            LOG.error("checkAvailableSpace is failed with Exception", e);
+        }
+        return false;
+    }
 }

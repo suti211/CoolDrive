@@ -20,4 +20,6 @@ public interface UserFileDao {
     boolean deleteUserFile(int id);
 
     int checkUserFile(UserFile userFile);
+
+    boolean checkAvailableSpace(int id, int fileSize);
 }
