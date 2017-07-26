@@ -82,26 +82,25 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return -1;
     }
 
-    public boolean modifyUserFile(int id, UserFile userFile) {
+    public boolean modifyUserFile(UserFile userFile) {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "UPDATE Files SET path = ?, filename = ?, ownerId = ?, parentId = ?, label = ? WHERE id = ?");
+                    "UPDATE Files SET path = ?, filename = ?, parentId = ?, label = ? WHERE id = ?");
             ps.setString(1, userFile.getPath());
             ps.setString(2, userFile.getFileName());
-            ps.setInt(3, userFile.getOwnerId());
-            ps.setInt(5, userFile.getParentId());
-            ps.setInt(5, id);
-            ps.setString(6, userFile.getLabel());
+            ps.setInt(3, userFile.getParentId());
+            ps.setString(4, userFile.getLabel());
+            ps.setInt(5, userFile.getId());
             int success = ps.executeUpdate();
             if (success > 0) {
-                LOG.info("Userfile(filename: {}, path: {}) is successfully modified with this id: {}", userFile.getFileName(), userFile.getPath(), id);
+                LOG.info("Userfile(filename: {}, path: {}) is successfully modified with this id: {}", userFile.getFileName(), userFile.getPath(), userFile.getId());
                 return true;
             }
         } catch (SQLException e) {
             LOG.error("modify userfile is failed with Exception", e);
         }
-        LOG.debug("File not found with this id: {} in modifyUserFile method", id);
+        LOG.debug("File not found with this id: {} in modifyUserFile method", userFile.getId());
         return false;
     }
 
@@ -121,25 +120,6 @@ public class UserFileController extends DatabaseController implements UserFileDa
             LOG.error("modify userfile is failed with Exception", e);
         }
         LOG.debug("File not found with this id: {} in modifyUserFile method", id);
-        return false;
-    }
-
-    public boolean changeFolderSize(int id, double maxSize) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(
-                    "UPDATE Files SET maxSize = ? WHERE id = ?");
-            ps.setDouble(1, maxSize);
-            ps.setInt(2, id);
-            int success = ps.executeUpdate();
-            if (success > 0) {
-                LOG.info("Folder size is succfully changed with his id: {} new size is: {}", id, maxSize);
-                return true;
-            }
-        } catch (SQLException e) {
-            LOG.error("Change folder size is failed with Exception", e);
-        }
-        LOG.debug("File not found with this id: {} in changeFolderSize method", id);
         return false;
     }
 
