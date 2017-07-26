@@ -7,6 +7,7 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
 import {StorageInfo} from '../model/storage-info';
 import {Token} from '../model/token.model';
+import {Status} from "../model/status.model";
 
 @Injectable()
 export class FileService {
@@ -24,6 +25,8 @@ export class FileService {
   getFilteredFilesArray(): File[] {
     return this.filteredFiles;
   }
+
+ 
 
   getStorageInfo(token: Token): Observable<StorageInfo> {
     let bodyString = JSON.stringify(token);
