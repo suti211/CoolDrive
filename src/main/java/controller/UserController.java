@@ -117,7 +117,7 @@ public class UserController extends DatabaseController implements UserDao {
                 ResultSet rs = ps.getGeneratedKeys();
                 LOG.info("User(username: {}, email: {) successfully registered", user.getUserName(), user.getEmail());
                 if (rs.next()) {
-                    return rs.getInt("id");
+                    return rs.getInt(1);
                 }
             }
         } catch (SQLException e) {

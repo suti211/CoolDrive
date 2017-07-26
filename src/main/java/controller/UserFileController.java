@@ -73,7 +73,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
                 LOG.info("Add new file(filename: {}, path: {}) is successfully created", userFile.getFileName(), userFile.getPath());
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
-                    return rs.getInt("id");
+                    return rs.getInt(1);
                 }
             }
         } catch (SQLException e) {
