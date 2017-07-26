@@ -1,19 +1,21 @@
 export class Transaction{
-    userName: string;
+    userToken: string;
     firstName: string;
     lastName: string;
-    zipCode: number;
+    zip: string;
     city: string;
-    address: string;
-    storagePack: number;
+    address1: string;
+    bought: number;
+    phone: string;
 
-    constructor(user: string, firstName: string, lastName: string, zipCode: number, city: string, address: string, storagePack: number){
-        this.userName = user;
+    constructor(userToken: string, firstName: string, lastName: string, zipCode: string, city: string, address: string, phone: string, storagePack: number){
+        this.userToken = userToken;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.zipCode = zipCode;
+        this.zip = zipCode;
         this.city = city;
-        this.address = address;
-        this.storagePack = storagePack;
+        this.address1 = address;
+        this.phone = phone;
+        this.bought = storagePack;
     }
 }
