@@ -131,8 +131,6 @@ CREATE TABLE `Users` (
   `firstname` varchar(70) CHARACTER SET latin1 DEFAULT NULL,
   `lastname` varchar(70) CHARACTER SET latin1 DEFAULT NULL,
   `admin` tinyint(1) DEFAULT NULL,
-  `quantity` double DEFAULT NULL,
-  `usage` double DEFAULT NULL,
   `token` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
   `registerdate` date DEFAULT NULL,
   `userhomeid` int(11) DEFAULT NULL,

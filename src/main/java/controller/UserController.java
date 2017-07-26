@@ -36,8 +36,6 @@ public class UserController extends DatabaseController implements UserDao {
                         rs.getString("firstname"),
                         rs.getString("lastname"),
                         rs.getBoolean("admin"),
-                        rs.getDouble("quantity"),
-                        rs.getDouble("usage"),
                         rs.getString("token"),
                         rs.getDate("registerdate"),
                         rs.getInt("userhomeid")
@@ -67,8 +65,6 @@ public class UserController extends DatabaseController implements UserDao {
                         rs.getString("firstname"),
                         rs.getString("lastname"),
                         rs.getBoolean("admin"),
-                        rs.getDouble("quantity"),
-                        rs.getDouble("usage"),
                         rs.getString("token"),
                         rs.getDate("registerdate"),
                         rs.getInt("userhomeid")
@@ -81,27 +77,11 @@ public class UserController extends DatabaseController implements UserDao {
         return null;
     }
 
-    public double getUsage(int id) {
-        double result;
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT `usage` FROM Users WHERE id = ?");
-            ps.setInt(1, id);
-            result = ps.executeQuery().getDouble("usage");
-            LOG.info("Find usage with this id: {} usage is {}", id, result);
-            return result;
-        } catch (SQLException e) {
-            LOG.error("get usage is failed with Exception", e);
-        }
-        LOG.debug("User not found with this id: {} in getUsage method", id);
-        return 0;
-    }
-
     public int registerUser(User user) {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "INSERT INTO Users(username, pass, email, validated, firstname, lastname, admin, quantity, `usage`, token, registerdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_DATE)", Statement.RETURN_GENERATED_KEYS);
+                    "INSERT INTO Users(username, pass, email, validated, firstname, lastname, admin, token, registerdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_DATE)", Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, user.getUserName());
             ps.setString(2, user.getPass());
             ps.setString(3, user.getEmail());
@@ -109,9 +89,7 @@ public class UserController extends DatabaseController implements UserDao {
             ps.setString(5, user.getFirstName());
             ps.setString(6, user.getLastName());
             ps.setBoolean(7, false);
-            ps.setDouble(8, 0);
-            ps.setDouble(9, 0);
-            ps.setString(10, user.getToken());
+            ps.setString(8, user.getToken());
             int success = ps.executeUpdate();
             if (success > 0) {
                 ResultSet rs = ps.getGeneratedKeys();
@@ -168,24 +146,6 @@ public class UserController extends DatabaseController implements UserDao {
         } catch (SQLException e) {
             LOG.error("setHomeId is failed with Exception", e);
         }
-        return false;
-    }
-
-    public boolean quantityChange(int id, double quantity) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("UPDATE Users SET quantity = ? WHERE id = ?");
-            ps.setDouble(1, quantity);
-            ps.setInt(2, id);
-            int success = ps.executeUpdate();
-            if (success > 0) {
-                LOG.info("User quantity is successfully changed with this id: {} new quantity is : {}", id, quantity);
-                return true;
-            }
-        } catch (SQLException e) {
-            LOG.error("quantity change is failed with Exception", e);
-        }
-        LOG.debug("User not found with this id: {} in quantityChange method", id);
         return false;
     }
 
