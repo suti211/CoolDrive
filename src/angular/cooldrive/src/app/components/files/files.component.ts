@@ -16,9 +16,9 @@ export class FilesComponent implements OnInit {
   currentFolderId: number;
   currentFolderName: string = "";
 
-  selectedFileName: string;
-  selectedFileLabel: string;
-  selectedFileisFolder: boolean;
+  selectedFile: File = new File(-1, "", "", 0, 0, "", "", true);
+
+  infoPanelDisplayed: boolean;
 
   usage: number;
   quantity: number;
@@ -35,6 +35,7 @@ export class FilesComponent implements OnInit {
   constructor(private fileService: FileService) {
     this.files = fileService.getFilesArray();
     this.filteredFiles = fileService.getFilteredFilesArray();
+    this.infoPanelDisplayed = false;
   }
 
   filterFiles(filt: string) {
@@ -124,10 +125,8 @@ export class FilesComponent implements OnInit {
     this.listFiles(this.currentFolderId);
   }
 
-  setSelectedFile(fileName: string, label: string, isFolder: boolean){
-    this.selectedFileName = fileName;
-    this.selectedFileLabel = label;
-    this.selectedFileisFolder = isFolder;
+  setSelectedFile(file: File){
+    this.selectedFile = file;
   }
 
 

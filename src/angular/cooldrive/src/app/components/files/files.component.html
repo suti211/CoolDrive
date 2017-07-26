@@ -6,6 +6,10 @@
   </div>
 </h1>
 
+<div *ngIf="infoPanelDisplayed" id="filesInfo" ngStyle="" class="alert alert-success" role="alert">
+  <strong>Well done!</strong> You successfully read this important alert message.
+</div>
+
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
@@ -40,7 +44,7 @@
           </button>
           <div id="floatingButtonDropdown" class="dropdown-menu">
             <a class="dropdown-item" (click)="deleteFile(file.id)">Delete</a>
-            <a class="dropdown-item" (click)="setSelectedFile(file.fileName, file.label, file.folder)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
+            <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
             <a class="dropdown-item" href="#">Something else here</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Separated link</a>
@@ -78,8 +82,18 @@
           <h5 class="modal-title" id="exampleModalLabel">Modify file details</h5>
         </div>
         <div class="modal-body">
-          FileName: <input value="{{selectedFileName}}">
-          Label: <input value="{{selectedFileLabel}}">
+          <div class="input-group">
+            <span class="input-group-addon modifyModal" id="modifyName">FileName</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" value="{{selectedFile.fileName}}">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon modifyModal" id="modifyLabel">Label</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" value="{{selectedFile.label}}">
+          </div>
+          <div class="input-group" *ngIf="selectedFile.folder">
+            <span class="input-group-addon modifyModal" id="modifyMaxSize">Max size</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" value="{{selectedFile.maxSize}}">
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
