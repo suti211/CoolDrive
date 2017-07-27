@@ -38,11 +38,12 @@ public class UserFileService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/deleteFile")
-    public boolean deleteUserFile(Token token, @Context HttpServletRequest request) {
+    public boolean deleteUserFile(Token token, @Context HttpServletRequest request) throws IOException {
         LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
         int fileId = getFileId(token, "deleteUserFile");
-        double size = userFileController.getUserFile(fileId).getSize();
-        userFileController.changeFolderCurrSize(fileId, -size);
+        UserFile userFile = userFileController.getUserFile(fileId);
+        UserFileManager.deleteFile(userFile.getPath() + userFile.getId() + userFile.getExtension());
+        userFileController.changeFolderCurrSize(fileId, -userFile.getSize());
         return userFileController.deleteUserFile(token.getId());
     }
 
