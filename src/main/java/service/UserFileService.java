@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
- * Created by David Szilagyi on 2017. 07. 18..
+ * Created by David Szilagyi und Dani on 2017. 07. 18..
  */
 @Path("/files")
 public class UserFileService {
@@ -30,6 +30,15 @@ public class UserFileService {
     public List<UserFile> getAllFilesFromFolder(Token token, @Context HttpServletRequest request) {
         LOG.info("getAllFilesFromFolder method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
         return userFileController.getAllFilesFromFolder(getFileId(token, "getAllFilesFromFolder"));
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/deleteFile")
+    public boolean deleteUserFile(Token token, @Context HttpServletRequest request) {
+        LOG.info("deleteUserfILE method is called with token:{}, id: {}", token.getToken(), token.getId());
+        return userFileController.deleteUserFile(token.getId());
     }
 
     @POST

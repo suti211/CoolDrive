@@ -26,8 +26,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
   }
 
-  sendSearchData(){
-    this.filesComponent.filterFiles(this.filter);
+  sendSearchData(filt: string){
+    this.filesComponent.filterFiles(filt);
   }
 
 
