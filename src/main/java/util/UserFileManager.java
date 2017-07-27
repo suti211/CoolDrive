@@ -52,10 +52,10 @@ public class UserFileManager {
                 LOG.error("The save user method was failed due to an exception", e);
             }
         }
-        streams.entrySet().parallelStream().forEach(e -> {
+        streams.entrySet().parallelStream().forEach(map -> {
             try {
-                writeFile(e.getKey(), e.getValue());
-                LOG.info("UserFile is successfully saved from multiPartFormDataInput.File id is: {}", e.getKey());
+                writeFile(map.getKey(), map.getValue());
+                LOG.info("UserFile is successfully saved from multiPartFormDataInput.File id is: {}", map.getKey());
             } catch (IOException e1) {
                 LOG.error("error when reading remote stream upload", e1);
             }
@@ -117,11 +117,14 @@ public class UserFileManager {
     private static int createUserFile(String fileName, User user, int parentId, boolean isFolder, double maxSize, InputStream inputStream) throws IOException {
         Path path = Paths.get(rootPath.toString(), folderName);
         double size = (inputStream.available() / 1024) / 1024;
-        String extension = "folder";
-        if (!isFolder) extension = fileName.substring(fileName.lastIndexOf("."));
-        UserFile userFile = new UserFile(path.toString(), size, fileName, extension, isFolder, user.getId(), parentId);
-        userFileController.addNewUserFile(userFile);
-        return userFileController.checkUserFile(userFile);
+        String extension = "dir";
+        String name = fileName;
+        if (!isFolder) {
+            extension = fileName.substring(fileName.lastIndexOf("."));
+            name = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+        UserFile userFile = new UserFile(path.toString(), size, name, extension, isFolder, user.getId(), parentId);
+        return userFileController.addNewUserFile(userFile);
     }
 
     public static void setrootPath(Path path) {
