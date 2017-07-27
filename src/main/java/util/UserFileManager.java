@@ -8,7 +8,6 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -40,7 +39,7 @@ public class UserFileManager {
         User user = userController.getUser(token);
         folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-        List<InputPart> inputParts = uploadForm.get("uploadedFile");
+        List<InputPart> inputParts = uploadForm.get("input");
         Map<String, InputStream> streams = new HashMap<>();
         int fileId = 0;
         for (InputPart inputPart : inputParts) {
@@ -65,7 +64,7 @@ public class UserFileManager {
 
     private static String getFileName(MultivaluedMap<String, String> header) {
 
-        String[] contentDisPosition = header.getFirst("Content-Dispositon").split(";");
+        String[] contentDisPosition = header.get("Content-Disposition").get(0).split(";");
 
         for (String word : contentDisPosition) {
             if ((word.trim().startsWith("filename"))) {
