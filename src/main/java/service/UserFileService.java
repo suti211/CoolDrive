@@ -43,7 +43,7 @@ public class UserFileService {
         int fileId = getFileId(token, "deleteUserFile");
         UserFile userFile = userFileController.getUserFile(fileId);
         UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
-        userFileController.changeFolderCurrSize(fileId, -userFile.getSize());
+        userFileController.changeFolderCurrSize(userFile.getParentId(), -userFile.getSize());
         return userFileController.deleteUserFile(token.getId());
     }
 

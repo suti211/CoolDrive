@@ -107,8 +107,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
     public boolean changeFolderCurrSize(int id, double size) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement(
-                    "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
+             ps = con.prepareStatement(
+                     "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
             ps.setDouble(1, size);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
