@@ -161,7 +161,7 @@ export class FilesComponent implements OnInit {
 
     let tokenID = localStorage.getItem(localStorage.key(0));
     let newToken = new Token(tokenID);
-    newToken.setID(222);
+    newToken.setID(6);
 
     let uploadFileOperation: Observable<Status>;
     uploadFileOperation = this.fileService.uploadFile(newToken, this.uploadedFilesList[0]);
