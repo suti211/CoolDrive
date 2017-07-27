@@ -60,7 +60,7 @@ export class FileService {
     let options = new RequestOptions({headers: headers});
 
     console.log(fd);
-    return this.http.post(this.filesUrl + 'upload2', fd, options)
+    return this.http.post(this.filesUrl + 'upload', fd, options)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
   }
