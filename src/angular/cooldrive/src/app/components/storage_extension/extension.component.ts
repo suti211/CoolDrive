@@ -35,7 +35,6 @@ export class ExtensionComponent{
     address: string= "";
 
     constructor(private router: Router, private transService: TransactionService){
-
     }
 
     change1mbHeader(){
@@ -150,7 +149,7 @@ export class ExtensionComponent{
                 console.log(status);
                 if(status.success){
                     console.log("siker");
-                    this.router.navigate(['dashboard/checkout', status.message])
+                    setTimeout(() => this.router.navigate(['dashboard/checkout', status.message]), 2000 );
                 }
             });
         }

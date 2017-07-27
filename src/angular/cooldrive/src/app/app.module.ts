@@ -38,14 +38,14 @@ import { CheckoutService } from './service/checkout.service';
     RouterModule.forRoot([
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'dashboard', component: DashboardComponent, children:
+      { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard], children:
        [
           { path: 'files', component: FilesComponent},
-          { path: 'storage', component: ExtensionComponent},
-          { path: 'checkout/:id', component: CheckoutComponent}
+          { path: 'storage', canActivate: [LoginGuard], component: ExtensionComponent},
+          { path: 'checkout/:id', canActivate: [LoginGuard], component: CheckoutComponent}
         ]
       },
-      //{path: "**", component: LoginComponent}
+      {path: "**", component: LoginComponent}
 
       
     ])
