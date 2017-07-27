@@ -39,7 +39,10 @@ public class UserFileService {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/deleteFile")
     public boolean deleteUserFile(Token token, @Context HttpServletRequest request) {
-        LOG.info("deleteUserfILE method is called with token:{}, id: {}", token.getToken(), token.getId());
+        LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
+        int fileId = getFileId(token, "deleteUserFile");
+        double size = userFileController.getUserFile(fileId).getSize();
+        userFileController.changeFolderCurrSize(fileId, -size);
         return userFileController.deleteUserFile(token.getId());
     }
 
@@ -65,7 +68,8 @@ public class UserFileService {
         double size = (request.getContentLength() / 1024) / 1024;
         int folderId = getFileId(token, "uploadFile");
         if(userFileController.checkAvailableSpace(folderId, size)) {
-            UserFileManager.saveUserFile(input, token.getToken(),token.getId(), false, 0);
+            UserFileManager.saveUserFile(input, token.getToken(), folderId, false, 0);
+            userFileController.changeFolderCurrSize(folderId, size);
             return new Status(Operation.USERFILE, true, "success");
         } else {
             return new Status(Operation.USERFILE, false, "not enough space");
