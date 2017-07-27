@@ -74,6 +74,8 @@ export class FilesComponent implements OnInit {
 
 
   openFolder(id: number, name: string) {
+    this.currentFolderId = id;
+
     if (name === "...") {
       this.currentFolderName = "Your files";
     } else {
