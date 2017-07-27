@@ -143,7 +143,7 @@ export class ExtensionComponent{
             this.showWarningPanel = false;
             this.showStorageWarning = false;
             this.showSuccessPanel = true;
-            this.transaction = new Transaction(localStorage.getItem(localStorage.key(0)), this.firstName, this.lastName, this.zipCode, this.city, this.phone, this.address, this.storage);
+            this.transaction = new Transaction(localStorage.getItem(localStorage.key(0)), this.firstName, this.lastName, this.zipCode, this.city,this.address, this.phone, this.storage);
             this.transactionResult = this.transService.newTransaction(this.transaction);
             console.log(this.transaction);
             this.transactionResult.subscribe((status : Status) => {

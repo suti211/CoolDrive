@@ -154,13 +154,13 @@
 
     <br>
 
-    <div class="col-sm-12 col-md-10 order" *ngIf="!showOrderDetails">
+    <div class="col-sm-12 col-md-10 order text-center" *ngIf="!showOrderDetails">
             <div class="btn-group" role="group" aria-label="...">
                 <button (click)="showForm()" type="button" class="btn btn-primary orderbutton">Show Order form</button>
             </div>
     </div>
 
-    <div class="col-sm-12 col-md-10 order" *ngIf="showOrderDetails">
+    <div class="col-sm-12 col-md-10 order text-center" *ngIf="showOrderDetails">
             <div class="btn-group" role="group" aria-label="...">
                 <button  type="button" (click)="initOrder(checkInput())" class="btn btn-primary orderbutton">Order</button>
             </div>
