@@ -98,7 +98,7 @@ public class UserFileManager {
         int content;
         while ((content = inputStream.read(bytes)) > 0) {
             LOG.debug("writing {} bytes to {}", content, filename);
-            fileOutputStream.write(content);
+            fileOutputStream.write(bytes, 0, content);
             fileOutputStream.flush();
         }
         fileOutputStream.close();
