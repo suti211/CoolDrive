@@ -26,14 +26,18 @@ export class LoginComponent{
         
   }
 
-  username: string;
-  password: string;
-  lastname = "";
-  firstname = "";
-  email = "";
+  username: string = "";
+  password: string = "";
+  lastname: string = "";
+  firstname: string = "";
+  email: string = "";
   user: Register;
   status: Status;
   token: Token;
+  showInputWarning: boolean = false;
+  showIncorrectCredentials: boolean = false;
+  showSuccesfulLogin: boolean = false;
+  statusMessage: String = "";
 
   login(){
 
@@ -55,17 +59,26 @@ export class LoginComponent{
 
         if(this.status.success){
           //console.log("Login Component: Successful login!");
-          this.router.navigate(['dashboard']);
+          this.showIncorrectCredentials = false;
+          this.showInputWarning = false;
+          this.showSuccesfulLogin = true;
+          this.statusMessage = status.message;
+          setTimeout(() => this.router.navigate(['dashboard/files']), 2000);
+        } else {
+          this.showInputWarning = false;
+          this.showIncorrectCredentials = true;
+          this.statusMessage = status.message;
         }
       });
 
     } else {
-      console.log("Login Component: " + "Üres az a sok szar te fasz!");
+      this.showInputWarning = true;
+      this.showIncorrectCredentials = false;
     }
   }
 
   isThereInput(): boolean{
-    if(this.password !=null && this.username != null){
+    if(this.password != "" && this.username != ""){
       return true;
     } else {
       return false;
