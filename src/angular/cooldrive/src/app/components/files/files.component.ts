@@ -16,7 +16,7 @@ export class FilesComponent implements OnInit {
   currentFolderId: number;
   currentFolderName: string = "";
 
-  selectedFile: File = new File(-1, "", "", 0, 0, "", "", true);
+  selectedFile: File = new File(-1, "", 0, "", "", "", 0, true, 0, 0, "");
 
   infoPanelDisplayed: boolean;
 
@@ -99,7 +99,7 @@ export class FilesComponent implements OnInit {
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-      let backButton = new File(-1, "...", "", this.homeFolderSize, this.homeFolderMaxSize, "", "", true);
+      let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "");
       if (id > 0) {
         this.files.push(backButton);
         this.filteredFiles.push(backButton);
@@ -113,19 +113,7 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  deleteFile(id: number){
-    let tokenID = localStorage.getItem(localStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(id);
 
-    let deleteFileOperation: Observable<Status>;
-    deleteFileOperation = this.fileService.deleteFile(newToken);
-    deleteFileOperation.subscribe((status: Status) => {
-      console.log(status.message);
-    });
-
-    this.listFiles(this.currentFolderId);
-  }
 
   setSelectedFile(file: File){
     this.selectedFile = file;
@@ -144,6 +132,30 @@ export class FilesComponent implements OnInit {
     }
   }
 
+  modifyFile(){
+    const modifiedFile = this.selectedFile;
+
+    let deleteFileOperation: Observable<Status>;
+    deleteFileOperation = this.fileService.modifyFile(modifiedFile);
+    deleteFileOperation.subscribe((status: Status) => {
+      console.log(status.message);
+      this.listFiles(this.currentFolderId);
+    });
+  }
+
+  deleteFile(id: number){
+    let tokenID = localStorage.getItem(localStorage.key(0));
+    let newToken = new Token(tokenID);
+    newToken.setID(id);
+
+    let deleteFileOperation: Observable<Status>;
+    deleteFileOperation = this.fileService.deleteFile(newToken);
+    deleteFileOperation.subscribe((status: Status) => {
+      console.log(status.message);
+      this.listFiles(this.currentFolderId);
+    });
+  }
+
   uploadFile(){
     this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
 
@@ -156,6 +168,8 @@ export class FilesComponent implements OnInit {
     uploadFileOperation.subscribe((status: Status) => {
       console.log(status.message);
     });
+
+    this.listFiles(this.currentFolderId);
   }
 
   listUploadedFiles() {

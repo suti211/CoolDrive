@@ -82,25 +82,25 @@
           <h5 class="modal-title" id="exampleModalLabel">Modify file details</h5>
         </div>
         <div class="modal-body">
-          <div *ngIf="true" id="modifyInfo" ngStyle="" class="alert alert-success" role="alert">
+          <div *ngIf="false" id="modifyInfo" class="alert alert-success" role="alert">
             <strong>Well done!</strong> You successfully read this important alert message.
           </div>
           <div class="input-group">
             <span class="input-group-addon modifyModal" id="modifyName">FileName</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" value="{{selectedFile.fileName}}">
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.fileName">
           </div>
           <div class="input-group">
             <span class="input-group-addon modifyModal" id="modifyLabel">Label</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" value="{{selectedFile.label}}">
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.label">
           </div>
           <div class="input-group" *ngIf="selectedFile.folder">
             <span class="input-group-addon modifyModal" id="modifyMaxSize">Max size</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" value="{{selectedFile.maxSize}}">
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.maxSize">
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="listFiles(currentFolderId)">Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="modifyFile()">Save changes</button>
         </div>
       </div>
     </div>

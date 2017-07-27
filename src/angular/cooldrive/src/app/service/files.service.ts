@@ -36,17 +36,31 @@ export class FileService {
       .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
+  modifyFile(file: File): Observable<Status>{
+    console.log(file);
+    let bodyString = JSON.stringify(file);
+
+    console.log(bodyString);
+
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.filesUrl + 'modify', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw('Server Error'));
+  }
+
   uploadFile(token: Token, file): Observable<Status>{
     let fd = new FormData();
-    fd.append('file', file);
     fd.append('token', token.token);
-    fd.append('parendId', token.id.toString());
+    fd.append('id', token.id.toString());
+    fd.append('input', file);
 
-    let headers = new Headers({'Content-Type': 'multipart/form-data'});
+
+    let headers = new Headers([{'Content-Type': 'multipart/form-data'}]);
     let options = new RequestOptions({headers: headers});
 
     console.log(fd);
-    return this.http.post(this.filesUrl + 'upload', fd, options)
+    return this.http.post(this.filesUrl + 'upload2', fd, options)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
   }
