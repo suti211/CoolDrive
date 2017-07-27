@@ -21,5 +21,5 @@ public interface UserFileDao {
 
     int checkUserFile(UserFile userFile);
 
-    boolean checkAvailableSpace(int id, int fileSize);
+    boolean checkAvailableSpace(int id, double fileSize);
 }
