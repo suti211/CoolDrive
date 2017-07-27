@@ -58,9 +58,14 @@ public class UserFileService {
     public Status uploadFile(MultipartFormDataInput input, Token token, boolean isFolder, double maxSize, @Context HttpServletRequest request) {
         LOG.info("uploadFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
         String userToken = token.getToken();
+        int size = request.getContentLength();
         int folderId = getFileId(token, "uploadFile");
-        UserFileManager.saveUserFile(input, userToken, folderId, isFolder, maxSize);
-        return null;
+        if(userFileController.checkAvailableSpace(folderId, size)) {
+            UserFileManager.saveUserFile(input, userToken, folderId, isFolder, maxSize);
+            return new Status(Operation.USERFILE, true, "success");
+        } else {
+            return new Status(Operation.USERFILE, false, "not enough space");
+        }
     }
 
     @POST
