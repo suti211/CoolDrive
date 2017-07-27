@@ -23,6 +23,7 @@ public class CheckoutService {
 		requestedTransaction = transactionsController.getTransaction(token.getId());
 		
 		System.out.println(requestedTransaction);
+		
 		return requestedTransaction;
 	}
 }
