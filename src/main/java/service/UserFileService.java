@@ -3,6 +3,7 @@ package service;
 import controller.UserController;
 import controller.UserFileController;
 import dto.*;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -52,16 +54,18 @@ public class UserFileService {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/upload")
-    public Status uploadFile(MultipartFormDataInput input, Token token, boolean isFolder, double maxSize, @Context HttpServletRequest request) {
+    public Status uploadFile(MultipartFormDataInput input, @Context HttpServletRequest request) throws IOException {
+        String userToken = input.getParts().get(0).getBodyAsString();
+        int id = Integer.valueOf(input.getParts().get(1).getBodyAsString());
+        Token token = new Token(userToken, id);
         LOG.info("uploadFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
-        String userToken = token.getToken();
-        int size = request.getContentLength();
+        double size = (request.getContentLength() / 1024) / 1024;
         int folderId = getFileId(token, "uploadFile");
         if(userFileController.checkAvailableSpace(folderId, size)) {
-            UserFileManager.saveUserFile(input, userToken, folderId, isFolder, maxSize);
+            UserFileManager.saveUserFile(input, token.getToken(),token.getId(), false, 0);
             return new Status(Operation.USERFILE, true, "success");
         } else {
             return new Status(Operation.USERFILE, false, "not enough space");
