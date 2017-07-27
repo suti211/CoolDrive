@@ -108,7 +108,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "UPDATE Files SET `size` = ? WHERE id = ?");
+                    "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
             ps.setDouble(1, size);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
