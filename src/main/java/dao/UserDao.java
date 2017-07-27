@@ -10,15 +10,13 @@ public interface UserDao {
 
     User getUser(String token);
 
-    double getUsage(int id);
-
-    boolean registerUser(User user);
+    int registerUser(User user);
 
     boolean deleteUser(int id);
 
     boolean modifyUser(int id, User user);
 
-    boolean quantityChange(int id, double quantity);
+    boolean setHomeId(int id, int userHomeID);
 
     boolean changeValidation(int id, boolean validate);
 

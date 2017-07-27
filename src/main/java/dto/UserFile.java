@@ -1,7 +1,5 @@
 package dto;
 
-import java.util.Date;
-
 /**
  * Created by David Szilagyi on 2017. 07. 06..
  */
@@ -53,7 +51,8 @@ public class UserFile {
         this.parentId = parentId;
     }
 
-
+    public UserFile() {
+    }
 
     public UserFile(String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
         this.path = ""; //created by FileManager
@@ -129,5 +128,29 @@ public class UserFile {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setSize(double size) {
+        this.size = size;
+    }
+
+    public void setUploadDate(String uploadDate) {
+        this.uploadDate = uploadDate;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    public void setFolder(boolean folder) {
+        isFolder = folder;
+    }
+
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
     }
 }
