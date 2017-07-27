@@ -35,7 +35,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
                 LOG.info("File(filename: {}, path: {}) found with this id: {}", rs.getString("filename"), rs.getString("path"), id);
                 return new UserFile(
                         rs.getInt("id"),
-                        rs.getString("filename"),
+                        rs.getString("path"),
                         rs.getDouble("size"),
                         sdf.format(rs.getTimestamp("uploadDate")),
                         rs.getString("filename"),
