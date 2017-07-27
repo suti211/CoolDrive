@@ -41,12 +41,13 @@ public class UserFileManager {
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("input");
         Map<String, InputStream> streams = new HashMap<>();
-        int fileId = 0;
+        String fileId;
         for (InputPart inputPart : inputParts) {
             try {
                 String fileName = getFileName(inputPart.getHeaders());
+                String extension = fileName.substring(fileName.lastIndexOf("."));
                 InputStream body = inputPart.getBody(new GenericType<>(InputStream.class));
-                fileId = createUserFile(fileName, user, parentId, isFolder, maxSize, body);
+                fileId = createUserFile(fileName, user, parentId, isFolder, maxSize, body) + extension;
                 streams.put(String.valueOf(fileId), body);
             } catch (IOException e) {
                 LOG.error("The save user method was failed due to an exception", e);
