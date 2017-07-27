@@ -3,11 +3,11 @@ package service;
 import controller.UserController;
 import controller.UserFileController;
 import dto.*;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
+import util.DoubleConverterUtil;
 import util.UserFileManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -42,7 +42,7 @@ public class UserFileService {
         LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
         int fileId = getFileId(token, "deleteUserFile");
         UserFile userFile = userFileController.getUserFile(fileId);
-        UserFileManager.deleteFile(userFile.getPath() + userFile.getId() + userFile.getExtension());
+        UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
         userFileController.changeFolderCurrSize(fileId, -userFile.getSize());
         return userFileController.deleteUserFile(token.getId());
     }
@@ -66,11 +66,13 @@ public class UserFileService {
         int id = Integer.valueOf(input.getParts().get(1).getBodyAsString());
         Token token = new Token(userToken, id);
         LOG.info("uploadFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
-        double size = (request.getContentLength() / 1024) / 1024;
+        double size = (request.getContentLength() / 1024);
+        size /= 1024;
+        double fileSize = DoubleConverterUtil.convertDouble(size, 2);
         int folderId = getFileId(token, "uploadFile");
-        if(userFileController.checkAvailableSpace(folderId, size)) {
+        if(userFileController.checkAvailableSpace(folderId, fileSize)) {
             UserFileManager.saveUserFile(input, token.getToken(), folderId, false, 0);
-            userFileController.changeFolderCurrSize(folderId, size);
+            userFileController.changeFolderCurrSize(folderId, fileSize);
             return new Status(Operation.USERFILE, true, "success");
         } else {
             return new Status(Operation.USERFILE, false, "not enough space");

@@ -8,6 +8,7 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -102,13 +103,18 @@ public class UserFileManager {
             fileOutputStream.flush();
         }
         fileOutputStream.close();
+        int fileId = Integer.valueOf(filename.substring(0, filename.lastIndexOf(".")));
+        double size = ((double) file.length()) / 1024;
+        size /= 1024;
+        double fileSize = DoubleConverterUtil.convertDouble(size, 2);
+        userFileController.setFileSize(fileId, fileSize);
     }
 
     public static boolean deleteFile(String path) throws IOException {
         File file = Paths.get(path).toFile();
         if (file.exists()) {
             Files.delete(file.toPath());
-            LOG.info("File deleting is succesfully done path: {}", path);
+            LOG.info("File deleting is successfully done path: {}", path);
             return true;
         }
         LOG.debug("File/Folder with this path : {} does not exist or is not reachable", path);
@@ -117,14 +123,13 @@ public class UserFileManager {
 
     private static int createUserFile(String fileName, User user, int parentId, boolean isFolder, double maxSize, InputStream inputStream) throws IOException {
         Path path = Paths.get(rootPath.toString(), folderName);
-        double size = (inputStream.available() / 1024) / 1024;
         String extension = "dir";
         String name = fileName;
         if (!isFolder) {
             extension = fileName.substring(fileName.lastIndexOf("."));
             name = fileName.substring(0, fileName.lastIndexOf("."));
         }
-        UserFile userFile = new UserFile(path.toString(), size, name, extension, isFolder, user.getId(), parentId);
+        UserFile userFile = new UserFile(path.toString(), 0, name, extension, isFolder, user.getId(), parentId);
         return userFileController.addNewUserFile(userFile);
     }
 
