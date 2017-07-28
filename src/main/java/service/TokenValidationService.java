@@ -22,7 +22,7 @@ public class TokenValidationService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Status validateToken(Token token){
 		
-		UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
+		UserController userController = new UserController(ConnectionUtil.DatabaseName.cooldrive);
 		User user = userController.getUser(token.getToken());
 		
 		if(user != null){

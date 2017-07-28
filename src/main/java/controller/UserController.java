@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
 import util.TokenGenerator;
+
+import javax.sql.DataSource;
 import java.sql.*;
 
 /**
@@ -16,6 +18,9 @@ public class UserController extends DatabaseController implements UserDao {
 	public UserController(ConnectionUtil.DatabaseName database) {
 	    super(database);
     }
+    public UserController(DataSource ds){
+		super(ds);
+	}
 
 	public User getUser(int id) {
 		PreparedStatement ps = null;
@@ -112,7 +117,7 @@ public class UserController extends DatabaseController implements UserDao {
 			ps.setString(10, user.getToken());
 			int success = ps.executeUpdate();
 			if (success > 0){
-				LOG.info("User(username: {}, email: {) successfully registered",user.getUserName(),user.getEmail());
+				LOG.info("User(username: {}, email: {} successfully registered",user.getUserName(),user.getEmail());
 				return true;
 			}
 		} catch (SQLException e) {

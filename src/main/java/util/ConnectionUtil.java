@@ -11,12 +11,12 @@ public final class ConnectionUtil {
 
 //    private static final String DRIVER = "com.mysql.jdbc.Driver";
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DATABASE_HOST = "192.168.150.86";
-    private static final String DATABASE_USER = "void";
-    private static final String DATABASE_PASSWORD = "void";
+    private static final String DATABASE_HOST = "localhost";
+    private static final String DATABASE_USER = "root";
+    private static final String DATABASE_PASSWORD = "xyxy";
     private static final int DATABASE_PORT = 3306;
     public enum DatabaseName{
-        CoolDrive,
+        cooldrive,
         CoolDrive_Test
     }
 

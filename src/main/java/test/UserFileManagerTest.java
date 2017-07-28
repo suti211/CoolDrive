@@ -1,15 +1,14 @@
 package test;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import javax.inject.Inject;
-import org.junit.runner.RunWith;
+
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.junit.Test;
 import util.UserFileManager;
 
+import javax.inject.Inject;
+import javax.persistence.SequenceGenerator;
+
+import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
@@ -17,36 +16,27 @@ import static org.junit.Assert.*;
 /**
  * Created by mudzso on 2017.07.25..
  */
-@RunWith(Arquillian.class)
 public class UserFileManagerTest {
-    @Inject
-    UserFileManager userFileManager;
 
-    @org.junit.Test
+    @Test
     public void saveUserFile() throws Exception {
 
     }
 
-    @org.junit.Test
+    @Test
     public void saveFolder() throws Exception {
+        UserFileManager.setrootPath(Paths.get("/home/mudzso/server"));
+        UserFileManager.saveFolder("asd");
+        assertEquals(true,Files.exists(Paths.get("/home/mudzso/server/asd")));
     }
 
-    @org.junit.Test
+    @Test
     public void deleteFile() throws Exception {
-    }
-
-    @org.junit.Test
-    public void setrootPath() throws Exception {
-        Path path = Paths.get("/home/test");
-        userFileManager.setrootPath(path);
-        assertEquals(true, Files.exists(path));
-    }
-
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(util.UserFileManager.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        String path = "/home/mudzso/server/asd/asd.txt";
+        File file = new File(path);
+        file.createNewFile();
+        UserFileManager.deleteFile(path);
+        assertEquals(false,Files.exists(Paths.get(path)));
     }
 
 }

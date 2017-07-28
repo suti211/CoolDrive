@@ -29,10 +29,10 @@ import java.util.zip.ZipOutputStream;
  */
 public class UserFileManager {
     private static final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
-    private static UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-    private static UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
+    private static UserController userController = new UserController(ConnectionUtil.DatabaseName.cooldrive);
+    private static UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.cooldrive);
     private static String folderName;
-    private static Path rootPath = Paths.get("d:\\");
+    private static Path rootPath;
     private static Path tempPath = Paths.get("d:\\temp");
 
     public static void saveUserFile(MultipartFormDataInput input,String token,int parentId,boolean isFolder,double maxSize) {
@@ -133,7 +133,9 @@ public class UserFileManager {
      }
 
      public static void setrootPath(Path path){
+
          rootPath = path;
+
      }
 
 
