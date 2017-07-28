@@ -88,3 +88,15 @@ html, body {
     max-width: 540px;
   }
 }
+
+.alert.alert-warning.info{
+    height: 50px;
+    padding: 10px;
+    background-color: #f2dede;
+}
+
+.alert.alert-success.info{
+    height: 50px;
+    padding: 10px;
+    background-color: #dff0d8;
+}

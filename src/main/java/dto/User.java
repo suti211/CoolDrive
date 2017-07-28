@@ -14,8 +14,6 @@ public class User {
     private String firstName;
     private String lastName;
     private boolean admin;
-    private double quantity;
-    private double usage;
     private String token;
     private Date registerDate;
     private int userHomeId;
@@ -25,7 +23,7 @@ public class User {
     }
 
     public User(int id, String userName, String pass, String email, boolean validated, String firstName,
-                String lastName, boolean admin, double quantity, double usage, String token, Date registerDate, int userHomeId) {
+                String lastName, boolean admin, String token, Date registerDate, int userHomeId) {
         this.id = id;
         this.userName = userName;
         this.pass = pass;
@@ -34,8 +32,6 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.admin = admin;
-        this.quantity = quantity;
-        this.usage = usage;
         this.token = token;
         this.registerDate = registerDate;
         this.userHomeId = userHomeId;
@@ -97,14 +93,6 @@ public class User {
         return admin;
     }
 
-    public double getQuantity() {
-        return quantity;
-    }
-
-    public double getUsage() {
-        return usage;
-    }
-
     public void setPass(String pass) {
         this.pass = pass;
     }
@@ -125,18 +113,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setUsage(int usage) {
-        this.usage = usage;
-    }
 
     @Override
     public String toString() {
         return "User [id=" + id + ", userName=" + userName + ", pass=" + pass + ", email=" + email + ", validated="
-                + validated + ", firstName=" + firstName + ", lastName=" + lastName + ", admin=" + admin + ", quantity="
-                + quantity + ", usage=" + usage + ", token=" + token + ", registerDate=" + registerDate + "]";
+                + validated + ", firstName=" + firstName + ", lastName=" + lastName + ", admin=" + admin +
+                ", token=" + token + ", registerDate=" + registerDate + "]";
     }
 }

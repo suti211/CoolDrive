@@ -1,0 +1,125 @@
+<h1>{{currentFolderName}}
+  <div class="progress">
+    <div id="progress-bar" ngClass="{{progressBarSytle}}" role="progressbar" [style.width]="percentage+'%'">
+      {{usage}}/{{quantity}} MB
+    </div>
+  </div>
+</h1>
+
+<div *ngIf="infoPanelDisplayed" id="filesInfo" ngStyle="" class="alert alert-success" role="alert">
+  <strong>Well done!</strong> You successfully read this important alert message.
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Filename</th>
+      <th>Extension</th>
+      <th>Size</th>
+      <th>Upload Date</th>
+      <th>Label</th>
+      <th>Functions</th>
+    </tr>
+    </thead>
+
+    <tbody id="FileListDisplay">
+    <tr *ngFor="let file of filteredFiles">
+      <td>
+        <div *ngIf="file.folder == false"><span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
+        <div style="cursor: pointer" *ngIf="file.folder == true" (dblclick)="openFolder(file.id, file.fileName)"><span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
+      </td>
+      <td>{{file.extension}}</td>
+      <td>
+        <div *ngIf="file.folder == false">{{file.size}} MB</div>
+        <div *ngIf="file.folder == true">{{file.size}}/{{file.maxSize}} MB</div>
+      </td>
+      <td>{{file.uploadDate}}</td>
+      <td>{{file.label}}</td>
+      <td>
+        <div *ngIf="file.id > 0" class="dropdown">
+          <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+            More
+          </button>
+          <div id="floatingButtonDropdown" class="dropdown-menu">
+            <a class="dropdown-item" style="cursor: pointer" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
+            <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red; cursor: pointer">Delete</a>
+          </div>
+        </div>
+      </td>
+    </tr>
+
+    </tbody>
+
+  </table>
+
+
+  <!-- FLOATING BUTTON -->
+  <div id="floatingButton" class="btn-group dropup">
+    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+      New
+    </button>
+    <div id="floatingButtonDropdown" class="dropdown-menu">
+      <a class="dropdown-item" href="" data-toggle="modal" data-target="#uploadModal">Upload</a>
+    </div>
+  </div>
+
+
+  <!-- FileModify -->
+  <div class="modal fade" id="fileModifyModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modify file details</h5>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="false" id="modifyInfo" class="alert alert-success" role="alert">
+            <strong>Well done!</strong> You successfully read this important alert message.
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon modifyModal" id="modifyName">FileName</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.fileName">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon modifyModal" id="modifyLabel">Label</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.label">
+          </div>
+          <div class="input-group" *ngIf="selectedFile.folder">
+            <span class="input-group-addon modifyModal" id="modifyMaxSize">Max size</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.maxSize">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="listFiles(currentFolderId)">Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="modifyFile()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD MODAL -->
+  <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="uploadModalButton">Upload</h4>
+        </div>
+        <form action="http://localhost:8080/CoolDrive/files/upload">
+          <div class="modal-body">
+            <input id="uploadedFiles" type="file" formenctype="multipart/form-data" multiple (change)="listUploadedFiles()"><br>
+            <div *ngFor="let file of uploadedFilesList">
+              {{file.name}} : {{(file.size/1024)/1024 | number:0 }} MB
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input type="button" class="btn btn-primary" (click)="uploadFile()" value="Upload">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>

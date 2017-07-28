@@ -2,24 +2,22 @@ package service;
 
 import controller.UserController;
 import controller.UserFileController;
-import dto.Operation;
-import dto.User;
-import dto.UserFile;
+import dto.*;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
-
+import util.DoubleConverterUtil;
+import util.UserFileManager;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by David Szilagyi on 2017. 07. 18..
+ * Created by David Szilagyi und Dani on 2017. 07. 18..
  */
 @Path("/files")
 public class UserFileService {
@@ -30,13 +28,88 @@ public class UserFileService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getfiles")
-    public List<UserFile> getAllFilesFromFolder(String token, int id, @Context HttpServletRequest request) {
-        LOG.info("getAllFilesFromFolder post method is called with token:{}, id: {}, from: {}", token, id, request.getRemoteAddr());
-        int fileId = id;
-        if (id != -1) {
-            fileId = userController.getUser(token).getId();
+    @Path("/getFiles")
+    public List<UserFile> getAllFilesFromFolder(Token token, @Context HttpServletRequest request) {
+        LOG.info("getAllFilesFromFolder method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
+        return userFileController.getAllFilesFromFolder(getFileId(token, "getAllFilesFromFolder"));
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/deleteFile")
+    public boolean deleteUserFile(Token token, @Context HttpServletRequest request) throws IOException {
+        LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
+        int fileId = getFileId(token, "deleteUserFile");
+        UserFile userFile = userFileController.getUserFile(fileId);
+        UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
+        double fileSize = -DoubleConverterUtil.convertDouble(userFile.getSize(),2);
+        int parentId = userFile.getParentId();
+        userFileController.changeFolderCurrSize(parentId, fileSize);
+        int folderParentId = userFileController.getUserFile(parentId).getParentId();
+        if(folderParentId != 1) {
+            userFileController.changeFolderCurrSize(folderParentId, fileSize);
         }
-        return userFileController.getAllFilesFromFolder(fileId);
+        return userFileController.deleteUserFile(token.getId());
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getStorageInfo")
+    public StorageInfo getStorageInfo(Token token, @Context HttpServletRequest request) {
+        LOG.info("getStorageInfo method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
+        UserFile uf = userFileController.getUserFile(getFileId(token, "getStorageInfo"));
+        return new StorageInfo(uf.getSize(), uf.getMaxSize());
+    }
+
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/upload")
+    public Status uploadFile(MultipartFormDataInput input, @Context HttpServletRequest request) throws IOException {
+        String userToken = input.getParts().get(0).getBodyAsString();
+        int id = Integer.valueOf(input.getParts().get(1).getBodyAsString());
+        Token token = new Token(userToken, id);
+        LOG.info("uploadFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
+        double size = (request.getContentLength() / 1024);
+        size /= 1024;
+        double fileSize = DoubleConverterUtil.convertDouble(size, 2);
+        int folderId = getFileId(token, "uploadFile");
+        if(userFileController.checkAvailableSpace(folderId, fileSize)) {
+            UserFileManager.saveUserFile(input, token.getToken(), folderId, false, 0);
+            userFileController.changeFolderCurrSize(folderId, fileSize);
+            int parentId = userFileController.getUserFile(folderId).getParentId();
+            if(parentId != 1) {
+                userFileController.changeFolderCurrSize(parentId, fileSize);
+            }
+            return new Status(Operation.USERFILE, true, "success");
+        } else {
+            return new Status(Operation.USERFILE, false, "not enough space");
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/modify")
+    public Status modifyFile(UserFile userFile, @Context HttpServletRequest request) {
+        LOG.info("modifyFile method is called with id: {}, from: {}", userFile.getId(), request.getRemoteAddr());
+        if (userFileController.modifyUserFile(userFile)) {
+            LOG.info("modifyFile method is succeeded with id: {}", userFile.getId());
+            return new Status(Operation.USERFILE, true, "success");
+        }
+        LOG.debug("modifyFile method is failed with id: {}", userFile.getId());
+        return new Status(Operation.USERFILE, false, "failed");
+    }
+
+    private int getFileId(Token token, String methodName) {
+        String userToken = token.getToken();
+        int fileId = token.getId();
+        LOG.info("getFileId method is called with token:{}, id: {}, from: {}", userToken, fileId, methodName);
+        if (fileId <= 0) {
+            fileId = userController.getUser(userToken).getUserHomeId();
+        }
+        return fileId;
     }
 }

@@ -3,9 +3,15 @@ package dto;
 public class Token {
 
 	private String token;
+	private int id;
 
 	public Token(String token) {
 		this.token = token;
+	}
+
+	public Token(String token, int id) {
+		this.token = token;
+		this.id = id;
 	}
 
 	public Token() {
@@ -19,4 +25,11 @@ public class Token {
 		this.token = token;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 }

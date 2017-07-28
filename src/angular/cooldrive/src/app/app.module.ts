@@ -11,15 +11,24 @@ import { LoginService } from './service/login.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterService } from './service/register.service';
 import { LoginGuard } from './guard/login.guard';
+import { FilesComponent } from './components/files/files.component';
+import { FileService } from './service/files.service';
 import { TokenService } from './service/token.service';
 import { LogoutService } from './service/logout.service';
+import { ExtensionComponent } from './components/storage_extension/extension.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
+import { TransactionService } from './service/transaction.service';
+import { CheckoutService } from './service/checkout.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    DashboardComponent
+    DashboardComponent,
+    FilesComponent,
+    ExtensionComponent,
+    CheckoutComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -29,10 +38,20 @@ import { LogoutService } from './service/logout.service';
     RouterModule.forRoot([
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard] }
+      { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard], children:
+       [
+          { path: 'files', component: FilesComponent},
+          { path: 'storage', canActivate: [LoginGuard], component: ExtensionComponent},
+          { path: 'checkout/:id', canActivate: [LoginGuard], component: CheckoutComponent}
+        ]
+      },
+      {path: "**", component: LoginComponent}
+
+      
     ])
   ],
-  providers: [LoginService, RegisterService, LoginGuard, TokenService, LogoutService],
+  
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

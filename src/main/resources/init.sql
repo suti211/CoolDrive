@@ -1,8 +1,10 @@
--- MySQL dump 10.13  Distrib 5.7.18, for Linux (x86_64)
+CREATE DATABASE  IF NOT EXISTS `CoolDrive` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `CoolDrive`;
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: cooldrive
+-- Host: 192.168.150.86    Database: CoolDrive
 -- ------------------------------------------------------
--- Server version	5.7.18-0ubuntu0.16.04.1
+-- Server version	5.5.54-0+deb8u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -40,7 +42,7 @@ CREATE TABLE `Files` (
   KEY `Files_Files_id_fk` (`parentId`),
   CONSTRAINT `Files_Files_id_fk` FOREIGN KEY (`parentId`) REFERENCES `Files` (`id`),
   CONSTRAINT `Files_Users_id_fk` FOREIGN KEY (`ownerId`) REFERENCES `Users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,6 +51,7 @@ CREATE TABLE `Files` (
 
 LOCK TABLES `Files` WRITE;
 /*!40000 ALTER TABLE `Files` DISABLE KEYS */;
+INSERT INTO `Files`(`path`, `size`, `uploadDate`, `filename`, `extension`, `maxSize`, `isFolder`, `ownerId`, `parentId`, `label`) VALUES ("D:\\CoolDrive\\Users\\", 0, NOW(), "CoolDrive_Home", "dir", NULL, 1, NULL, NULL, "HOME FOLDER");
 /*!40000 ALTER TABLE `Files` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -66,7 +69,7 @@ CREATE TABLE `Permissions` (
   KEY `Permissions_Users_id_fk` (`userId`),
   CONSTRAINT `Permissions_Files_id_fk` FOREIGN KEY (`fileId`) REFERENCES `Files` (`id`),
   CONSTRAINT `Permissions_Users_id_fk` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,6 +79,37 @@ CREATE TABLE `Permissions` (
 LOCK TABLES `Permissions` WRITE;
 /*!40000 ALTER TABLE `Permissions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Transactions`
+--
+
+DROP TABLE IF EXISTS `Transactions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Transactions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `zip` varchar(45) NOT NULL,
+  `city` varchar(45) NOT NULL,
+  `address1` varchar(45) NOT NULL,
+  `address2` varchar(45) DEFAULT NULL,
+  `phone` varchar(45) NOT NULL,
+  `bought` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId_Users.id_idx` (`userId`),
+  CONSTRAINT `userId_Users.id` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Transactions`
+--
+
+LOCK TABLES `Transactions` WRITE;
+/*!40000 ALTER TABLE `Transactions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -103,8 +137,8 @@ CREATE TABLE `Users` (
   UNIQUE KEY `Users_id_uindex` (`id`),
   UNIQUE KEY `Users_username_uindex` (`username`),
   UNIQUE KEY `Users_email_uindex` (`email`),
-  CONSTRAINT `Users_Files_id_fk` FOREIGN KEY (`userhomeid`) REFERENCES `Files` (`id`),
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `userhomeid_idx` (`userhomeid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,4 +159,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-05 12:02:08
+-- Dump completed on 2017-07-27 22:28:00
