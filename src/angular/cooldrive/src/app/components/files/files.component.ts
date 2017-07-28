@@ -155,6 +155,7 @@ export class FilesComponent implements OnInit {
     deleteFileOperation.subscribe((status: Status) => {
       console.log(status.message);
       this.listFiles(this.currentFolderId);
+      this.getStorageInfo();
     });
   }
 

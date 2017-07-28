@@ -27,7 +27,7 @@
     <tr *ngFor="let file of filteredFiles">
       <td>
         <div *ngIf="file.folder == false"><span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
-        <div *ngIf="file.folder == true" (dblclick)="openFolder(file.id, file.fileName)"><span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
+        <div style="cursor: pointer" *ngIf="file.folder == true" (dblclick)="openFolder(file.id, file.fileName)"><span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
       </td>
       <td>{{file.extension}}</td>
       <td>
@@ -43,8 +43,8 @@
             More
           </button>
           <div id="floatingButtonDropdown" class="dropdown-menu">
-            <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
-            <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red">Delete</a>
+            <a class="dropdown-item" style="cursor: pointer" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
+            <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red; cursor: pointer">Delete</a>
           </div>
         </div>
       </td>
