@@ -117,7 +117,7 @@
           <div class="modal-body">
             <input id="uploadedFiles" type="file" formenctype="multipart/form-data" multiple (change)="listUploadedFiles()"><br>
             <div *ngFor="let file of uploadedFilesList">
-              {{file.name}} : {{file.size/1024000 | number:0 }} MB
+              {{file.name}} : {{(file.size/1024)/1024 | number:0 }} MB
             </div>
           </div>
           <div class="modal-footer">
