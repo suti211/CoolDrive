@@ -43,7 +43,13 @@ public class UserFileService {
         int fileId = getFileId(token, "deleteUserFile");
         UserFile userFile = userFileController.getUserFile(fileId);
         UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
-        userFileController.changeFolderCurrSize(userFile.getParentId(), -userFile.getSize());
+        double fileSize = -DoubleConverterUtil.convertDouble(userFile.getSize(),2);
+        int parentId = userFile.getParentId();
+        userFileController.changeFolderCurrSize(parentId, fileSize);
+        int folderParentId = userFileController.getUserFile(parentId).getParentId();
+        if(folderParentId != 1) {
+            userFileController.changeFolderCurrSize(folderParentId, fileSize);
+        }
         return userFileController.deleteUserFile(token.getId());
     }
 
@@ -73,6 +79,10 @@ public class UserFileService {
         if(userFileController.checkAvailableSpace(folderId, fileSize)) {
             UserFileManager.saveUserFile(input, token.getToken(), folderId, false, 0);
             userFileController.changeFolderCurrSize(folderId, fileSize);
+            int parentId = userFileController.getUserFile(folderId).getParentId();
+            if(parentId != 1) {
+                userFileController.changeFolderCurrSize(parentId, fileSize);
+            }
             return new Status(Operation.USERFILE, true, "success");
         } else {
             return new Status(Operation.USERFILE, false, "not enough space");
