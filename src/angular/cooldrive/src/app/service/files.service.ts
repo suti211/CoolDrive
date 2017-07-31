@@ -26,16 +26,22 @@ export class FileService {
     return this.filteredFiles;
   }
 
-  downloadFile(token: Token) {
+
+/*  downloadfile(token: Token){
     let bodyString = JSON.stringify(token);
 
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
-    let req = this.http.post(this.filesUrl + 'download', bodyString, options)
-      .map((res: Response) => console.log(res));
-    req.subscribe();
+    this.http.post(this.filesUrl + 'download', bodyString, options).map
+  }*/
 
-
+ downloadFile(fileId: number) {
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    this.http.get(this.filesUrl + 'download?id=' + fileId, options).toPromise()
+      .then(function(response) {
+        window.location.href = response.url;
+      })
   }
 
   modifyFile(file: File): Observable<Status>{
