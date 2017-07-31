@@ -26,12 +26,12 @@ export class FileService {
     return this.filteredFiles;
   }
 
-  deleteFile(token: Token): Observable<Status>{
+  downloadFile(token: Token): Observable<Status>{
     let bodyString = JSON.stringify(token);
 
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
-    return this.http.post(this.filesUrl + 'deleteFile', bodyString, options)
+    return this.http.post(this.filesUrl + 'download', bodyString, options)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
@@ -47,6 +47,16 @@ export class FileService {
     return this.http.post(this.filesUrl + 'modify', bodyString, options)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
+  }
+
+  deleteFile(token: Token): Observable<Status>{
+    let bodyString = JSON.stringify(token);
+
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.filesUrl + 'deleteFile', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
   uploadFile(token: Token, file): Observable<Status>{
