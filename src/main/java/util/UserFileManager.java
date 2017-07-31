@@ -139,21 +139,20 @@ public class UserFileManager {
     public static Response downloadUserFiles(int id) {
         byte[] bytes = new byte[1024];
         UserFile userFile = userFileController.getUserFile(id);
-        Path path = Paths.get(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
+        File downloadFile = new File(Paths.get(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension()).toString());
+        Path temppath = Paths.get(tempPath + "\\" + userFile.getId() + userFile.getExtension());
         File tempFile = null;
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(path.toString());
-            ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
-            tempFile = new File(path.toString());
-            FileInputStream fileInputStream = new FileInputStream(tempFile);
-            zipOutputStream.putNextEntry(new ZipEntry(tempFile.getName()));
+            FileOutputStream fileOutputStream = new FileOutputStream(temppath.toString());
+            tempFile = new File(temppath.toString());
+            FileInputStream fileInputStream = new FileInputStream(downloadFile);
             int length;
             while ((length = fileInputStream.read(bytes)) > 0) {
-                zipOutputStream.write(bytes, 0, length);
+                fileOutputStream.write(bytes, 0, length);
+                fileOutputStream.flush();
             }
-            zipOutputStream.closeEntry();
             fileInputStream.close();
-            zipOutputStream.close();
+            fileOutputStream.close();
         } catch (IOException e) {
         }
         return Response.ok(tempFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
