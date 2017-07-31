@@ -106,8 +106,7 @@ public class UserFileManager {
         int fileId = Integer.valueOf(filename.substring(0, filename.lastIndexOf(".")));
         double size = ((double) file.length()) / 1024;
         size /= 1024;
-        double fileSize = DoubleConverterUtil.convertDouble(size, 2);
-        userFileController.setFileSize(fileId, fileSize);
+        userFileController.setFileSize(fileId, size);
     }
 
     public static boolean deleteFile(String path) throws IOException {

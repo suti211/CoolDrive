@@ -7,7 +7,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
-import util.DoubleConverterUtil;
 import util.UserFileManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -45,12 +44,12 @@ public class UserFileService {
         int fileId = getFileId(token, "deleteUserFile");
         UserFile userFile = userFileController.getUserFile(fileId);
         UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
-        double fileSize = -DoubleConverterUtil.convertDouble(userFile.getSize(), 2);
+        double fileSize = -userFile.getSize();
         int parentId = userFile.getParentId();
         userFileController.changeFolderCurrSize(parentId, fileSize);
         int folderParentId = userFileController.getUserFile(parentId).getParentId();
         if (folderParentId != 1) {
-            userFileController.changeFolderCurrSize(folderParentId, fileSize);
+            userFileController.changeFolderCurrSize(folderParentId, -fileSize);
         }
         return userFileController.deleteUserFile(token.getId());
     }
@@ -76,14 +75,13 @@ public class UserFileService {
         LOG.info("uploadFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
         double size = (request.getContentLength() / 1024);
         size /= 1024;
-        double fileSize = DoubleConverterUtil.convertDouble(size, 2);
         int folderId = getFileId(token, "uploadFile");
-        if (userFileController.checkAvailableSpace(folderId, fileSize)) {
+        if (userFileController.checkAvailableSpace(folderId, size)) {
             UserFileManager.saveUserFile(input, token.getToken(), folderId, false, 0);
-            userFileController.changeFolderCurrSize(folderId, fileSize);
+            userFileController.changeFolderCurrSize(folderId, size);
             int parentId = userFileController.getUserFile(folderId).getParentId();
             if (parentId != 1) {
-                userFileController.changeFolderCurrSize(parentId, fileSize);
+                userFileController.changeFolderCurrSize(parentId, size);
             }
             return new Status(Operation.USERFILE, true, "success");
         } else {
