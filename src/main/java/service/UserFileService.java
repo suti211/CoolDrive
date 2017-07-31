@@ -120,12 +120,15 @@ public class UserFileService {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/download")
     public Response downloadFile(@Context HttpServletRequest request) {
-        LOG.info("downloadFile method is called with id: {}, from: {}", request.getParameter("id"), request.getRemoteAddr());
-        File userFile = UserFileManager.downloadUserFiles(Integer.valueOf(request.getParameter("id")));
+        int id = Integer.valueOf(request.getParameter("id"));
+        LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
+        File userFile = UserFileManager.downloadUserFiles(Integer.valueOf(id));
+        String name = userFile.getName();
+        String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
         if (userFile != null) {
-            LOG.info("File is found and ready to send to user with this id: {}", request.getParameter("id"));
+            LOG.info("File is found and ready to send to user with this id: {}", id);
             return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
-                    .header("Content-Disposition", "attachment; filename=\"" + userFile.getName() + "\"")
+                    .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
                     .build();
         } else {
             LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
