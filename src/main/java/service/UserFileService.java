@@ -112,4 +112,13 @@ public class UserFileService {
         }
         return fileId;
     }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/download")
+    public void downloadFile(int id, @Context HttpServletRequest request) {
+        LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
+        UserFileManager.downloadUserFiles(new int []{id}, false);
+    }
 }
