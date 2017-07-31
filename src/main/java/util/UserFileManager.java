@@ -140,23 +140,23 @@ public class UserFileManager {
         byte[] bytes = new byte[1024];
         UserFile userFile = userFileController.getUserFile(id);
         File downloadFile = new File(Paths.get(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension()).toString());
-        Path temppath = Paths.get(tempPath + "\\" + userFile.getId() + userFile.getExtension());
-        File tempFile = null;
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(temppath.toString());
-            tempFile = new File(temppath.toString());
-            FileInputStream fileInputStream = new FileInputStream(downloadFile);
-            int length;
-            while ((length = fileInputStream.read(bytes)) > 0) {
-                fileOutputStream.write(bytes, 0, length);
-                fileOutputStream.flush();
-            }
-            fileInputStream.close();
-            fileOutputStream.close();
-        } catch (IOException e) {
-        }
-        return Response.ok(tempFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
-                .header("Content-Disposition", "attachment; filename=\"" + tempFile.getName() + "\"")
+//        Path temppath = Paths.get(tempPath + "\\" + userFile.getId() + userFile.getExtension());
+//        File tempFile = null;
+//        try {
+//            FileOutputStream fileOutputStream = new FileOutputStream(temppath.toString());
+//            tempFile = new File(temppath.toString());
+//            FileInputStream fileInputStream = new FileInputStream(downloadFile);
+//            int length;
+//            while ((length = fileInputStream.read(bytes)) > 0) {
+//                fileOutputStream.write(bytes, 0, length);
+//                fileOutputStream.flush();
+//            }
+//            fileInputStream.close();
+//            fileOutputStream.close();
+//        } catch (IOException e) {
+//        }
+        return Response.ok(downloadFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                .header("Content-Disposition", "attachment; filename=\"" + downloadFile.getName() + "\"")
                 .build();
     }
 //    public static Response downloadUserFiles(int[] userFileIds, boolean isFolder) {
