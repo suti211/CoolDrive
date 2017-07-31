@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 
@@ -115,10 +116,10 @@ public class UserFileService {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/download")
-    public void downloadFile(Token token, @Context HttpServletRequest request) {
+    public Response downloadFile(Token token, @Context HttpServletRequest request) {
         LOG.info("downloadFile method is called with id: {}, from: {}", token.getId(), request.getRemoteAddr());
-        UserFileManager.downloadUserFiles(new int []{token.getId()}, false);
+        return UserFileManager.downloadUserFiles(new int []{token.getId()}, false);
     }
 }
