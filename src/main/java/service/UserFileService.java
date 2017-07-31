@@ -114,12 +114,12 @@ public class UserFileService {
         return fileId;
     }
 
-    @POST
+    @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/download")
-    public Response downloadFile(Token token, @Context HttpServletRequest request) {
-        LOG.info("downloadFile method is called with id: {}, from: {}", token.getId(), request.getRemoteAddr());
-        return UserFileManager.downloadUserFiles(token.getId());
+    public Response downloadFile(@Context HttpServletRequest request) {
+        LOG.info("downloadFile method is called with id: {}, from: {}", request.getParameter("id"), request.getRemoteAddr());
+        return UserFileManager.downloadUserFiles(Integer.valueOf(request.getParameter("id")));
     }
 }
