@@ -14,6 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class UserFileService {
         LOG.info("getAllFilesFromFolder method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
         return userFileController.getAllFilesFromFolder(getFileId(token, "getAllFilesFromFolder"));
     }
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -44,11 +45,11 @@ public class UserFileService {
         int fileId = getFileId(token, "deleteUserFile");
         UserFile userFile = userFileController.getUserFile(fileId);
         UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
-        double fileSize = -DoubleConverterUtil.convertDouble(userFile.getSize(),2);
+        double fileSize = -DoubleConverterUtil.convertDouble(userFile.getSize(), 2);
         int parentId = userFile.getParentId();
         userFileController.changeFolderCurrSize(parentId, fileSize);
         int folderParentId = userFileController.getUserFile(parentId).getParentId();
-        if(folderParentId != 1) {
+        if (folderParentId != 1) {
             userFileController.changeFolderCurrSize(folderParentId, fileSize);
         }
         return userFileController.deleteUserFile(token.getId());
@@ -77,11 +78,11 @@ public class UserFileService {
         size /= 1024;
         double fileSize = DoubleConverterUtil.convertDouble(size, 2);
         int folderId = getFileId(token, "uploadFile");
-        if(userFileController.checkAvailableSpace(folderId, fileSize)) {
+        if (userFileController.checkAvailableSpace(folderId, fileSize)) {
             UserFileManager.saveUserFile(input, token.getToken(), folderId, false, 0);
             userFileController.changeFolderCurrSize(folderId, fileSize);
             int parentId = userFileController.getUserFile(folderId).getParentId();
-            if(parentId != 1) {
+            if (parentId != 1) {
                 userFileController.changeFolderCurrSize(parentId, fileSize);
             }
             return new Status(Operation.USERFILE, true, "success");
@@ -120,6 +121,15 @@ public class UserFileService {
     @Path("/download")
     public Response downloadFile(@Context HttpServletRequest request) {
         LOG.info("downloadFile method is called with id: {}, from: {}", request.getParameter("id"), request.getRemoteAddr());
-        return UserFileManager.downloadUserFiles(Integer.valueOf(request.getParameter("id")));
+        File userFile = UserFileManager.downloadUserFiles(Integer.valueOf(request.getParameter("id")));
+        if (userFile != null) {
+            LOG.info("File is found and ready to send to user with this id: {}", request.getParameter("id"));
+            return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                    .header("Content-Disposition", "attachment; filename=\"" + userFile.getName() + "\"")
+                    .build();
+        } else {
+            LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
+            return null;
+        }
     }
 }
