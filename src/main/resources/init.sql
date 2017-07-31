@@ -38,6 +38,7 @@ CREATE TABLE `Files` (
   `label` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Files_id_uindex` (`id`),
+  UNIQUE KEY `Files_name_extension_parentid` (`filename`, `extension`, `parentId`),
   KEY `Files_Users_id_fk` (`ownerId`),
   KEY `Files_Files_id_fk` (`parentId`),
   CONSTRAINT `Files_Files_id_fk` FOREIGN KEY (`parentId`) REFERENCES `Files` (`id`),
