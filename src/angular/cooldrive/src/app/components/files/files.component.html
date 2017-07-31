@@ -43,7 +43,7 @@
             More
           </button>
           <div id="floatingButtonDropdown" class="dropdown-menu">
-            <a class="dropdown-item" (click)="download(file)" data-toggle="modal" data-target="#fileModifyModal">Download</a>
+            <a class="dropdown-item" (click)="download(file)">Download</a>
             <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
             <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red; cursor: pointer">Delete</a>
           </div>

@@ -26,14 +26,16 @@ export class FileService {
     return this.filteredFiles;
   }
 
-  downloadFile(token: Token): Observable<Status>{
+  downloadFile(token: Token) {
     let bodyString = JSON.stringify(token);
 
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
-    return this.http.post(this.filesUrl + 'download', bodyString, options)
-      .map((res: Response) => res.json())
-      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+    let req = this.http.post(this.filesUrl + 'download', bodyString, options)
+      .map((res: Response) => console.log(res));
+    req.subscribe();
+
+
   }
 
   modifyFile(file: File): Observable<Status>{
