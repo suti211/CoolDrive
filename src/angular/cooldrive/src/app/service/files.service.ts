@@ -26,16 +26,7 @@ export class FileService {
     return this.filteredFiles;
   }
 
-
-/*  downloadfile(token: Token){
-    let bodyString = JSON.stringify(token);
-
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    this.http.post(this.filesUrl + 'download', bodyString, options).map
-  }*/
-
- downloadFile(fileId: number) {
+  downloadFile(fileId: number) {
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
     this.http.get(this.filesUrl + 'download?id=' + fileId, options).toPromise()
