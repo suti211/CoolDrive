@@ -120,6 +120,6 @@ public class UserFileService {
     @Path("/download")
     public Response downloadFile(Token token, @Context HttpServletRequest request) {
         LOG.info("downloadFile method is called with id: {}, from: {}", token.getId(), request.getRemoteAddr());
-        return UserFileManager.downloadUserFiles(new int []{token.getId()}, false);
+        return UserFileManager.downloadUserFiles(token.getId());
     }
 }
