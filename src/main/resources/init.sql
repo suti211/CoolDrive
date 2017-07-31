@@ -9,7 +9,7 @@ USE `CoolDrive`;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8_generic_ci */;
+/*!40101 SET NAMES utf8_hungarian_ci */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -23,7 +23,7 @@ USE `CoolDrive`;
 
 DROP TABLE IF EXISTS `Files`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8_generic_ci */;
+/*!40101 SET character_set_client = utf8_hungarian_ci */;
 CREATE TABLE `Files` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `path` varchar(210) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE `Files` (
   KEY `Files_Files_id_fk` (`parentId`),
   CONSTRAINT `Files_Files_id_fk` FOREIGN KEY (`parentId`) REFERENCES `Files` (`id`),
   CONSTRAINT `Files_Users_id_fk` FOREIGN KEY (`ownerId`) REFERENCES `Users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8_generic_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8_hungarian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,7 +62,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8_generic_ci */;
+/*!40101 SET character_set_client = utf8_hungarian_ci */;
 CREATE TABLE `Permissions` (
   `fileId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE `Permissions` (
   KEY `Permissions_Users_id_fk` (`userId`),
   CONSTRAINT `Permissions_Files_id_fk` FOREIGN KEY (`fileId`) REFERENCES `Files` (`id`),
   CONSTRAINT `Permissions_Users_id_fk` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8_generic_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8_hungarian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -88,20 +88,23 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8_generic_ci */;
+/*!40101 SET character_set_client = utf8_hungarian_ci */;
 CREATE TABLE `Transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
+  `firstname` varchar(45) DEFAULT NULL,
+  `lastname` varchar(45) DEFAULT NULL,
   `zip` varchar(45) NOT NULL,
   `city` varchar(45) NOT NULL,
   `address1` varchar(45) NOT NULL,
   `address2` varchar(45) DEFAULT NULL,
   `phone` varchar(45) NOT NULL,
   `bought` varchar(45) NOT NULL,
+  `boughtDate` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `userId_Users.id_idx` (`userId`),
   CONSTRAINT `userId_Users.id` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8_generic_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8_hungarian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,7 +122,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8_generic_ci */;
+/*!40101 SET character_set_client = utf8_hungarian_ci */;
 CREATE TABLE `Users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(30) NOT NULL,
@@ -137,7 +140,7 @@ CREATE TABLE `Users` (
   UNIQUE KEY `Users_username_uindex` (`username`),
   UNIQUE KEY `Users_email_uindex` (`email`),
   KEY `userhomeid_idx` (`userhomeid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8_generic_ci COLLATE=utf8_generic_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8_hungarian_ci COLLATE=utf8_hungarian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
