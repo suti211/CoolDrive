@@ -134,14 +134,8 @@ export class FilesComponent implements OnInit {
     }
   }
 
-  download(file: File){
-    console.log("asd")
-    let tokenID = localStorage.getItem(localStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(file.id);
-
-    let downloadFileOperation;
-    downloadFileOperation = this.fileService.downloadFile(newToken);
+  download(fileId: number) {
+    this.fileService.downloadFile(fileId);
   }
 
   modifyFile(){
