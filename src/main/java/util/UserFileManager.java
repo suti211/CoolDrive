@@ -8,6 +8,7 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -136,7 +137,7 @@ public class UserFileManager {
         rootPath = path;
     }
 
-    public static Response downloadUserFiles(int id) {
+    public static File downloadUserFiles(int id) {
         byte[] bytes = new byte[1024];
         UserFile userFile = userFileController.getUserFile(id);
         File downloadFile = new File(Paths.get(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension()).toString());
@@ -155,9 +156,14 @@ public class UserFileManager {
 //            fileOutputStream.close();
 //        } catch (IOException e) {
 //        }
-        return Response.ok(downloadFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
-                .header("Content-Disposition", "attachment; filename=\"" + downloadFile.getName() + "\"")
-                .build();
+        if (downloadFile != null) {
+            LOG.info("send file to server with this id: {}", id);
+            return downloadFile;
+        } else {
+            LOG.info("file not found or not available with this id: {}", id);
+            return null;
+        }
+
     }
 //    public static Response downloadUserFiles(int[] userFileIds, boolean isFolder) {
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
