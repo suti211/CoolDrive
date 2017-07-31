@@ -40,23 +40,24 @@ public class UserFileManager {
         User user = userController.getUser(token);
         folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-        List<InputPart> inputParts = uploadForm.get("uploadedFile");
+        List<InputPart> inputParts = uploadForm.get("input");
         Map<String, InputStream> streams = new HashMap<>();
-        int fileId = 0;
+        String fileId;
         for (InputPart inputPart : inputParts) {
             try {
                 String fileName = getFileName(inputPart.getHeaders());
+                String extension = fileName.substring(fileName.lastIndexOf("."));
                 InputStream body = inputPart.getBody(new GenericType<>(InputStream.class));
-                fileId = createUserFile(fileName, user, parentId, isFolder, maxSize, body);
+                fileId = createUserFile(fileName, user, parentId, isFolder, maxSize, body) + extension;
                 streams.put(String.valueOf(fileId), body);
             } catch (IOException e) {
                 LOG.error("The save user method was failed due to an exception", e);
             }
         }
-        streams.entrySet().parallelStream().forEach(e -> {
+        streams.entrySet().parallelStream().forEach(map -> {
             try {
-                writeFile(e.getKey(), e.getValue());
-                LOG.info("UserFile is successfully saved from multiPartFormDataInput.File id is: {}", e.getKey());
+                writeFile(map.getKey(), map.getValue());
+                LOG.info("UserFile is successfully saved from multiPartFormDataInput.File id is: {}", map.getKey());
             } catch (IOException e1) {
                 LOG.error("error when reading remote stream upload", e1);
             }
@@ -65,7 +66,7 @@ public class UserFileManager {
 
     private static String getFileName(MultivaluedMap<String, String> header) {
 
-        String[] contentDisPosition = header.getFirst("Content-Dispositon").split(";");
+        String[] contentDisPosition = header.get("Content-Disposition").get(0).split(";");
 
         for (String word : contentDisPosition) {
             if ((word.trim().startsWith("filename"))) {
@@ -98,17 +99,22 @@ public class UserFileManager {
         int content;
         while ((content = inputStream.read(bytes)) > 0) {
             LOG.debug("writing {} bytes to {}", content, filename);
-            fileOutputStream.write(content);
+            fileOutputStream.write(bytes, 0, content);
             fileOutputStream.flush();
         }
         fileOutputStream.close();
+        int fileId = Integer.valueOf(filename.substring(0, filename.lastIndexOf(".")));
+        double size = ((double) file.length()) / 1024;
+        size /= 1024;
+        double fileSize = DoubleConverterUtil.convertDouble(size, 2);
+        userFileController.setFileSize(fileId, fileSize);
     }
 
     public static boolean deleteFile(String path) throws IOException {
         File file = Paths.get(path).toFile();
         if (file.exists()) {
             Files.delete(file.toPath());
-            LOG.info("File deleting is succesfully done path: {}", path);
+            LOG.info("File deleting is successfully done path: {}", path);
             return true;
         }
         LOG.debug("File/Folder with this path : {} does not exist or is not reachable", path);
@@ -117,12 +123,14 @@ public class UserFileManager {
 
     private static int createUserFile(String fileName, User user, int parentId, boolean isFolder, double maxSize, InputStream inputStream) throws IOException {
         Path path = Paths.get(rootPath.toString(), folderName);
-        double size = (inputStream.available() / 1024) / 1024;
-        String extension = "folder";
-        if (!isFolder) extension = fileName.substring(fileName.lastIndexOf("."));
-        UserFile userFile = new UserFile(path.toString(), size, fileName, extension, isFolder, user.getId(), parentId);
-        userFileController.addNewUserFile(userFile);
-        return userFileController.checkUserFile(userFile);
+        String extension = "dir";
+        String name = fileName;
+        if (!isFolder) {
+            extension = fileName.substring(fileName.lastIndexOf("."));
+            name = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+        UserFile userFile = new UserFile(path.toString(), 0, name, extension, isFolder, user.getId(), parentId);
+        return userFileController.addNewUserFile(userFile);
     }
 
     public static void setrootPath(Path path) {

@@ -7,11 +7,13 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
+import util.DoubleConverterUtil;
 import util.UserFileManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -36,8 +38,18 @@ public class UserFileService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/deleteFile")
-    public boolean deleteUserFile(Token token, @Context HttpServletRequest request) {
-        LOG.info("deleteUserfILE method is called with token:{}, id: {}", token.getToken(), token.getId());
+    public boolean deleteUserFile(Token token, @Context HttpServletRequest request) throws IOException {
+        LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
+        int fileId = getFileId(token, "deleteUserFile");
+        UserFile userFile = userFileController.getUserFile(fileId);
+        UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
+        double fileSize = -DoubleConverterUtil.convertDouble(userFile.getSize(),2);
+        int parentId = userFile.getParentId();
+        userFileController.changeFolderCurrSize(parentId, fileSize);
+        int folderParentId = userFileController.getUserFile(parentId).getParentId();
+        if(folderParentId != 1) {
+            userFileController.changeFolderCurrSize(folderParentId, fileSize);
+        }
         return userFileController.deleteUserFile(token.getId());
     }
 
@@ -52,16 +64,25 @@ public class UserFileService {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/upload")
-    public Status uploadFile(MultipartFormDataInput input, Token token, boolean isFolder, double maxSize, @Context HttpServletRequest request) {
+    public Status uploadFile(MultipartFormDataInput input, @Context HttpServletRequest request) throws IOException {
+        String userToken = input.getParts().get(0).getBodyAsString();
+        int id = Integer.valueOf(input.getParts().get(1).getBodyAsString());
+        Token token = new Token(userToken, id);
         LOG.info("uploadFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
-        String userToken = token.getToken();
-        int size = request.getContentLength();
+        double size = (request.getContentLength() / 1024);
+        size /= 1024;
+        double fileSize = DoubleConverterUtil.convertDouble(size, 2);
         int folderId = getFileId(token, "uploadFile");
-        if(userFileController.checkAvailableSpace(folderId, size)) {
-            UserFileManager.saveUserFile(input, userToken, folderId, isFolder, maxSize);
+        if(userFileController.checkAvailableSpace(folderId, fileSize)) {
+            UserFileManager.saveUserFile(input, token.getToken(), folderId, false, 0);
+            userFileController.changeFolderCurrSize(folderId, fileSize);
+            int parentId = userFileController.getUserFile(folderId).getParentId();
+            if(parentId != 1) {
+                userFileController.changeFolderCurrSize(parentId, fileSize);
+            }
             return new Status(Operation.USERFILE, true, "success");
         } else {
             return new Status(Operation.USERFILE, false, "not enough space");

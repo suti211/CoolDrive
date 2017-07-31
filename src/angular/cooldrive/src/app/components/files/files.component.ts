@@ -74,6 +74,8 @@ export class FilesComponent implements OnInit {
 
 
   openFolder(id: number, name: string) {
+    this.currentFolderId = id;
+
     if (name === "...") {
       this.currentFolderName = "Your files";
     } else {
@@ -84,7 +86,7 @@ export class FilesComponent implements OnInit {
     this.filteredFiles.length = 0;
     let tokenID = localStorage.getItem(localStorage.key(0));
     let newToken = new Token(tokenID);
-    newToken.setID(id);
+    newToken.setID(this.currentFolderId);
 
     let getStorageInfoOperation: Observable<StorageInfo>;
     getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
@@ -153,6 +155,23 @@ export class FilesComponent implements OnInit {
     deleteFileOperation.subscribe((status: Status) => {
       console.log(status.message);
       this.listFiles(this.currentFolderId);
+      this.getStorageInfo();
+    });
+  }
+
+  getStorageInfo(){
+    let tokenID = localStorage.getItem(localStorage.key(0));
+    let newToken = new Token(tokenID);
+    newToken.setID(this.currentFolderId);
+
+    let getStorageInfoOperation: Observable<StorageInfo>;
+    getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
+    getStorageInfoOperation.subscribe((info: StorageInfo) => {
+      this.usage = info.usage;
+      this.quantity = info.quantity;
+      this.percentage = info.usage / info.quantity * 100;
+
+      this.setProgressBarStyle();
     });
   }
 
@@ -161,15 +180,16 @@ export class FilesComponent implements OnInit {
 
     let tokenID = localStorage.getItem(localStorage.key(0));
     let newToken = new Token(tokenID);
-    newToken.setID(222);
+    newToken.setID(this.currentFolderId);
 
     let uploadFileOperation: Observable<Status>;
     uploadFileOperation = this.fileService.uploadFile(newToken, this.uploadedFilesList[0]);
     uploadFileOperation.subscribe((status: Status) => {
       console.log(status.message);
+      this.getStorageInfo()
+      this.listFiles(this.currentFolderId);
     });
 
-    this.listFiles(this.currentFolderId);
   }
 
   listUploadedFiles() {

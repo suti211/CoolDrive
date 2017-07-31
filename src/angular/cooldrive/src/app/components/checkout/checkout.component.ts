@@ -18,6 +18,7 @@ export class CheckoutComponent implements OnInit{
     orderFetch: Observable<Transaction>;
     order: Transaction;
     token: Token;
+    loaded: boolean = false;
 
     constructor(private route: ActivatedRoute, private checkoutService: CheckoutService){
 
@@ -34,6 +35,7 @@ export class CheckoutComponent implements OnInit{
             this.orderFetch.subscribe((transaction : Transaction) => {
                 this.order = new Transaction(localStorage.getItem(localStorage.key(0)), transaction.firstName, transaction.lastName, transaction.zip, transaction.city, transaction.address1, transaction.phone, transaction.bought);
                 console.log(this.order);
+                this.loaded = true;
         });
     }
 

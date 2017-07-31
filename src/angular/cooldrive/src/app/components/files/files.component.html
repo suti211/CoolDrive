@@ -27,7 +27,7 @@
     <tr *ngFor="let file of filteredFiles">
       <td>
         <div *ngIf="file.folder == false"><span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
-        <div *ngIf="file.folder == true" (dblclick)="openFolder(file.id, file.fileName)"><span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
+        <div style="cursor: pointer" *ngIf="file.folder == true" (dblclick)="openFolder(file.id, file.fileName)"><span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
       </td>
       <td>{{file.extension}}</td>
       <td>
@@ -43,11 +43,8 @@
             More
           </button>
           <div id="floatingButtonDropdown" class="dropdown-menu">
-            <a class="dropdown-item" (click)="deleteFile(file.id)">Delete</a>
-            <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a>
+            <a class="dropdown-item" style="cursor: pointer" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
+            <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red; cursor: pointer">Delete</a>
           </div>
         </div>
       </td>
@@ -66,10 +63,6 @@
     </button>
     <div id="floatingButtonDropdown" class="dropdown-menu">
       <a class="dropdown-item" href="" data-toggle="modal" data-target="#uploadModal">Upload</a>
-      <a class="dropdown-item" href="#">Another action</a>
-      <a class="dropdown-item" href="#">Something else here</a>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="#">Separated link</a>
     </div>
   </div>
 
@@ -117,7 +110,7 @@
           <div class="modal-body">
             <input id="uploadedFiles" type="file" formenctype="multipart/form-data" multiple (change)="listUploadedFiles()"><br>
             <div *ngFor="let file of uploadedFilesList">
-              {{file.name}} : {{file.size/1024000 | number:0 }} MB
+              {{file.name}} : {{(file.size/1024)/1024 | number:0 }} MB
             </div>
           </div>
           <div class="modal-footer">

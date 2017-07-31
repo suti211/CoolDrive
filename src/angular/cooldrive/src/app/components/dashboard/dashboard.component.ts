@@ -36,10 +36,10 @@ export class DashboardComponent implements OnInit {
     this.logoutOperation.subscribe((status: Status) => {
       console.log(status);
       if(status.success){
-        localStorage.clear();
-        this.router.navigate(['login']);
+        setTimeout(this.router.navigate(['login']), 2000);
       }
     });
+    localStorage.clear();
   }
 
   storage(){

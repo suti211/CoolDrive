@@ -94,7 +94,7 @@ export class RegisterComponent {
         this.addAlertMsg('Registration is complete!');
         this.addAlertMsg('You will be redirected in a moment...');
         this.setAlert('success');
-        this.router.navigate(['login']);
+        setTimeout(() => this.router.navigate(['login']), 2000);
       }else {
         this.addAlertMsg('Registration failed!');
         this.addAlertMsg(status.message);

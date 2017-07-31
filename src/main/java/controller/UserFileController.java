@@ -32,10 +32,10 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                LOG.info("File(filename: {}, path: {}) found with this id: {}", rs.getString("filename"), rs.getString("filename"), id);
+                LOG.info("File(filename: {}, path: {}) found with this id: {}", rs.getString("filename"), rs.getString("path"), id);
                 return new UserFile(
                         rs.getInt("id"),
-                        rs.getString("filename"),
+                        rs.getString("path"),
                         rs.getDouble("size"),
                         sdf.format(rs.getTimestamp("uploadDate")),
                         rs.getString("filename"),
@@ -107,8 +107,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
     public boolean changeFolderCurrSize(int id, double size) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement(
-                    "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
+             ps = con.prepareStatement(
+                     "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
             ps.setDouble(1, size);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
@@ -190,14 +190,14 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return 0;
     }
 
-    public boolean checkAvailableSpace(int id, int fileSize) {
+    public boolean checkAvailableSpace(int id, double fileSize) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SELECT `size` FROM Files WHERE id = ?");
+            ps = con.prepareStatement("SELECT `size`, maxSize FROM Files WHERE id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
-                if(rs.getInt("size") > fileSize) {
+                if((rs.getDouble("maxSize") - rs.getDouble("size")) > fileSize) {
                     return true;
                 } else {
                     return false;
@@ -206,6 +206,25 @@ public class UserFileController extends DatabaseController implements UserFileDa
         } catch (SQLException e) {
             LOG.error("checkAvailableSpace is failed with Exception", e);
         }
+        return false;
+    }
+
+    public boolean setFileSize(int id, double fileSize) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement(
+                    "UPDATE Files SET `size` = ? WHERE id = ?");
+            ps.setDouble(1, fileSize);
+            ps.setInt(2, id);
+            int success = ps.executeUpdate();
+            if (success > 0) {
+                LOG.info("setFileSize(size: {}) is successfully modified with this id: {}", fileSize, id);
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("setFileSize is failed with Exception", e);
+        }
+        LOG.debug("File not found with this id: {} in setFileSize method", id);
         return false;
     }
 }
