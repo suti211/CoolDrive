@@ -67,7 +67,7 @@ local.properties
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
-src/main/java/util/PathUtil.java
+/src/main/java/util/PathUtil.java
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
