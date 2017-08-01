@@ -210,4 +210,3 @@ testem.log
 .DS_Store
 
 # End of https://www.gitignore.io/api/java,maven,jboss,eclipse,intellij+iml
-src/main/java/util/PathUtil\.java
