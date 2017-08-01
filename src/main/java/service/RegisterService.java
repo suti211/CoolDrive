@@ -17,6 +17,7 @@ import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
+import util.EmailSenderUtil;
 import util.PathUtil;
 import util.UserFileManager;
 
@@ -42,6 +43,7 @@ public class RegisterService {
 			if(userController.setHomeId(userId, userHomeId)){
 				UserFileManager.saveFolder(input.getUserName());
 				userController.setToken(input.getUserName());
+				EmailSenderUtil.sendEmail(input, userController.getUserbyemail(input.getEmail()).getToken());
 				return new Status(Operation.REGISTER, true, "User successfully registered!");
 			} else {
 				return new Status(Operation.REGISTER, false, "Failed to add user to DB!");
