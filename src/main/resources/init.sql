@@ -139,7 +139,8 @@ CREATE TABLE `Users` (
   UNIQUE KEY `Users_id_uindex` (`id`),
   UNIQUE KEY `Users_username_uindex` (`username`),
   UNIQUE KEY `Users_email_uindex` (`email`),
-  KEY `userhomeid_idx` (`userhomeid`)
+  KEY `userhomeid_idx` (`userhomeid`),
+  CONSTRAINT `userhomeid_file_id_fk` FOREIGN KEY (`userhomeid`) REFERENCES `files` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8_unicode_ci COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
