@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Path("/files")
 public class UserFileService {
-    private static final Logger LOG = LoggerFactory.getLogger(RegisterService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserFileService.class);
     private static final UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
     private static final UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
 

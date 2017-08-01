@@ -23,16 +23,15 @@ import util.UserFileManager;
 @Path("/register")
 public class RegisterService {
 	private static final Logger LOG = LoggerFactory.getLogger(RegisterService.class);
+	private static final UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
+	private static final UserFileController ufc = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Status getUser(User input,@Context HttpServletRequest request) {
 		LOG.info("RegisterService post method is called with username: {}, from: {}",input.getUserName(),request.getRemoteAddr());
-		
-		UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-		UserFileController ufc = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
-		
+
 		int userID = userController.checkUser(input.getUserName(), input.getPass());
 		
 		if(userID == -1){
@@ -42,6 +41,7 @@ public class RegisterService {
 			int userHomeId = ufc.addNewUserFile(new UserFile(PathUtil.ROOT_PATH, 0, input.getUserName(), "dir", startQuantity, true, userId, parentId));
 			if(userController.setHomeId(userId, userHomeId)){
 				UserFileManager.saveFolder(input.getUserName());
+				userController.setToken(input.getUserName());
 				return new Status(Operation.REGISTER, true, "User successfully registered!");
 			} else {
 				return new Status(Operation.REGISTER, false, "Failed to add user to DB!");
@@ -49,12 +49,5 @@ public class RegisterService {
 		} else {
 			return new Status(Operation.REGISTER, false, "User already Exists!");
 		}
-		
 	}
-
-//	@GET
-//	public String test() {
-//		return "<h1>aha</h1>";
-//	}
-
 }
