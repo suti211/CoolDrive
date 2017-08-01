@@ -83,9 +83,9 @@ public class UserFileService {
             if (parentId != 1) {
                 userFileController.changeFolderCurrSize(parentId, size);
             }
-            return new Status(Operation.USERFILE, true, "success");
+            return new Status(Operation.USERFILE, true, "File upload was successful!");
         } else {
-            return new Status(Operation.USERFILE, false, "not enough space");
+            return new Status(Operation.USERFILE, false, "Not enough space for this file in this folder!");
         }
     }
 
