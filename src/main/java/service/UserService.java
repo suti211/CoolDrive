@@ -7,7 +7,6 @@ import dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -28,7 +27,7 @@ public class UserService {
     public Status verifyUser(@Context HttpServletRequest request) {
         String email = request.getParameter("email");
         String token = request.getParameter("token");
-        User user = userController.getToken(email);
+        User user = userController.getUserbyemail(email);
         if (!user.isValidated()) {
             if (user.getToken().equalsIgnoreCase(token)) {
                 userController.deleteToken(user.getUserName());
