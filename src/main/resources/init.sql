@@ -1,4 +1,4 @@
-CREATE DATABASE  IF NOT EXISTS `CoolDrive` /*!40100 DEFAULT CHARACTER SET utf8_generic_ci */;
+CREATE DATABASE  IF NOT EXISTS `CoolDrive`;
 USE `CoolDrive`;
 -- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
@@ -9,7 +9,7 @@ USE `CoolDrive`;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8_unicode_ci */;
+/*!40101 SET NAMES 'utf8' */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -23,7 +23,7 @@ USE `CoolDrive`;
 
 DROP TABLE IF EXISTS `Files`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8_unicode_ci */;
+/*!40101 SET character_set_client = 'utf8' */;
 CREATE TABLE `Files` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `path` varchar(210) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE `Files` (
   KEY `Files_Files_id_fk` (`parentId`),
   CONSTRAINT `Files_Files_id_fk` FOREIGN KEY (`parentId`) REFERENCES `Files` (`id`),
   CONSTRAINT `Files_Users_id_fk` FOREIGN KEY (`ownerId`) REFERENCES `Users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,7 +62,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8_unicode_ci */;
+/*!40101 SET character_set_client = 'utf8' */;
 CREATE TABLE `Permissions` (
   `fileId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE `Permissions` (
   KEY `Permissions_Users_id_fk` (`userId`),
   CONSTRAINT `Permissions_Files_id_fk` FOREIGN KEY (`fileId`) REFERENCES `Files` (`id`),
   CONSTRAINT `Permissions_Users_id_fk` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -88,7 +88,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8_unicode_ci */;
+/*!40101 SET character_set_client = 'utf8' */;
 CREATE TABLE `Transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE `Transactions` (
   PRIMARY KEY (`id`),
   KEY `userId_Users.id_idx` (`userId`),
   CONSTRAINT `userId_Users.id` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8_unicode_ci */;
+/*!40101 SET character_set_client = 'utf8' */;
 CREATE TABLE `Users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(30) NOT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE `Users` (
   UNIQUE KEY `Users_email_uindex` (`email`),
   KEY `userhomeid_idx` (`userhomeid`),
   CONSTRAINT `userhomeid_file_id_fk` FOREIGN KEY (`userhomeid`) REFERENCES `files` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8_unicode_ci COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-27 22:28:00
+-- Dump completed on 2017-08-01 14:57:00
