@@ -141,8 +141,9 @@ public class UserFileService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/createFolder")
-    public Status createFolder(Token token, Folder folder, @Context HttpServletRequest request) {
+    public Status createFolder(Folder folder, @Context HttpServletRequest request) {
         LOG.info("createFolder method is called with id: {}, from: {}", request.getRemoteAddr());
+        Token token = new Token(folder.getToken(), -1);
         int parentId = getFileId(token, "createFolder");
         User user = userController.getUser(token.getToken());
         UserFile userFile = userFileController.getUserFile(parentId);
