@@ -98,6 +98,13 @@ public class UserFileService {
     @Path("/modify")
     public Status modifyFile(UserFile userFile, @Context HttpServletRequest request) {
         LOG.info("modifyFile method is called with id: {}, from: {}", userFile.getId(), request.getRemoteAddr());
+        if(userFile.isFolder() && !userFileController.checkAvailableSpace(userFile.getParentId(), userFile.getMaxSize())) {
+            LOG.info("modifyFile method is failed with id: {} because of not enough space", userFile.getId());
+            return new Status(Operation.USERFILE, false, "Not enough space on the parent folder!");
+        } else if(userFile.getMaxSize() < userFile.getSize()) {
+            LOG.info("modifyFile method is failed with id: {} because of wrong maxSize", userFile.getId());
+            return new Status(Operation.USERFILE, false, "Max size cannot be lower than current size!");
+        }
         if (userFileController.modifyUserFile(userFile)) {
             LOG.info("modifyFile method is succeeded with id: {}", userFile.getId());
             return new Status(Operation.USERFILE, true, "Modification was successful!");
