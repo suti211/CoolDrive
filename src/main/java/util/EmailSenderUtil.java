@@ -38,7 +38,7 @@ public class EmailSenderUtil {
             String text = String.format("Dear %s,\nThank you for registration for CoolDrive!\n" +
                     "Your account informations:\n" +
                     "------------------------------\nUsername: %s\nStarting quantity: 50 MB\n" +
-                    "------------------------------\nFor start use our services please verify your account with this link:\n" +
+                    "------------------------------\nFor start to use our services please verify your account with this link:\n" +
                     "%s\n\n\nCodecool CoolDrive ©", user.getFirstName() + " " + user.getLastName(), user.getUserName(), regURL);
             message.setText(text);
             Transport.send(message);
