@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
 import util.UserFileManager;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -133,6 +134,31 @@ public class UserFileService {
         } else {
             LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
             return null;
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/createFolder")
+    public Status createFolder(Token token, Folder folder, @Context HttpServletRequest request) {
+        LOG.info("createFolder method is called with id: {}, from: {}", request.getRemoteAddr());
+        int parentId = getFileId(token, "createFolder");
+        User user = userController.getUser(token.getToken());
+        UserFile userFile = userFileController.getUserFile(parentId);
+        String path = userFile.getPath() + "\\" + userFile.getFileName();
+        if (userFileController.checkAvailableSpace(parentId, folder.getMaxSize())) {
+            int id = userFileController.addNewUserFile(new UserFile(path, 0, folder.getFileName(), "dir", true, user.getId(), parentId));
+            if (id > 0) {
+                LOG.info("Folder added to this path: {} with this id: {}", path, id);
+                return new Status(Operation.CREATEFOLDER, true, "Folder successfully created!");
+            } else {
+                LOG.info("Folder failed to this path: {} with this id: {}", path, id);
+                return new Status(Operation.CREATEFOLDER, false, "Folder creation is failed!");
+            }
+        } else {
+            LOG.info("User({}) not enough space in this path: {}", user.getUserName(), path);
+            return new Status(Operation.CREATEFOLDER, false, "Not enough space for this folder!");
         }
     }
 }
