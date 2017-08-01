@@ -8,7 +8,7 @@ import 'rxjs/add/operator/catch'
 
 @Injectable()
 export class LogoutService {
-  logoutUrl = "http://localhost:8080/CoolDrive/logout";
+  logoutUrl = "http://localhost:8080/CoolDrive/logout/user";
 
   constructor(private http: Http) {
 
