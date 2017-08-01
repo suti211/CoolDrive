@@ -32,12 +32,12 @@ public class UserService {
             if (user.getToken().equalsIgnoreCase(token)) {
                 userController.deleteToken(user.getUserName());
                 userController.changeValidation(user.getId(), true);
-                return new Status(Operation.VERIFICATION, true, "User is now validated!");
+                return new Status(Operation.VERIFICATION, true, email + " is now validated!");
             } else {
                 return new Status(Operation.VERIFICATION, false, "Invalid token or email!");
             }
         } else {
-            return new Status(Operation.VERIFICATION, false, "User already validated!");
+            return new Status(Operation.VERIFICATION, false, email +" is already validated!");
         }
     }
 }
