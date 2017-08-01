@@ -7,11 +7,19 @@ public class Folder {
     private String fileName;
     private double maxSize;
     private String label;
+    private String token;
 
-    public Folder(String fileName, double maxSize, String label) {
+    public Folder(String fileName, double maxSize, String label, String token) {
         this.fileName = fileName;
         this.maxSize = maxSize;
         this.label = label;
+        this.token = token;
+    }
+
+    public Folder(String fileName, double maxSize, String token) {
+        this.fileName = fileName;
+        this.maxSize = maxSize;
+        this.token = token;
     }
 
     public Folder() {
@@ -39,5 +47,13 @@ public class Folder {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
