@@ -8,6 +8,7 @@ import util.ConnectionUtil;
 import util.TokenGenerator;
 
 import java.sql.*;
+import java.util.Map;
 
 /**
  * Created by David Szilagyi on 2017. 07. 10..
@@ -74,6 +75,35 @@ public class UserController extends DatabaseController implements UserDao {
             LOG.error("getUser(token) if failed with Exception", e);
         }
         LOG.debug("User not found with this token: {} in getUser(token) method", token);
+        return null;
+    }
+
+    public User getUserbyemail(String email) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("SELECT * FROM Users WHERE email = ?");
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                LOG.info("Found user with this email: {} ", email);
+                return new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("pass"),
+                        rs.getString("email"),
+                        rs.getBoolean("validated"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getBoolean("admin"),
+                        rs.getString("token"),
+                        rs.getDate("registerdate"),
+                        rs.getInt("userhomeid")
+                );
+            }
+        } catch (SQLException e) {
+            LOG.error("getVerificationif failed with Exception", e);
+        }
+        LOG.debug("User not found with this email: {} in getVerification method", email);
         return null;
     }
 

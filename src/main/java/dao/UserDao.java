@@ -10,6 +10,8 @@ public interface UserDao {
 
     User getUser(String token);
 
+    User getUserbyemail(String email);
+
     int registerUser(User user);
 
     boolean deleteUser(int id);
