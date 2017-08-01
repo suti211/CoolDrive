@@ -78,7 +78,7 @@ public class UserController extends DatabaseController implements UserDao {
         return null;
     }
 
-    public User getToken(String email) {
+    public User getUserbyemail(String email) {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement("SELECT * FROM Users WHERE email = ?");
