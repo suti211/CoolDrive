@@ -19,6 +19,10 @@ export class FilesComponent implements OnInit {
   selectedFile: File = new File(-1, "", 0, "", "", "", 0, true, 0, 0, "");
 
   infoPanelDisplayed: boolean;
+  infoPanelText: string;
+
+  uploadInfoPanelDisplayed: boolean;
+  uploadInfoPanelText: string;
 
   test: any;
 
@@ -39,6 +43,20 @@ export class FilesComponent implements OnInit {
     this.filteredFiles = fileService.getFilteredFilesArray();
     this.infoPanelDisplayed = false;
   }
+
+  setInfoPanelDisplay(text: string, show: boolean) {
+    this.infoPanelDisplayed = show;
+    this.infoPanelText = text;
+    setTimeout(() => this.infoPanelDisplayed = false, 5000);
+  }
+
+  setUploadInfoPanelDisplay(text: string, show: boolean) {
+    this.uploadInfoPanelDisplayed = show;
+    this.uploadInfoPanelText = text;
+    setTimeout(() => this.uploadInfoPanelDisplayed = false, 5000);
+  }
+
+
 
   filterFiles(filt: string) {
     let filter = filt.toLowerCase();
@@ -189,7 +207,12 @@ export class FilesComponent implements OnInit {
     let uploadFileOperation: Observable<Status>;
     uploadFileOperation = this.fileService.uploadFile(newToken, this.uploadedFilesList[0]);
     uploadFileOperation.subscribe((status: Status) => {
-      console.log(status.message);
+      if(status.success){
+        this.setInfoPanelDisplay(status.message,true);
+        document.getElementById("uploadCloseButton").click();
+      }else{
+        this.setUploadInfoPanelDisplay(status.message,true);
+      }
       this.getStorageInfo()
       this.listFiles(this.currentFolderId);
     });

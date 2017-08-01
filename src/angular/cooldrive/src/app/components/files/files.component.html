@@ -6,8 +6,8 @@
   </div>
 </h1>
 
-<div *ngIf="infoPanelDisplayed" id="filesInfo" ngStyle="" class="alert alert-success" role="alert">
-  <strong>Well done!</strong> You successfully read this important alert message.
+<div *ngIf="infoPanelDisplayed" id="filesInfo" class="alert alert-success" role="alert">
+  {{infoPanelText}}
 </div>
 
 <div class="table-responsive">
@@ -108,15 +108,18 @@
         <div class="modal-header">
           <h4 class="modal-title" id="uploadModalButton">Upload</h4>
         </div>
-        <form action="http://localhost:8080/CoolDrive/files/upload">
+        <form>
           <div class="modal-body">
-            <input id="uploadedFiles" type="file" formenctype="multipart/form-data" multiple (change)="listUploadedFiles()"><br>
+            <div *ngIf="uploadInfoPanelDisplayed" id="filesUploadInfo" class="alert alert-danger" role="alert">
+              {{uploadInfoPanelText}}
+            </div>
+            <input id="uploadedFiles" type="file" formenctype="multipart/form-data" (change)="listUploadedFiles()"><br>
             <div *ngFor="let file of uploadedFilesList">
               {{file.name}} : {{(file.size/1024)/1024 | number:0 }} MB
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button id="uploadCloseButton" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <input type="button" class="btn btn-primary" (click)="uploadFile()" value="Upload">
           </div>
         </form>
