@@ -78,7 +78,7 @@ public class UserController extends DatabaseController implements UserDao {
         return null;
     }
 
-    public String getToken(String email) {
+    public User getToken(String email) {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement("SELECT token FROM Users WHERE email = ?");
@@ -86,7 +86,19 @@ public class UserController extends DatabaseController implements UserDao {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 LOG.info("Found user with this email: {} ", email);
-                return rs.getString("token");
+                return new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("pass"),
+                        rs.getString("email"),
+                        rs.getBoolean("validated"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getBoolean("admin"),
+                        rs.getString("token"),
+                        rs.getDate("registerdate"),
+                        rs.getInt("userhomeid")
+                );
             }
         } catch (SQLException e) {
             LOG.error("getVerificationif failed with Exception", e);
