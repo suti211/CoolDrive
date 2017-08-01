@@ -1,9 +1,9 @@
 export class Status {
-    operation: String;
+    operation: string;
     success: boolean;
-    message: String;
+    message: string;
 
-    constructor( operation: String, success: boolean, message: String){
+    constructor( operation: string, success: boolean, message: string){
         this.operation = operation;
         this.success = success;
         this.message = message;
