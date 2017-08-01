@@ -134,6 +134,10 @@ export class FilesComponent implements OnInit {
     }
   }
 
+  download(fileId: number) {
+    this.fileService.downloadFile(fileId);
+  }
+
   modifyFile(){
     const modifiedFile = this.selectedFile;
 

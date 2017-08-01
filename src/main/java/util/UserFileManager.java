@@ -106,8 +106,7 @@ public class UserFileManager {
         int fileId = Integer.valueOf(filename.substring(0, filename.lastIndexOf(".")));
         double size = ((double) file.length()) / 1024;
         size /= 1024;
-        double fileSize = DoubleConverterUtil.convertDouble(size, 2);
-        userFileController.setFileSize(fileId, fileSize);
+        userFileController.setFileSize(fileId, size);
     }
 
     public static boolean deleteFile(String path) throws IOException {
@@ -137,41 +136,68 @@ public class UserFileManager {
         rootPath = path;
     }
 
-
-    public static Response downloadUserFiles(int[] userFileIds, boolean isFolder) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String filename = "arcive" + LocalDateTime.now().format(formatter) + ".zip";
+    public static File downloadUserFiles(int id) {
         byte[] bytes = new byte[1024];
-        String[] userFilePaths = getPathFromUserFiles(userFileIds);
-        Path path = Paths.get(tempPath.toString(), filename);
-        File tempFile = null;
-        if (userFilePaths.length == 1) {
-            tempFile = new File(userFilePaths[0]);
+        UserFile userFile = userFileController.getUserFile(id);
+        File downloadFile = new File(Paths.get(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension()).toString());
+//        Path temppath = Paths.get(tempPath + "\\" + userFile.getId() + userFile.getExtension());
+//        File tempFile = null;
+//        try {
+//            FileOutputStream fileOutputStream = new FileOutputStream(temppath.toString());
+//            tempFile = new File(temppath.toString());
+//            FileInputStream fileInputStream = new FileInputStream(downloadFile);
+//            int length;
+//            while ((length = fileInputStream.read(bytes)) > 0) {
+//                fileOutputStream.write(bytes, 0, length);
+//                fileOutputStream.flush();
+//            }
+//            fileInputStream.close();
+//            fileOutputStream.close();
+//        } catch (IOException e) {
+//        }
+        if (downloadFile != null) {
+            LOG.info("send file to server with this id: {}", id);
+            return downloadFile;
         } else {
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(path.toString());
-                ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
-                tempFile = new File(path.toString());
-                for (int i = 0; i < userFilePaths.length; i++) {
-                    tempFile = new File(userFilePaths[i]);
-                    FileInputStream fileInputStream = new FileInputStream(tempFile);
-                    zipOutputStream.putNextEntry(new ZipEntry(tempFile.getName()));
-                    int length;
-                    while ((length = fileInputStream.read(bytes)) > 0) {
-                        zipOutputStream.write(bytes, 0, length);
-                    }
-                    zipOutputStream.closeEntry();
-                    fileInputStream.close();
-                }
-                zipOutputStream.close();
-            } catch (IOException e) {
-
-            }
+            LOG.info("file not found or not available with this id: {}", id);
+            return null;
         }
-        return Response.ok(tempFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
-                .header("Content-Disposition", "attachment; filename=\"" + tempFile.getName() + "\"")
-                .build();
+
     }
+//    public static Response downloadUserFiles(int[] userFileIds, boolean isFolder) {
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+//        String filename = "arcive" + LocalDateTime.now().format(formatter) + ".zip";
+//        byte[] bytes = new byte[1024];
+//        String[] userFilePaths = getPathFromUserFiles(userFileIds);
+//        Path path = Paths.get(tempPath.toString(), filename);
+//        File tempFile = null;
+//        if (userFilePaths.length == 1) {
+//            tempFile = new File(userFilePaths[0]);
+//        } else {
+//            try {
+//                FileOutputStream fileOutputStream = new FileOutputStream(path.toString());
+//                ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+//                tempFile = new File(path.toString());
+//                for (int i = 0; i < userFilePaths.length; i++) {
+//                    tempFile = new File(userFilePaths[i]);
+//                    FileInputStream fileInputStream = new FileInputStream(tempFile);
+//                    zipOutputStream.putNextEntry(new ZipEntry(tempFile.getName()));
+//                    int length;
+//                    while ((length = fileInputStream.read(bytes)) > 0) {
+//                        zipOutputStream.write(bytes, 0, length);
+//                    }
+//                    zipOutputStream.closeEntry();
+//                    fileInputStream.close();
+//                }
+//                zipOutputStream.close();
+//            } catch (IOException e) {
+//
+//            }
+//        }
+//        return Response.ok(tempFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+//                .header("Content-Disposition", "attachment; filename=\"" + tempFile.getName() + "\"")
+//                .build();
+//    }
 
     private static String[] getPathFromUserFiles(int[] userFileIds) {
         String[] result = new String[userFileIds.length];
