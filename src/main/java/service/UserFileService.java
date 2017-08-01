@@ -83,8 +83,10 @@ public class UserFileService {
             if (parentId != 1) {
                 userFileController.changeFolderCurrSize(parentId, size);
             }
+            LOG.info("uploadFile method is succeeded with id: {}", id);
             return new Status(Operation.USERFILE, true, "File upload was successful!");
         } else {
+            LOG.info("uploadFile method is failed with id: {}", id);
             return new Status(Operation.USERFILE, false, "Not enough space for this file in this folder!");
         }
     }
@@ -97,10 +99,10 @@ public class UserFileService {
         LOG.info("modifyFile method is called with id: {}, from: {}", userFile.getId(), request.getRemoteAddr());
         if (userFileController.modifyUserFile(userFile)) {
             LOG.info("modifyFile method is succeeded with id: {}", userFile.getId());
-            return new Status(Operation.USERFILE, true, "success");
+            return new Status(Operation.USERFILE, true, "Modification was successful!");
         }
         LOG.debug("modifyFile method is failed with id: {}", userFile.getId());
-        return new Status(Operation.USERFILE, false, "failed");
+        return new Status(Operation.USERFILE, false, "There was an error on modification!");
     }
 
     private int getFileId(Token token, String methodName) {
