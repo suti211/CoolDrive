@@ -138,21 +138,21 @@
           <div *ngIf="false" id="createFolderInfo" class="alert alert-success" role="alert">
           </div>
           <div class="input-group">
-            <span class="input-group-addon createFolderModal">Folder name</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.fileName">
+            <span class="input-group-addon createFolderModal">Folder name*</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" (change)="enableCreateFolderBtn()" [(ngModel)]="newFolderName">
           </div>
           <div class="input-group">
             <span class="input-group-addon createFolderModal">Label</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.label">
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderLabel">
           </div>
           <div class="input-group">
-            <span class="input-group-addon createFolderModal">Max size</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.maxSize">
+            <span class="input-group-addon createFolderModal">Max size*</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" (change)="enableCreateFolderBtn()" [(ngModel)]="newFolderMaxSize">
           </div>
         </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input id="createFolderButton" type="button" class="btn btn-primary" (click)="uploadFile()" value="Create">
+            <input id="createFolderButton" type="button" class="btn btn-primary" (click)="createFolder()" value="Create">
           </div>
       </div>
     </div>
