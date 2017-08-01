@@ -101,7 +101,7 @@ public class UserFileService {
         if(userFile.isFolder() && !userFileController.checkAvailableSpace(userFile.getParentId(), userFile.getMaxSize())) {
             LOG.info("modifyFile method is failed with id: {} because of not enough space", userFile.getId());
             return new Status(Operation.USERFILE, false, "Not enough space on the parent folder!");
-        } else if(userFile.getMaxSize() < userFile.getSize()) {
+        } else if(userFile.isFolder() && userFile.getMaxSize() < userFile.getSize()) {
             LOG.info("modifyFile method is failed with id: {} because of wrong maxSize", userFile.getId());
             return new Status(Operation.USERFILE, false, "Max size cannot be lower than current size!");
         }
