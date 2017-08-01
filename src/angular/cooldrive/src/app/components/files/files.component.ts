@@ -24,8 +24,6 @@ export class FilesComponent implements OnInit {
   uploadInfoPanelDisplayed: boolean;
   uploadInfoPanelText: string;
 
-  test: any;
-
   usage: number;
   quantity: number;
   percentage: number;

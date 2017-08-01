@@ -132,14 +132,27 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title" id="uploadModalButton">Create folder</h4>
+          <h4 class="modal-title">Create folder</h4>
         </div>
-          <div class="modal-body">
-
+        <div class="modal-body">
+          <div *ngIf="false" id="createFolderInfo" class="alert alert-success" role="alert">
           </div>
+          <div class="input-group">
+            <span class="input-group-addon createFolderModal">Folder name</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.fileName">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon createFolderModal">Label</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.label">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon createFolderModal">Max size</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.maxSize">
+          </div>
+        </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input type="button" class="btn btn-primary" (click)="uploadFile()" value="Upload">
+            <input id="createFolderButton" type="button" class="btn btn-primary" (click)="uploadFile()" value="Create">
           </div>
       </div>
     </div>
