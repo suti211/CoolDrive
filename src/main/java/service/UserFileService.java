@@ -141,14 +141,15 @@ public class UserFileService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/createFolder")
-    public Status createFolder(Token token, Folder folder, @Context HttpServletRequest request) {
+    public Status createFolder(Folder folder, @Context HttpServletRequest request) {
         LOG.info("createFolder method is called with id: {}, from: {}", request.getRemoteAddr());
+        Token token = new Token(folder.getToken(), -1);
         int parentId = getFileId(token, "createFolder");
         User user = userController.getUser(token.getToken());
         UserFile userFile = userFileController.getUserFile(parentId);
         String path = userFile.getPath() + "\\" + userFile.getFileName();
         if (userFileController.checkAvailableSpace(parentId, folder.getMaxSize())) {
-            int id = userFileController.addNewUserFile(new UserFile(path, 0, folder.getFileName(), "dir", true, user.getId(), parentId));
+            int id = userFileController.addNewUserFile(new UserFile(path, 0, folder.getName(), "dir", folder.getMaxSize(), true, user.getId(), parentId));
             if (id > 0) {
                 LOG.info("Folder added to this path: {} with this id: {}", path, id);
                 return new Status(Operation.CREATEFOLDER, true, "Folder successfully created!");
