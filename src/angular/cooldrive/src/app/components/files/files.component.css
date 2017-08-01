@@ -18,6 +18,10 @@
   width: 85px;
 }
 
+.input-group-addon.createFolderModal{
+  width: 110px;
+}
+
 .modal-content{
   margin-top: 190px;
 }
