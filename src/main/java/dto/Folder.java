@@ -4,33 +4,41 @@ package dto;
  * Created by David Szilagyi on 2017. 08. 01..
  */
 public class Folder {
-    private String fileName;
+    private String token;
+    private String name;
     private double maxSize;
     private String label;
-    private String token;
 
-    public Folder(String fileName, double maxSize, String label, String token) {
-        this.fileName = fileName;
+    public Folder(String token, String name, double maxSize, String label) {
+        this.token = token;
+        this.name = name;
         this.maxSize = maxSize;
         this.label = label;
-        this.token = token;
     }
 
-    public Folder(String fileName, double maxSize, String token) {
-        this.fileName = fileName;
-        this.maxSize = maxSize;
+    public Folder(String token, String name, double maxSize) {
         this.token = token;
+        this.name = name;
+        this.maxSize = maxSize;
     }
 
     public Folder() {
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getToken() {
+        return token;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getMaxSize() {
@@ -47,13 +55,5 @@ public class Folder {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }
