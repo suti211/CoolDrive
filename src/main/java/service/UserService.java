@@ -27,16 +27,19 @@ public class UserService {
     public Status verifyUser(@Context HttpServletRequest request) {
         String token = request.getParameter("token");
         User user = userController.getUser("token", token);
-        if (!user.isValidated()) {
-            if (user.getToken().equalsIgnoreCase(token)) {
-                userController.deleteToken(user.getUserName());
-                userController.changeValidation(user.getId(), true);
-                return new Status(Operation.VERIFICATION, true, user.getEmail() + " is now validated!");
+        if(user != null) {
+            if (!user.isValidated()) {
+                if (user.getToken().equalsIgnoreCase(token)) {
+                    userController.deleteToken(user.getUserName());
+                    userController.changeValidation(user.getId(), true);
+                    return new Status(Operation.VERIFICATION, true, user.getEmail() + " is now validated!");
+                } else {
+                    return new Status(Operation.VERIFICATION, false, "Invalid token or email!");
+                }
             } else {
-                return new Status(Operation.VERIFICATION, false, "Invalid token or email!");
+                return new Status(Operation.VERIFICATION, false, user.getEmail() + " is already validated!");
             }
-        } else {
-            return new Status(Operation.VERIFICATION, false, user.getEmail() +" is already validated!");
         }
+        return new Status(Operation.VERIFICATION, false, "Invalid token or email!");
     }
 }
