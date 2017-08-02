@@ -1,23 +1,13 @@
 export class File {
-  id: number;
-  fileName: String;
-  extension: String;
-  size: Number;
-  maxSize: Number;
-  uploadDate: string;
-  label: String;
-  folder: boolean;
 
-
-  constructor(id: number, fileName: String, extension: String, size: Number, maxSize: Number, uploadDate: string,
-              label: String, folder: boolean) {
-    this.id = id;
-    this.fileName = fileName;
-    this.extension = extension;
-    this.size = size;
-    this.maxSize = maxSize;
-    this.uploadDate = uploadDate;
-    this.label = label;
-    this.folder = folder;
+  constructor(
+    public id: number,
+    public fileName: String,
+    public extension: String,
+    public size: Number,
+    public maxSize: Number,
+    public uploadDate: string,
+    public label: String,
+    public folder: boolean) {
   }
 }

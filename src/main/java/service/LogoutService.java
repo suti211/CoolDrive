@@ -20,7 +20,7 @@ public class LogoutService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Status deleteUserToken(Token token){
-		UserController userController = new UserController(ConnectionUtil.DatabaseName.cooldrive);
+		UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
 		User user = userController.getUser(token.getToken());
 		
 		boolean tokenRemoved = userController.deleteToken(user.getUserName());
