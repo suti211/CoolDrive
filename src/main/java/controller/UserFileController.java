@@ -227,4 +227,23 @@ public class UserFileController extends DatabaseController implements UserFileDa
         LOG.debug("File not found with this id: {} in setFileSize method", id);
         return false;
     }
+    
+    public boolean increaseFileSize(int homeId, double increment) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement(
+                    "UPDATE Files SET `maxSize`= `maxSize` + ? WHERE id = ?");
+            ps.setDouble(1, increment);
+            ps.setInt(2, homeId);
+            int success = ps.executeUpdate();
+            if (success > 0) {
+                LOG.info("increaseFileSize(increment: {}) is successfully modified with this homeId: {}", increment, homeId);
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("setFileSize is failed with Exception", e);
+        }
+        LOG.debug("File not found with this id: {} in setFileSize method", homeId);
+        return false;
+    }
 }
