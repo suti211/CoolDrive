@@ -84,7 +84,7 @@ export class FilesComponent implements OnInit {
 
     this.files.length = 0;
     this.filteredFiles.length = 0;
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(this.currentFolderId);
 
@@ -146,7 +146,7 @@ export class FilesComponent implements OnInit {
   }
 
   deleteFile(id: number){
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(id);
 
@@ -160,7 +160,7 @@ export class FilesComponent implements OnInit {
   }
 
   getStorageInfo(){
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(this.currentFolderId);
 
@@ -178,7 +178,7 @@ export class FilesComponent implements OnInit {
   uploadFile(){
     this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
 
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(this.currentFolderId);
 
@@ -201,7 +201,7 @@ export class FilesComponent implements OnInit {
     this.files.length = 0;
     this.filteredFiles.length = 0;
 
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(id);
 
@@ -219,7 +219,7 @@ export class FilesComponent implements OnInit {
 
   ngOnInit() {
     //  let tokenID = localStorage.getItem(localStorage.key(0));
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(-1);
 
