@@ -26,7 +26,7 @@ public class RegisterService {
 	public Status getUser(User input,@Context HttpServletRequest request) {
 		LOG.info("RegisterService post method is called with username: {}, from: {}",input.getUserName(),request.getRemoteAddr());
 		
-		UserController userController = new UserController(ConnectionUtil.DatabaseName.cooldrive);
+		UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
 		
 		int userID = userController.checkUser(input.getUserName(), input.getPass());
 		

@@ -110,10 +110,16 @@ public class DbTest {
 
     @Test
     public void deleteUser() throws Exception {
+        userController.changeValidation(0,true);
+        userController.deleteUser(0);
     }
 
     @Test
     public void modifyUser() throws Exception {
+        user.setUserName("changed");
+        userController.modifyUser(0,user);
+        User result = userController.getUser(0);
+        assertEquals(result.getUserName(),"changed");
     }
 
     @Test

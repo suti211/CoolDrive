@@ -20,8 +20,8 @@ import java.util.List;
 @Path("/files")
 public class UserFileService {
     private static final Logger LOG = LoggerFactory.getLogger(RegisterService.class);
-    private static final UserController userController = new UserController(ConnectionUtil.DatabaseName.cooldrive);
-    private static final UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.cooldrive);
+    private static final UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
+    private static final UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

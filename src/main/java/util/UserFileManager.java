@@ -29,8 +29,8 @@ import java.util.zip.ZipOutputStream;
  */
 public class UserFileManager {
     private static final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
-    private static UserController userController = new UserController(ConnectionUtil.DatabaseName.cooldrive);
-    private static UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.cooldrive);
+    private static UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
+    private static UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
     private static String folderName;
     private static Path rootPath;
     private static Path tempPath = Paths.get("d:\\temp");

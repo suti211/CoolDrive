@@ -21,7 +21,7 @@ import util.ConnectionUtil;
 @Path("/login")
 public class LoginService {
 	private static final Logger LOG = LoggerFactory.getLogger(LoginService.class);
-	UserController userController = new UserController(ConnectionUtil.DatabaseName.cooldrive);
+	UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

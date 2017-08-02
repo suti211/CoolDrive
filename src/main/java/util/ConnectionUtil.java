@@ -16,7 +16,7 @@ public final class ConnectionUtil {
     private static final String DATABASE_PASSWORD = "xyxy";
     private static final int DATABASE_PORT = 3306;
     public enum DatabaseName{
-        cooldrive,
+        CoolDrive,
         CoolDrive_Test
     }
 
