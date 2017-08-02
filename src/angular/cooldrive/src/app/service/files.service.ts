@@ -8,6 +8,7 @@ import 'rxjs/add/operator/catch'
 import {StorageInfo} from '../model/storage-info';
 import {Token} from '../model/token.model';
 import {Status} from "../model/status.model";
+import {Folder} from "../model/folder";
 
 @Injectable()
 export class FileService {
@@ -26,14 +27,23 @@ export class FileService {
     return this.filteredFiles;
   }
 
-  deleteFile(token: Token): Observable<Status>{
-    let bodyString = JSON.stringify(token);
-
+  createFolder(folder: Folder): Observable<Status>{
+    console.log(folder);
+    let bodyString = JSON.stringify(folder);
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
-    return this.http.post(this.filesUrl + 'deleteFile', bodyString, options)
+    return this.http.post(this.filesUrl + 'createFolder', bodyString, options)
       .map((res: Response) => res.json())
-      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+      .catch((error: any) => Observable.throw('Server Error'));
+  }
+
+  downloadFile(fileId: number) {
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    this.http.get(this.filesUrl + 'download?id=' + fileId, options).toPromise()
+      .then(function(response) {
+        window.location.href = response.url;
+      })
   }
 
   modifyFile(file: File): Observable<Status>{
@@ -47,6 +57,16 @@ export class FileService {
     return this.http.post(this.filesUrl + 'modify', bodyString, options)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
+  }
+
+  deleteFile(token: Token): Observable<Status>{
+    let bodyString = JSON.stringify(token);
+
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.filesUrl + 'deleteFile', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
   uploadFile(token: Token, file): Observable<Status>{

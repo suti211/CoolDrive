@@ -8,7 +8,7 @@ import dto.User;
 public interface UserDao {
     User getUser(int id);
 
-    User getUser(String token);
+    User getUser(String columnName, String value);
 
     int registerUser(User user);
 

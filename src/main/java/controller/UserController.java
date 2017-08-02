@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
 import util.TokenGenerator;
-
 import java.sql.*;
 
 /**
@@ -48,14 +47,15 @@ public class UserController extends DatabaseController implements UserDao {
         return null;
     }
 
-    public User getUser(String token) {
+    public User getUser(String columnName, String value) {
+        String sql = String.format("SELECT * FROM Users WHERE %s = ?", columnName);
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SELECT * FROM Users WHERE token = ?");
-            ps.setString(1, token);
+            ps = con.prepareStatement(sql);
+            ps.setString(1, value);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                LOG.info("Find user with this token: {} User(username: {}, email: {})", token, rs.getString("username"), rs.getString("email"));
+                LOG.info("Find user with columnName: {} - value: {}, User(username: {}, email: {})",columnName, value, rs.getString("username"), rs.getString("email"));
                 return new User(
                         rs.getInt("id"),
                         rs.getString("username"),
@@ -71,9 +71,9 @@ public class UserController extends DatabaseController implements UserDao {
                 );
             }
         } catch (SQLException e) {
-            LOG.error("getUser(token) if failed with Exception", e);
+            LOG.error("getUser(columnName: {}, value: {}) if failed with Exception",columnName, value, e);
         }
-        LOG.debug("User not found with this token: {} in getUser(token) method", token);
+        LOG.debug("User not found - columnName: {}, value: {} in getUser method", columnName, value);
         return null;
     }
 

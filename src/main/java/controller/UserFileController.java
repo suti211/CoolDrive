@@ -86,9 +86,9 @@ public class UserFileController extends DatabaseController implements UserFileDa
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "UPDATE Files SET path = ?, filename = ?, parentId = ?, label = ? WHERE id = ?");
-            ps.setString(1, userFile.getPath());
-            ps.setString(2, userFile.getFileName());
+                    "UPDATE Files SET filename = ?, maxSize = ?, parentId = ?, label = ? WHERE id = ?");
+            ps.setString(1, userFile.getFileName());
+            ps.setDouble(2, userFile.getMaxSize());
             ps.setInt(3, userFile.getParentId());
             ps.setString(4, userFile.getLabel());
             ps.setInt(5, userFile.getId());

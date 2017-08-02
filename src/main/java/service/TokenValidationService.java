@@ -23,7 +23,7 @@ public class TokenValidationService {
 	public Status validateToken(Token token){
 		
 		UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-		User user = userController.getUser(token.getToken());
+		User user = userController.getUser("token", token.getToken());
 		
 		if(user != null){
 			return new Status(Operation.TOKENVALIDATION, true, "Token is valid!");			

@@ -54,16 +54,6 @@ public class UserFile {
     public UserFile() {
     }
 
-    public UserFile(String fileName, double maxSize, boolean isFolder, int ownerId, int parentId) {
-        this.path = ""; //created by FileManager
-        this.size = 0; //get by FileManager
-        this.fileName = ""; //created by FileManager
-        this.maxSize = maxSize;
-        this.isFolder = isFolder;
-        this.ownerId = ownerId;
-        this.parentId = parentId;
-    }
-
     public int getId() {
         return id;
     }

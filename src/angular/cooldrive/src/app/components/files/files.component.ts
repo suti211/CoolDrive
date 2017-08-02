@@ -5,6 +5,7 @@ import {FileService} from '../../service/files.service';
 import {StorageInfo} from '../../model/storage-info';
 import {Token} from '../../model/token.model';
 import {Status} from "../../model/status.model";
+import {Folder} from "../../model/folder";
 
 @Component({
   selector: 'app-files',
@@ -19,8 +20,10 @@ export class FilesComponent implements OnInit {
   selectedFile: File = new File(-1, "", 0, "", "", "", 0, true, 0, 0, "");
 
   infoPanelDisplayed: boolean;
+  infoPanelText: string;
 
-  test: any;
+  uploadInfoPanelDisplayed: boolean;
+  uploadInfoPanelText: string;
 
   usage: number;
   quantity: number;
@@ -32,6 +35,11 @@ export class FilesComponent implements OnInit {
   homeFolderSize: number;
   homeFolderMaxSize: number;
 
+  newFolderName: string;
+  newFolderLabel: string;
+  newFolderMaxSize: number;
+
+
   progressBarSytle: string = "progress-bar";
 
   constructor(private fileService: FileService) {
@@ -39,6 +47,59 @@ export class FilesComponent implements OnInit {
     this.filteredFiles = fileService.getFilteredFilesArray();
     this.infoPanelDisplayed = false;
   }
+
+  setSelectedFile(file: File){
+    this.selectedFile = file;
+  }
+
+  creatToken(id: number): Token {
+    let tokenID = localStorage.getItem(localStorage.key(0));
+    let newToken = new Token(tokenID);
+    newToken.setID(id);
+    return newToken;
+  }
+
+  setInfoPanelDisplay(text: string, show: boolean) {
+    this.infoPanelDisplayed = show;
+    this.infoPanelText = text;
+    setTimeout(() => this.infoPanelDisplayed = false, 5000);
+  }
+
+  setUploadInfoPanelDisplay(text: string, show: boolean) {
+    this.uploadInfoPanelDisplayed = show;
+    this.uploadInfoPanelText = text;
+    setTimeout(() => this.uploadInfoPanelDisplayed = false, 5000);
+  }
+
+  setProgressBarStyle() {
+    if (this.percentage.valueOf() <= 60) {
+      this.progressBarSytle = "progress-bar";
+    } else {
+      if (this.percentage.valueOf() <= 85) {
+        this.progressBarSytle = "progress-bar bg-warning";
+      } else {
+        this.progressBarSytle = "progress-bar bg-danger";
+      }
+    }
+  }
+
+  getStorageInfo(){
+    let tokenID = localStorage.getItem(localStorage.key(0));
+    let newToken = new Token(tokenID);
+    newToken.setID(this.currentFolderId);
+
+    let getStorageInfoOperation: Observable<StorageInfo>;
+    getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
+    getStorageInfoOperation.subscribe((info: StorageInfo) => {
+      this.usage = info.usage;
+      this.quantity = info.quantity;
+      this.percentage = info.usage / info.quantity * 100;
+
+      this.setProgressBarStyle();
+    });
+  }
+
+  // Files list methods
 
   filterFiles(filt: string) {
     let filter = filt.toLowerCase();
@@ -84,10 +145,9 @@ export class FilesComponent implements OnInit {
 
     this.files.length = 0;
     this.filteredFiles.length = 0;
-    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(this.currentFolderId);
 
+    let newToken = this.creatToken(this.currentFolderId);
+    
     let getStorageInfoOperation: Observable<StorageInfo>;
     getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
     getStorageInfoOperation.subscribe((info: StorageInfo) => {
@@ -116,22 +176,22 @@ export class FilesComponent implements OnInit {
   }
 
 
+  createFolder(){
+    let tokenID = localStorage.getItem(localStorage.key(0));
+    let folder = new Folder(tokenID,this.newFolderName,this.newFolderMaxSize,this.newFolderLabel);
 
-  setSelectedFile(file: File){
-    this.selectedFile = file;
+    let createFolderOperation: Observable<Status>;
+    createFolderOperation = this.fileService.createFolder(folder);
+    createFolderOperation.subscribe((status: Status) => {
+      console.log(status.message);
+      this.listFiles(this.currentFolderId);
+    });
   }
 
+  // File action methods
 
-  setProgressBarStyle() {
-    if (this.percentage.valueOf() <= 60) {
-      this.progressBarSytle = "progress-bar";
-    } else {
-      if (this.percentage.valueOf() <= 85) {
-        this.progressBarSytle = "progress-bar bg-warning";
-      } else {
-        this.progressBarSytle = "progress-bar bg-danger";
-      }
-    }
+  download(fileId: number) {
+    this.fileService.downloadFile(fileId);
   }
 
   modifyFile(){
@@ -185,7 +245,12 @@ export class FilesComponent implements OnInit {
     let uploadFileOperation: Observable<Status>;
     uploadFileOperation = this.fileService.uploadFile(newToken, this.uploadedFilesList[0]);
     uploadFileOperation.subscribe((status: Status) => {
-      console.log(status.message);
+      if(status.success){
+        this.setInfoPanelDisplay(status.message,true);
+        document.getElementById("uploadCloseButton").click();
+      }else{
+        this.setUploadInfoPanelDisplay(status.message,true);
+      }
       this.getStorageInfo()
       this.listFiles(this.currentFolderId);
     });
@@ -214,7 +279,6 @@ export class FilesComponent implements OnInit {
       }
       console.log(this.files);
     });
-
   }
 
   ngOnInit() {
