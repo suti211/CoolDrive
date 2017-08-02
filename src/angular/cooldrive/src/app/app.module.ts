@@ -20,6 +20,7 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
 import { TransactionService } from './service/transaction.service';
 import { CheckoutService } from './service/checkout.service';
 import { EmailValidation } from './components/emailValidation/emailValidation.component';
+import {EmailValidationService} from "./service/email-validation.service";
 
 @NgModule({
   declarations: [
@@ -38,7 +39,7 @@ import { EmailValidation } from './components/emailValidation/emailValidation.co
     FormsModule,
     HttpModule,
     RouterModule.forRoot([
-      { path: 'verify:token', component: EmailValidation },
+      { path: 'verify/:token', component: EmailValidation },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard], children:
@@ -54,7 +55,7 @@ import { EmailValidation } from './components/emailValidation/emailValidation.co
     ])
   ],
 
-  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService],
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
