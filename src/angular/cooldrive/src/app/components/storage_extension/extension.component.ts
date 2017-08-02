@@ -15,7 +15,7 @@ import { Observable } from 'rxjs/Rx';
 
 
 export class ExtensionComponent{
-    token: Token = new Token(localStorage.getItem(localStorage.key(0)));
+    token: Token = new Token(sessionStorage.getItem(sessionStorage.key(0)));
     storage: number;
     card1Color: String = "";
     card2Color: String = "";
@@ -33,6 +33,7 @@ export class ExtensionComponent{
     city: string = "";
     phone: string = "";
     address: string= "";
+    billingAddress: string = "none";
 
     constructor(private router: Router, private transService: TransactionService){
     }
@@ -142,8 +143,15 @@ export class ExtensionComponent{
             this.showWarningPanel = false;
             this.showStorageWarning = false;
             this.showSuccessPanel = true;
-            this.transaction = new Transaction(localStorage.getItem(localStorage.key(0)), this.firstName, this.lastName, this.zipCode, this.city,this.address, this.phone, this.storage);
-            this.transactionResult = this.transService.newTransaction(this.transaction);
+            this.transaction = new Transaction(sessionStorage.getItem(sessionStorage.key(0)), this.firstName, this.lastName, this.zipCode, this.city,this.address, this.phone, this.storage);
+
+            if(this.billingAddress != ""){
+                this.transaction.setBillingAddress(this.billingAddress);
+            }
+
+            localStorage.removeItem("transaction");
+            localStorage.setItem("transaction", JSON.stringify(this.transaction));
+            /*this.transactionResult = this.transService.newTransaction(this.transaction);
             console.log(this.transaction);
             this.transactionResult.subscribe((status : Status) => {
                 console.log(status);
@@ -151,7 +159,9 @@ export class ExtensionComponent{
                     console.log("siker");
                     setTimeout(() => this.router.navigate(['dashboard/checkout', status.message]), 2000 );
                 }
-            });
+            }); */
+
+            setTimeout(() => this.router.navigate(['dashboard/checkout']), 2000 );
         }
     }
 

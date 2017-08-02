@@ -18,13 +18,13 @@ export class LoginGuard implements CanActivate {
 
     canActivate() {
 
-        if (localStorage.length == 0) {
+        if (sessionStorage.length == 0) {
             //nincs semmi token
             this.router.navigate(['login']);
             return false;
         }
 
-        this.token = new Token(localStorage.getItem(localStorage.key(0)));
+        this.token = new Token(sessionStorage.getItem(sessionStorage.key(0)));
         this.validateOperation = this.tokenService.validateToken(this.token);
 
         return this.validateOperation.map(status => status.success);

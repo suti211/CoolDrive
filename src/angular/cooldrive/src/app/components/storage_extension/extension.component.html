@@ -113,7 +113,7 @@
             <div class="col-sm-8 col-md-6 order-form" id="form">
                 <div>
                     <h3>Order form:</h3>
-                    <h6>Every field is required!</h6>
+                    <h6>Billing address is optional!</h6>
                 </div>
 
                 <div class="alert alert-danger" role="alert" *ngIf="showWarningPanel">
@@ -147,7 +147,11 @@
                 <div class="input-group">
                     <span class="input-group-addon fixed-size">Address: </span>
                     <input type="text" class="form-control" id="addressField" placeholder="Street name, house number" [(ngModel)]="address">
-                </div> 
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon fixed-size">Billing address: </span>
+                    <input type="text" class="form-control" id="billingAddressField" placeholder="Billing address(optional)" [(ngModel)]="billingAddress">
+                </div>
             </div>
         </div>
     </div>

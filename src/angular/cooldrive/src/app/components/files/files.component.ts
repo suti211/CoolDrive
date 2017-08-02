@@ -147,7 +147,7 @@ export class FilesComponent implements OnInit {
     this.filteredFiles.length = 0;
 
     let newToken = this.creatToken(this.currentFolderId);
-
+    
     let getStorageInfoOperation: Observable<StorageInfo>;
     getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
     getStorageInfoOperation.subscribe((info: StorageInfo) => {
@@ -206,7 +206,7 @@ export class FilesComponent implements OnInit {
   }
 
   deleteFile(id: number){
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(id);
 
@@ -219,10 +219,26 @@ export class FilesComponent implements OnInit {
     });
   }
 
+  getStorageInfo(){
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
+    let newToken = new Token(tokenID);
+    newToken.setID(this.currentFolderId);
+
+    let getStorageInfoOperation: Observable<StorageInfo>;
+    getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
+    getStorageInfoOperation.subscribe((info: StorageInfo) => {
+      this.usage = info.usage;
+      this.quantity = info.quantity;
+      this.percentage = info.usage / info.quantity * 100;
+
+      this.setProgressBarStyle();
+    });
+  }
+
   uploadFile(){
     this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
 
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(this.currentFolderId);
 
@@ -250,7 +266,7 @@ export class FilesComponent implements OnInit {
     this.files.length = 0;
     this.filteredFiles.length = 0;
 
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(id);
 
@@ -267,7 +283,7 @@ export class FilesComponent implements OnInit {
 
   ngOnInit() {
     //  let tokenID = localStorage.getItem(localStorage.key(0));
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(-1);
 
