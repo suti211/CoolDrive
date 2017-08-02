@@ -1,0 +1,32 @@
+<h2>Checkout:</h2>
+    <h4>Please validate your personal informations!</h4>
+<hr>
+<div class="row" *ngIf="loaded">
+    <div class="col-sm-5 col-md-4">
+        <h4><strong>Customer name </strong></h4>
+        <h4><strong>ZIP code: </strong></h4>
+        <h4><strong>City: </strong></h4>
+        <h4><strong>Address: </strong></h4>
+        <h4><strong>Phone number: </strong></h4>
+        <h4><strong>Order: </strong></h4>
+        <h4><strong>Total: </strong></h4>
+    </div>
+
+    <div class="col-sm-5 col-md-4">
+        <h4>{{order.firstName}} {{order.lastName}} </h4>
+        <h4>{{order.zip}}</h4>
+        <h4>{{order.city}}</h4>
+        <h4>{{order.address1}}</h4>
+        <h4>{{order.phone}}</h4>
+        <h4>{{order.bought}} MB pack</h4>
+        <h4>{{order.bought}} $</h4>
+    </div>
+</div>
+<hr>
+<div class="row" *ngIf="loaded">
+    <div class="col-sm-5 col-md-4 text-center centered">
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-primary">Payment</button>
+        </div>
+    </div>
+</div>

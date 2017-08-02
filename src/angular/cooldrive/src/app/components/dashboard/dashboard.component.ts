@@ -26,19 +26,24 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
   }
 
-  sendSearchData(){
-    this.filesComponent.filterFiles(this.filter);
+  sendSearchData(filt: string){
+    this.filesComponent.filterFiles(filt);
   }
 
 
   logout(){
     this.logoutOperation = this.logoutService.sendLogoutRequest(this.userToken);
     this.logoutOperation.subscribe((status: Status) => {
+      console.log(status);
       if(status.success){
-        localStorage.clear();
-        this.router.navigate(['login']);
+        setTimeout(this.router.navigate(['login']), 2000);
       }
     });
+    localStorage.clear();
+  }
+
+  storage(){
+    this.router.navigate(['storage']);
   }
 
 }

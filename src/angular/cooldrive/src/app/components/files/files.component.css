@@ -9,9 +9,19 @@
   z-index: 99; /* Make sure it does not overlap */
   cursor: pointer; /* Add a mouse pointer on hover */
 }
-
-
 #floatingButtonDropdown{
   left: auto;
   right: 0px;
+}
+
+.input-group-addon.modifyModal{
+  width: 85px;
+}
+
+.input-group-addon.createFolderModal{
+  width: 110px;
+}
+
+.modal-content{
+  margin-top: 190px;
 }

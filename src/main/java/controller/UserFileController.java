@@ -5,9 +5,11 @@ import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +32,10 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                LOG.info("File(filename: {}, path: {}) found with this id: {}", rs.getString("filename"), rs.getString("filename"), id);
+                LOG.info("File(filename: {}, path: {}) found with this id: {}", rs.getString("filename"), rs.getString("path"), id);
                 return new UserFile(
                         rs.getInt("id"),
-                        rs.getString("filename"),
+                        rs.getString("path"),
                         rs.getDouble("size"),
                         sdf.format(rs.getTimestamp("uploadDate")),
                         rs.getString("filename"),
@@ -52,11 +54,11 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return null;
     }
 
-    public boolean addNewUserFile(UserFile userFile) {
+    public int addNewUserFile(UserFile userFile) {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "INSERT INTO Files(path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId, label) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)");
+                    "INSERT INTO Files(path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId, label) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, userFile.getPath());
             ps.setDouble(2, userFile.getSize());
             ps.setString(3, userFile.getFileName());
@@ -69,42 +71,44 @@ public class UserFileController extends DatabaseController implements UserFileDa
             int success = ps.executeUpdate();
             if (success > 0) {
                 LOG.info("Add new file(filename: {}, path: {}) is successfully created", userFile.getFileName(), userFile.getPath());
-                return true;
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
             }
         } catch (SQLException e) {
             LOG.error("Add new userfile is failed with Exception", e);
         }
-        return false;
+        return -1;
     }
 
-    public boolean modifyUserFile(int id, UserFile userFile) {
+    public boolean modifyUserFile(UserFile userFile) {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "UPDATE Files SET path = ?, filename = ?, ownerId = ?, parentId = ?, label = ? WHERE id = ?");
-            ps.setString(1, userFile.getPath());
-            ps.setString(2, userFile.getFileName());
-            ps.setInt(3, userFile.getOwnerId());
-            ps.setInt(5, userFile.getParentId());
-            ps.setInt(5, id);
-            ps.setString(6, userFile.getLabel());
+                    "UPDATE Files SET filename = ?, maxSize = ?, parentId = ?, label = ? WHERE id = ?");
+            ps.setString(1, userFile.getFileName());
+            ps.setDouble(2, userFile.getMaxSize());
+            ps.setInt(3, userFile.getParentId());
+            ps.setString(4, userFile.getLabel());
+            ps.setInt(5, userFile.getId());
             int success = ps.executeUpdate();
             if (success > 0) {
-                LOG.info("Userfile(filename: {}, path: {}) is successfully modified with this id: {}", userFile.getFileName(), userFile.getPath(), id);
+                LOG.info("Userfile(filename: {}, path: {}) is successfully modified with this id: {}", userFile.getFileName(), userFile.getPath(), userFile.getId());
                 return true;
             }
         } catch (SQLException e) {
             LOG.error("modify userfile is failed with Exception", e);
         }
-        LOG.debug("File not found with this id: {} in modifyUserFile method", id);
+        LOG.debug("File not found with this id: {} in modifyUserFile method", userFile.getId());
         return false;
     }
 
     public boolean changeFolderCurrSize(int id, double size) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement(
-                    "UPDATE Files SET `size` = ? WHERE id = ?");
+             ps = con.prepareStatement(
+                     "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
             ps.setDouble(1, size);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
@@ -119,25 +123,6 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return false;
     }
 
-    public boolean changeFolderSize(int id, double maxSize) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(
-                    "UPDATE Files SET maxSize = ? WHERE id = ?");
-            ps.setDouble(1, maxSize);
-            ps.setInt(2, id);
-            int success = ps.executeUpdate();
-            if (success > 0) {
-                LOG.info("Folder size is succfully changed with his id: {} new size is: {}", id, maxSize);
-                return true;
-            }
-        } catch (SQLException e) {
-            LOG.error("Change folder size is failed with Exception", e);
-        }
-        LOG.debug("File not found with this id: {} in changeFolderSize method", id);
-        return false;
-    }
-
     public List<UserFile> getAllFilesFromFolder(int parentId) {
         List<UserFile> userFiles = new ArrayList<>();
         PreparedStatement ps = null;
@@ -148,7 +133,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
             while (rs.next()) {
                 userFiles.add(new UserFile(
                         rs.getInt("id"),
-                        rs.getString("filename"),
+                        rs.getString("path"),
                         rs.getDouble("size"),
                         sdf.format(rs.getTimestamp("uploadDate")),
                         rs.getString("filename"),
@@ -192,16 +177,54 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps = con.prepareStatement("SELECT id FROM Files WHERE path = ? AND filename = ?");
             ps.setString(1, userFile.getPath());
             ps.setString(2, userFile.getFileName());
-            int success  = ps.executeUpdate();
-            if (success > 0){
+            int success = ps.executeUpdate();
+            if (success > 0) {
                 ResultSet rs = ps.executeQuery();
-                LOG.info("Userfile(filename: {}, path: {}) is successfully checked",userFile.getFileName(),userFile.getPath());
+                LOG.info("Userfile(filename: {}, path: {}) is successfully checked", userFile.getFileName(), userFile.getPath());
                 rs.first();
                 return rs.getInt("id");
             }
         } catch (SQLException e) {
-            LOG.error("check userfile is failed with Exception",e);
-    }
+            LOG.error("check userfile is failed with Exception", e);
+        }
         return 0;
+    }
+
+    public boolean checkAvailableSpace(int id, double fileSize) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("SELECT `size`, maxSize FROM Files WHERE id = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                if((rs.getDouble("maxSize") - rs.getDouble("size")) > fileSize) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            LOG.error("checkAvailableSpace is failed with Exception", e);
+        }
+        return false;
+    }
+
+    public boolean setFileSize(int id, double fileSize) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement(
+                    "UPDATE Files SET `size` = ? WHERE id = ?");
+            ps.setDouble(1, fileSize);
+            ps.setInt(2, id);
+            int success = ps.executeUpdate();
+            if (success > 0) {
+                LOG.info("setFileSize(size: {}) is successfully modified with this id: {}", fileSize, id);
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("setFileSize is failed with Exception", e);
+        }
+        LOG.debug("File not found with this id: {} in setFileSize method", id);
+        return false;
     }
 }
