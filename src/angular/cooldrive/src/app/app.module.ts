@@ -19,6 +19,8 @@ import { ExtensionComponent } from './components/storage_extension/extension.com
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { TransactionService } from './service/transaction.service';
 import { CheckoutService } from './service/checkout.service';
+import { PaymentComponent } from './components/payment/payment.component';
+import { TransactionStatus } from './components/transaction_status/transaction.status.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { CheckoutService } from './service/checkout.service';
     DashboardComponent,
     FilesComponent,
     ExtensionComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    PaymentComponent,
+    TransactionStatus
   ],
   imports: [
     BrowserAnimationsModule,
@@ -42,7 +46,9 @@ import { CheckoutService } from './service/checkout.service';
        [
           { path: 'files', component: FilesComponent},
           { path: 'storage', canActivate: [LoginGuard], component: ExtensionComponent},
-          { path: 'checkout/:id', canActivate: [LoginGuard], component: CheckoutComponent}
+          { path: 'checkout', canActivate: [LoginGuard], component: CheckoutComponent},
+          { path: 'payment/:id', canActivate: [LoginGuard], component: PaymentComponent},
+          { path: 'transaction', canActivate: [LoginGuard], component: TransactionStatus},
         ]
       },
       {path: "**", component: LoginComponent}
