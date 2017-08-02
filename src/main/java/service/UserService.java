@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by David Szilagyi on 2017. 08. 01..
  */
-@Path("/user")
+@Path("")
 public class UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
     private static final UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);

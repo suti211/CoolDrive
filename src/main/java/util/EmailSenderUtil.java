@@ -34,7 +34,7 @@ public class EmailSenderUtil {
             }
         });
 
-        String regURL = String.format("<a href=http://localhost:4200/CoolDrive/user/verify?token=%s>Verify my account</a>", user.getEmail(), token);
+        String regURL = String.format("<a href=http://localhost:8080/CoolDrive/verify?token=%s>Verify my account</a>", user.getEmail(), token);
         String text = String.format("Dear %s,<br>Thank you for registration for <b>CoolDrive!</b><br>" +
                 "Your account informations:<br>" +
                 "<hr>Username: %s<br>Starting quantity: 50 MB<br>" +
