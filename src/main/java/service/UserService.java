@@ -28,18 +28,17 @@ public class UserService {
         String token = request.getParameter("token");
         User user = userController.getUser("token", token);
         if(user != null) {
+            LOG.info("user found with this token: {}, email: {}", token, user.getEmail());
             if (!user.isValidated()) {
-                if (user.getToken().equalsIgnoreCase(token)) {
                     userController.deleteToken(user.getUserName());
                     userController.changeValidation(user.getId(), true);
                     return new Status(Operation.VERIFICATION, true, user.getEmail() + " is now validated!");
-                } else {
-                    return new Status(Operation.VERIFICATION, false, "Invalid token or email!");
-                }
             } else {
+                LOG.info("user is already validated with this email: {}", user.getEmail());
                 return new Status(Operation.VERIFICATION, false, user.getEmail() + " is already validated!");
             }
         }
-        return new Status(Operation.VERIFICATION, false, "Invalid token or email!");
+        LOG.error("user if null in verifyUser with this token: {}", token);
+        return new Status(Operation.VERIFICATION, false, "Invalid token!");
     }
 }
