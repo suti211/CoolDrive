@@ -29,7 +29,7 @@ public class TransactionService {
 		TransactionsController transactionsController = new TransactionsController(DATABASE_NAME);
 		
 		
-		User user = userController.getUser(transaction.getUserToken());
+		User user = userController.getUser("token", transaction.getUserToken());
 		
 		if(user == null){
 			return new Status(Operation.NEWTRANSACTION, false, "Token mismatch, no such user!");

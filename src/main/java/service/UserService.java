@@ -27,7 +27,7 @@ public class UserService {
     public Status verifyUser(@Context HttpServletRequest request) {
         String email = request.getParameter("email");
         String token = request.getParameter("token");
-        User user = userController.getUserbyemail(email);
+        User user = userController.getUser("email", email);
         if (!user.isValidated()) {
             if (user.getToken().equalsIgnoreCase(token)) {
                 userController.deleteToken(user.getUserName());

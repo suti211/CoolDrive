@@ -118,7 +118,7 @@ public class UserFileService {
         int fileId = token.getId();
         LOG.info("getFileId method is called with token:{}, id: {}, from: {}", userToken, fileId, methodName);
         if (fileId <= 0) {
-            fileId = userController.getUser(userToken).getUserHomeId();
+            fileId = userController.getUser("token", userToken).getUserHomeId();
         }
         return fileId;
     }
@@ -152,7 +152,7 @@ public class UserFileService {
         LOG.info("createFolder method is called with id: {}, from: {}", request.getRemoteAddr());
         Token token = new Token(folder.getToken(), -1);
         int parentId = getFileId(token, "createFolder");
-        User user = userController.getUser(token.getToken());
+        User user = userController.getUser("token", token.getToken());
         UserFile userFile = userFileController.getUserFile(parentId);
         String path = userFile.getPath() + "\\" + userFile.getFileName();
         if (userFileController.checkAvailableSpace(parentId, folder.getMaxSize())) {

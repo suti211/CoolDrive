@@ -43,7 +43,7 @@ public class RegisterService {
 			if(userController.setHomeId(userId, userHomeId)){
 				UserFileManager.saveFolder(input.getUserName());
 				userController.setToken(input.getUserName());
-				EmailSenderUtil.sendEmail(input, userController.getUserbyemail(input.getEmail()).getToken());
+				EmailSenderUtil.sendEmail(input, userController.getUser("email", input.getEmail()).getToken());
 				return new Status(Operation.REGISTER, true, "User successfully registered!");
 			} else {
 				return new Status(Operation.REGISTER, false, "Failed to add user to DB!");

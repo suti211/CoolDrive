@@ -37,7 +37,7 @@ public class UserFileManager {
     private static Path tempPath = Paths.get(PathUtil.TEMP_PATH);
 
     public static void saveUserFile(MultipartFormDataInput input, String token, int parentId, boolean isFolder, double maxSize) {
-        User user = userController.getUser(token);
+        User user = userController.getUser("token", token);
         folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("input");
