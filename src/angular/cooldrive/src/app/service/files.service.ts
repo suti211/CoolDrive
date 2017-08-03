@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import {File} from '../model/file.model';
-
+import { environment } from "../../environments/environment.live"
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
 import {StorageInfo} from '../model/storage-info';
@@ -15,7 +15,7 @@ import {TextFile} from "../model/text-file";
 export class FileService {
   files: File[] = [];
   filteredFiles: File[] = [];
-  filesUrl = "http://localhost:8080/CoolDrive/files/";
+  filesUrl = environment.urlPrefix + "/" + "files";
 
   constructor(private http: Http) {
   }

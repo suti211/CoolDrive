@@ -3,11 +3,11 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Transaction } from '../model/transaction.model';
 import { Status } from '../model/status.model';
+import { environment } from "../../environments/environment"
 
 @Injectable()
 export class TransactionService{
-    transactionServiceUrl = "http://localhost:8080/CoolDrive/transaction";
-    //loginUrl = "http://demo1158757.mockable.io/loginTest";
+    transactionServiceUrl = environment.urlPrefix + "/" + "transaction";
 
     constructor(private http:Http){
 
