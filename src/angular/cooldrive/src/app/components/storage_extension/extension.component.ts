@@ -151,15 +151,6 @@ export class ExtensionComponent{
 
             localStorage.removeItem("transaction");
             localStorage.setItem("transaction", JSON.stringify(this.transaction));
-            /*this.transactionResult = this.transService.newTransaction(this.transaction);
-            console.log(this.transaction);
-            this.transactionResult.subscribe((status : Status) => {
-                console.log(status);
-                if(status.success){
-                    console.log("siker");
-                    setTimeout(() => this.router.navigate(['dashboard/checkout', status.message]), 2000 );
-                }
-            }); */
 
             setTimeout(() => this.router.navigate(['dashboard/checkout']), 2000 );
         }
