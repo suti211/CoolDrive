@@ -124,7 +124,7 @@ export class PaymentComponent implements OnInit {
 
     payWithCard(isValid: boolean) {
         if (isValid) {
-
+            this.router.navigate(['dashboard/transaction']);
         }
 
     }
