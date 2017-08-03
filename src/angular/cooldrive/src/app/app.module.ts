@@ -23,6 +23,7 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { TransactionStatus } from './components/transaction_status/transaction.status.component';
 import { EmailValidation } from './components/emailValidation/emailValidation.component';
 import {EmailValidationService} from "./service/email-validation.service";
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import {EmailValidationService} from "./service/email-validation.service";
     CheckoutComponent,
     PaymentComponent,
     TransactionStatus,
-    EmailValidation
+    EmailValidation,
+    LandingPageComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -44,6 +46,7 @@ import {EmailValidationService} from "./service/email-validation.service";
     FormsModule,
     HttpModule,
     RouterModule.forRoot([
+      { path: 'landing', component: LandingPageComponent },
       { path: 'verify/:token', component: EmailValidation },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
@@ -56,7 +59,7 @@ import {EmailValidationService} from "./service/email-validation.service";
           { path: 'transaction', canActivate: [LoginGuard], component: TransactionStatus},
         ]
       },
-      {path: "**", component: LoginComponent}
+      {path: "**", component: LandingPageComponent}
 
 
     ])
