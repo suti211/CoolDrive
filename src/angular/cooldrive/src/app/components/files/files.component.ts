@@ -87,22 +87,6 @@ export class FilesComponent implements OnInit {
     }
   }
 
-  getStorageInfo(){
-    let tokenID = localStorage.getItem(localStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(this.currentFolderId);
-
-    let getStorageInfoOperation: Observable<StorageInfo>;
-    getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
-    getStorageInfoOperation.subscribe((info: StorageInfo) => {
-      this.usage = info.usage;
-      this.quantity = info.quantity;
-      this.percentage = info.usage / info.quantity * 100;
-
-      this.setProgressBarStyle();
-    });
-  }
-
   // Files list methods
 
   filterFiles(filt: string) {

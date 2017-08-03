@@ -35,7 +35,7 @@ import {EmailValidationService} from "./service/email-validation.service";
     ExtensionComponent,
     CheckoutComponent,
     PaymentComponent,
-    TransactionStatus
+    TransactionStatus,
     EmailValidation
   ],
   imports: [
