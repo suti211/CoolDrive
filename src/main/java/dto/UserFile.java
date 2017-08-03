@@ -143,4 +143,42 @@ public class UserFile {
     public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserFile userFile = (UserFile) o;
+
+        if (id != userFile.id) return false;
+        if (Double.compare(userFile.size, size) != 0) return false;
+        if (Double.compare(userFile.maxSize, maxSize) != 0) return false;
+        if (isFolder != userFile.isFolder) return false;
+        if (ownerId != userFile.ownerId) return false;
+        if (parentId != userFile.parentId) return false;
+        if (path != null ? !path.equals(userFile.path) : userFile.path != null) return false;
+        if (uploadDate != null ? !uploadDate.equals(userFile.uploadDate) : userFile.uploadDate != null) return false;
+        if (fileName != null ? !fileName.equals(userFile.fileName) : userFile.fileName != null) return false;
+        return extension != null ? extension.equals(userFile.extension) : userFile.extension == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = id;
+        result = 31 * result + (path != null ? path.hashCode() : 0);
+        temp = Double.doubleToLongBits(size);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (uploadDate != null ? uploadDate.hashCode() : 0);
+        result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
+        result = 31 * result + (extension != null ? extension.hashCode() : 0);
+        temp = Double.doubleToLongBits(maxSize);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (isFolder ? 1 : 0);
+        result = 31 * result + ownerId;
+        result = 31 * result + parentId;
+        return result;
+    }
 }

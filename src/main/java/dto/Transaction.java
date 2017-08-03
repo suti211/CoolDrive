@@ -117,5 +117,38 @@ public class Transaction {
 	public void setUserToken(String userToken) {
 		this.userToken = userToken;
 	}
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Transaction that = (Transaction) o;
+
+        if (id != that.id) return false;
+        if (userId != that.userId) return false;
+        if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
+        if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
+        if (zip != null ? !zip.equals(that.zip) : that.zip != null) return false;
+        if (city != null ? !city.equals(that.city) : that.city != null) return false;
+        if (address1 != null ? !address1.equals(that.address1) : that.address1 != null) return false;
+        if (address2 != null ? !address2.equals(that.address2) : that.address2 != null) return false;
+        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
+        return bought != null ? bought.equals(that.bought) : that.bought == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + userId;
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (zip != null ? zip.hashCode() : 0);
+        result = 31 * result + (city != null ? city.hashCode() : 0);
+        result = 31 * result + (address1 != null ? address1.hashCode() : 0);
+        result = 31 * result + (address2 != null ? address2.hashCode() : 0);
+        result = 31 * result + (phone != null ? phone.hashCode() : 0);
+        result = 31 * result + (bought != null ? bought.hashCode() : 0);
+        return result;
+    }
 }

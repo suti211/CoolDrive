@@ -1,11 +1,8 @@
 package test;
 
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+
 import org.junit.Test;
 import util.UserFileManager;
-
-import javax.inject.Inject;
-import javax.persistence.SequenceGenerator;
 
 import java.io.File;
 import java.nio.file.Files;

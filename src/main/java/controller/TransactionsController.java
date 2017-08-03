@@ -20,7 +20,7 @@ import util.ConnectionUtil;
  */
 public class TransactionsController extends DatabaseController implements TransactionsDao {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TransactionsController.class);
 
     public TransactionsController(ConnectionUtil.DatabaseName database) {
         super(database);
