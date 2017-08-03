@@ -9,6 +9,7 @@ import {StorageInfo} from '../model/storage-info';
 import {Token} from '../model/token.model';
 import {Status} from "../model/status.model";
 import {Folder} from "../model/folder";
+import {TextFile} from "../model/text-file";
 
 @Injectable()
 export class FileService {
@@ -25,6 +26,16 @@ export class FileService {
 
   getFilteredFilesArray(): File[] {
     return this.filteredFiles;
+  }
+
+  createTextFile(txt: TextFile): Observable<Status>{
+    let bodyString = JSON.stringify(txt);
+    console.log(bodyString);
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.filesUrl + 'uploadTXT', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw('Server Error'));
   }
 
   createFolder(folder: Folder): Observable<Status>{
