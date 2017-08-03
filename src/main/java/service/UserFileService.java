@@ -93,7 +93,7 @@ public class UserFileService {
     }
 
     @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/uploadTXT")
     public Status uploadTXTFile(TXT txt, @Context HttpServletRequest request) throws IOException {
