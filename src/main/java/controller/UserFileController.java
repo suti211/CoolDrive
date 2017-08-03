@@ -107,8 +107,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
     public boolean changeFolderCurrSize(int id, double size) {
         PreparedStatement ps = null;
         try {
-             ps = con.prepareStatement(
-                     "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
+            ps = con.prepareStatement(
+                    "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
             ps.setDouble(1, size);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
@@ -171,23 +171,25 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return false;
     }
 
-    public int checkUserFile(UserFile userFile) {
+    public int checkUserFile(String filename, String extension, int parentId) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SELECT id FROM Files WHERE path = ? AND filename = ?");
-            ps.setString(1, userFile.getPath());
-            ps.setString(2, userFile.getFileName());
+            ps = con.prepareStatement("SELECT id FROM Files WHERE filename = ? AND extension = ? AND parentId = ?");
+            ps.setString(1, filename);
+            ps.setString(2, extension);
+            ps.setInt(3, parentId);
             int success = ps.executeUpdate();
             if (success > 0) {
                 ResultSet rs = ps.executeQuery();
-                LOG.info("Userfile(filename: {}, path: {}) is successfully checked", userFile.getFileName(), userFile.getPath());
-                rs.first();
-                return rs.getInt("id");
+                if (rs.next()) {
+                LOG.info("UserFile(filename: {}, extension: {}, parentId: {}) is found", filename, extension, parentId);
+                    return rs.getInt("id");
+                }
             }
         } catch (SQLException e) {
-            LOG.error("check userfile is failed with Exception", e);
+            LOG.error("check UserFile is failed with Exception", e);
         }
-        return 0;
+        return -1;
     }
 
     public boolean checkAvailableSpace(int id, double fileSize) {
@@ -196,8 +198,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps = con.prepareStatement("SELECT `size`, maxSize FROM Files WHERE id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                if((rs.getDouble("maxSize") - rs.getDouble("size")) > fileSize) {
+            if (rs.next()) {
+                if ((rs.getDouble("maxSize") - rs.getDouble("size")) > fileSize) {
                     return true;
                 } else {
                     return false;
@@ -227,7 +229,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
         LOG.debug("File not found with this id: {} in setFileSize method", id);
         return false;
     }
-    
+
     public boolean increaseFileSize(int homeId, double increment) {
         PreparedStatement ps = null;
         try {

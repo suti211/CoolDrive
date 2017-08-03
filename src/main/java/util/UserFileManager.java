@@ -116,7 +116,7 @@ public class UserFileManager {
         }
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
         String[] content = txt.getContent().split("\\n");
-        for(String line : content) {
+        for (String line : content) {
             bw.append(line);
             bw.newLine();
         }
@@ -148,7 +148,10 @@ public class UserFileManager {
         folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
         String fileName = txt.getName() + ".txt";
         try {
-            int fileId = createUserFile(fileName, user, parentId, false);
+            int fileId = userFileController.checkUserFile(txt.getName(), ".txt", parentId);
+            if (fileId <= 0) {
+                fileId = createUserFile(fileName, user, parentId, false);
+            }
             writeTXTFile(txt, fileId + ".txt");
             return true;
         } catch (IOException e) {
