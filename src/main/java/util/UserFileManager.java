@@ -141,6 +141,7 @@ public class UserFileManager {
     public static boolean createTXTFile(TXT txt, int parentId) {
         LOG.info("createTXTFile method called with parentId: {}, file: {}", parentId, txt.getName());
         User user = userController.getUser("token", txt.getToken().getToken());
+        folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
         String fileName = txt.getName() + ".txt";
         try {
             int fileId = createUserFile(fileName, user, parentId, false);
