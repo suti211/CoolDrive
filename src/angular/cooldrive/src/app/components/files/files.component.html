@@ -160,4 +160,33 @@
     </div>
   </div>
 
+  <!-- CREATE TEXT FILE MODAL -->
+  <div class="modal fade" id="createTxtModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Create Text File</h4>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="false" id="createTxtInfo" class="alert alert-success" role="alert">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon createTxtModal">Title*</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" (change)="enableCreateFolderBtn()" [(ngModel)]="newFolderName">
+          </div>
+          <div class="form-group">
+            <br>
+            <span class="input-group-addon createTxtModal content">Content</span>
+            <textarea class="form-control" id="Textarea" rows="3" [(ngModel)]="newFolderLabel"></textarea>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <input id="createTxtButton" type="button" class="btn btn-primary" (click)="createTxtFile()" value="Create">
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
