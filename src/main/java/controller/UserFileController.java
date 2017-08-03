@@ -162,10 +162,10 @@ public class UserFileController extends DatabaseController implements UserFileDa
             if (success > 0) {
                 LOG.info("Userfile is successfully deleted with this id: {}", id);
                 return true;
-
             }
         } catch (SQLException e) {
             LOG.error("Delete userfile is failed with Exception", e);
+            return false;
         }
         LOG.debug("File not found with this id: {} in deleteUserFile method", id);
         return false;

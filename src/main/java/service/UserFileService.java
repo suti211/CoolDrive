@@ -44,21 +44,18 @@ public class UserFileService {
         LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
         int fileId = getFileId(token, "deleteUserFile");
         UserFile userFile = userFileController.getUserFile(fileId);
-        if(userFile.getSize() > 0 && userFile.isFolder()) {
-            return new Status(Operation.USERFILE, false, "This folder is not empty!");
-        }
-        UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
-        double fileSize = -userFile.getSize();
-        int parentId = userFile.getParentId();
-        userFileController.changeFolderCurrSize(parentId, fileSize);
-        int folderParentId = userFileController.getUserFile(parentId).getParentId();
-        if (folderParentId != 1) {
-            userFileController.changeFolderCurrSize(folderParentId, fileSize);
-        }
-        if (userFileController.deleteUserFile(token.getId())) {
+        if(userFileController.deleteUserFile(fileId)) {
+            UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
+            double fileSize = -userFile.getSize();
+            int parentId = userFile.getParentId();
+            userFileController.changeFolderCurrSize(parentId, fileSize);
+            int folderParentId = userFileController.getUserFile(parentId).getParentId();
+            if (folderParentId != 1) {
+                userFileController.changeFolderCurrSize(folderParentId, fileSize);
+            }
             return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
         }
-        return new Status(Operation.USERFILE, false, "There was an error during deleting!");
+            return new Status(Operation.USERFILE, false, "This folder is not empty!");
     }
 
     @POST
