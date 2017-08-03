@@ -178,13 +178,10 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps.setString(1, filename);
             ps.setString(2, extension);
             ps.setInt(3, parentId);
-            int success = ps.executeUpdate();
-            if (success > 0) {
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
                 LOG.info("UserFile(filename: {}, extension: {}, parentId: {}) is found", filename, extension, parentId);
-                    return rs.getInt("id");
-                }
+                return rs.getInt("id");
             }
         } catch (SQLException e) {
             LOG.error("check UserFile is failed with Exception", e);
