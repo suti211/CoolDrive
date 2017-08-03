@@ -115,7 +115,11 @@ public class UserFileManager {
             file.createNewFile();
         }
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-        bw.write(txt.getContent());
+        String[] content = txt.getContent().split("\\n");
+        for(String line : content) {
+            bw.append(line);
+            bw.newLine();
+        }
         bw.close();
         setFileSize(file, fileName);
     }

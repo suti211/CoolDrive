@@ -166,7 +166,7 @@ public class UserFileService {
         int parentId = getFileId(token, "createFolder");
         User user = userController.getUser("token", token.getToken());
         UserFile userFile = userFileController.getUserFile(parentId);
-        String path = userFile.getPath() + userFile.getFileName();
+        String path = userFile.getPath() + "\\" + userFile.getFileName();
         if (userFileController.checkAvailableSpace(parentId, folder.getMaxSize())) {
             int id = userFileController.addNewUserFile(new UserFile(path, 0, folder.getName(), "dir", folder.getMaxSize(), true, user.getId(), parentId));
             if (id > 0) {
