@@ -47,9 +47,8 @@ export class LoginComponent{
 
   login(){
 
-    if(this.isThereInput()){
-
-      localStorage.clear();
+    if(this.isThereInput()){    
+      sessionStorage.clear();
       //console.log(this.username, this.password);
       //console.log("Login Attempt!");
       this.user = new Register(this.username, this.firstname, this.lastname, this.email, this.password);
@@ -61,7 +60,7 @@ export class LoginComponent{
         this.token = new Token(this.status.message.split(" ")[1]);
         //console.log("Login Component: (status) " + this.status.operation, this.status.success, this.status.message);
         //console.log("Login Component: (token) " + this.token.token);
-        localStorage.setItem(this.username, this.token.token);
+        sessionStorage.setItem(this.username, this.token.token);
 
         if(this.status.success){
           //console.log("Login Component: Successful login!");

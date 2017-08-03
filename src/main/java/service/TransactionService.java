@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import controller.TransactionsController;
 import controller.UserController;
+import controller.UserFileController;
 import dto.Operation;
 import dto.Status;
 import dto.Transaction;
@@ -24,8 +25,10 @@ public class TransactionService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Status createNewTransaction(Transaction	transaction){
+		
 		final DatabaseName DATABASE_NAME = ConnectionUtil.DatabaseName.CoolDrive;
 		UserController userController = new UserController(DATABASE_NAME);
+		UserFileController uFileController = new UserFileController(DATABASE_NAME);
 		TransactionsController transactionsController = new TransactionsController(DATABASE_NAME);
 		
 		
@@ -40,16 +43,17 @@ public class TransactionService {
 		java.util.Date utilDate = cal.getTime();
 		java.sql.Date sqlDate = new Date(utilDate.getTime());
 		
-		Transaction newTransaction = new Transaction(user.getId(), transaction.getFirstName(), transaction.getLastName(), transaction.getZip(), transaction.getCity(), transaction.getAddress1(), null, transaction.getPhone(), transaction.getBought(), sqlDate.toString());
+		Transaction newTransaction = new Transaction(user.getId(), transaction.getFirstName(), transaction.getLastName(), transaction.getZip(), transaction.getCity(), transaction.getAddress1(), transaction.getAddress2(), transaction.getPhone(), transaction.getBought(), sqlDate.toString());
 		
 		int transactionID = transactionsController.addTransaction(newTransaction);
 		
 		System.out.println(transaction.toString());
 		
 		if(transactionID != -1){
-			return new Status(Operation.NEWTRANSACTION, true, String.valueOf(transactionID));
+			uFileController.increaseFileSize(user.getUserHomeId(), Double.parseDouble(newTransaction.getBought()));
+			return new Status(Operation.NEWTRANSACTION, true, "Transaction added succesfully!");
 		} else {
-			return new Status(Operation.NEWTRANSACTION, false, "Transaction creation failed because of reasons!");
+			return new Status(Operation.NEWTRANSACTION, false, "Transaction wasn't added to database.");
 		}
 		
 	}

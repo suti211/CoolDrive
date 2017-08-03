@@ -15,8 +15,8 @@ import {FilesComponent} from '../files/files.component';
 })
 export class DashboardComponent implements OnInit {
 
-  userName : string = localStorage.key(0);
-  userToken: Token = new Token(localStorage.getItem(this.userName));
+  userName : string = sessionStorage.key(0);
+  userToken: Token = new Token(sessionStorage.getItem(this.userName));
   logoutOperation: Observable<Status>;
 
   filter: string;
@@ -36,10 +36,11 @@ export class DashboardComponent implements OnInit {
     this.logoutOperation.subscribe((status: Status) => {
       console.log(status);
       if(status.success){
+        localStorage.removeItem("transaction");
         setTimeout(this.router.navigate(['login']), 2000);
       }
     });
-    localStorage.clear();
+    sessionStorage.clear();
   }
 
   storage(){
