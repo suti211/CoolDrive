@@ -50,10 +50,10 @@ public class UserFileService {
         UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
         double fileSize = -userFile.getSize();
         int parentId = userFile.getParentId();
-        userFileController.changeFolderCurrSize(parentId, -fileSize);
+        userFileController.changeFolderCurrSize(parentId, fileSize);
         int folderParentId = userFileController.getUserFile(parentId).getParentId();
         if (folderParentId != 1) {
-            userFileController.changeFolderCurrSize(folderParentId, -fileSize);
+            userFileController.changeFolderCurrSize(folderParentId, fileSize);
         }
         if (userFileController.deleteUserFile(token.getId())) {
             return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
