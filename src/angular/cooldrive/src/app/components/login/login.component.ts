@@ -15,7 +15,7 @@ import { Token } from '../../model/token.model';
 
   // make fade in animation available to this component
   animations: [slideInOutAnimation],
- 
+
   // attach the fade in animation to the host (root) element of this component
   host: { '[@slideInOutAnimation]': '' }
 })
@@ -23,7 +23,10 @@ import { Token } from '../../model/token.model';
 export class LoginComponent{
 
   constructor (private loginService: LoginService, private route: ActivatedRoute, private router: Router){
-        
+        this.emailStatus = JSON.parse(localStorage.getItem("emailStatus"))
+        if(this.emailStatus != null) {
+          this.checkValidatedEmail();
+        }
   }
 
   username: string = "";
@@ -37,12 +40,14 @@ export class LoginComponent{
   showInputWarning: boolean = false;
   showIncorrectCredentials: boolean = false;
   showSuccesfulLogin: boolean = false;
+  showValidatedEmail: boolean = false;
+  showWrongValidatedEmail: boolean = false;
+  emailStatus: Status;
   statusMessage: String = "";
 
   login(){
 
-    if(this.isThereInput()){
-      
+    if(this.isThereInput()){    
       sessionStorage.clear();
       //console.log(this.username, this.password);
       //console.log("Login Attempt!");
@@ -88,6 +93,16 @@ export class LoginComponent{
   register(){
     // redirect to users view
     this.router.navigate(['register']);
+  }
+
+  checkValidatedEmail() {
+    if(this.emailStatus.success) {
+      this.showValidatedEmail = true;
+      this.showWrongValidatedEmail = false;
+    } else {
+      this.showValidatedEmail = false;
+      this.showWrongValidatedEmail = true;
+    }
   }
 }
 

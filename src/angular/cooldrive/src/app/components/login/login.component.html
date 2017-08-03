@@ -11,6 +11,12 @@
                 <div class="alert alert-success info" role="alert" *ngIf="showSuccesfulLogin">
                     <h3 style="margin: auto">Succesful Login!</h3>
                 </div>
+              <div class="alert alert-success info" role="alert" *ngIf="showValidatedEmail">
+                <h3 style="margin: auto">{{emailStatus.message}}</h3>
+              </div>
+              <div class="alert alert-warning info" role="alert" *ngIf="showWrongValidatedEmail">
+                <h3 style="margin: auto">{{emailStatus.message}}</h3>
+              </div>
                 <div class="card-group mb-0">
                     <div class="card p-4">
                         <div class="card-block">

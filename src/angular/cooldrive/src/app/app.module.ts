@@ -21,6 +21,9 @@ import { TransactionService } from './service/transaction.service';
 import { CheckoutService } from './service/checkout.service';
 import { PaymentComponent } from './components/payment/payment.component';
 import { TransactionStatus } from './components/transaction_status/transaction.status.component';
+import { EmailValidation } from './components/emailValidation/emailValidation.component';
+import {EmailValidationService} from "./service/email-validation.service";
+
 
 @NgModule({
   declarations: [
@@ -33,6 +36,7 @@ import { TransactionStatus } from './components/transaction_status/transaction.s
     CheckoutComponent,
     PaymentComponent,
     TransactionStatus
+    EmailValidation
   ],
   imports: [
     BrowserAnimationsModule,
@@ -40,6 +44,7 @@ import { TransactionStatus } from './components/transaction_status/transaction.s
     FormsModule,
     HttpModule,
     RouterModule.forRoot([
+      { path: 'verify/:token', component: EmailValidation },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard], children:
@@ -53,11 +58,11 @@ import { TransactionStatus } from './components/transaction_status/transaction.s
       },
       {path: "**", component: LoginComponent}
 
-      
+
     ])
   ],
-  
-  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService],
+
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -107,27 +107,18 @@ export class FilesComponent implements OnInit {
 
     if (filt.length === 0) {
       for (let file of this.files) {
-        if (file.folder) {
-          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
+        this.filteredFiles.push(file);
+      }
+    }else {
+      for (let file of this.files) {
+        if(file.label === null) {
+          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1) {
             this.filteredFiles.push(file);
           }
-        } else {
+        }else {
           if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
             this.filteredFiles.push(file);
           }
-        }
-      }
-      return;
-    }
-
-    for (let file of this.files) {
-      if (file.folder) {
-        if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
-          this.filteredFiles.push(file);
-        }
-      } else {
-        if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
-          this.filteredFiles.push(file);
         }
       }
     }
