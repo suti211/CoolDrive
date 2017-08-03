@@ -78,7 +78,7 @@ public class UserFileService {
         size /= 1024;
         int folderId = getFileId(token, "uploadFile");
         if (userFileController.checkAvailableSpace(folderId, size)) {
-            UserFileManager.saveUserFile(input, token.getToken(), folderId, false, 0);
+            UserFileManager.saveUserFile(input, token.getToken(), folderId, false);
             userFileController.changeFolderCurrSize(folderId, size);
             int parentId = userFileController.getUserFile(folderId).getParentId();
             if (parentId != 1) {
@@ -96,8 +96,11 @@ public class UserFileService {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/uploadTXT")
-    public Status uploadTXTFile(TXT txt, @Context HttpServletRequest request) {
-
+    public Status uploadTXTFile(TXT txt, @Context HttpServletRequest request) throws IOException {
+        int parentId = getFileId(txt.getToken(), "uploadTXTFile");
+        if(UserFileManager.createTXTFile(txt, parentId)) {
+            return new Status(Operation.TXT, true, "TXT file successfully created!");
+        }
         return new Status(Operation.TXT, false, "Cannot create TXT file!");
     }
 
