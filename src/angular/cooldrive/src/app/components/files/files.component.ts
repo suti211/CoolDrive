@@ -57,7 +57,7 @@ export class FilesComponent implements OnInit {
   }
 
   creatToken(id: number): Token {
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(id);
     return newToken;
@@ -126,7 +126,7 @@ export class FilesComponent implements OnInit {
     this.filteredFiles.length = 0;
 
     let newToken = this.creatToken(this.currentFolderId);
-    
+
     let getStorageInfoOperation: Observable<StorageInfo>;
     getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
     getStorageInfoOperation.subscribe((info: StorageInfo) => {
@@ -167,8 +167,8 @@ export class FilesComponent implements OnInit {
   }
 
   createFolder(){
-    let tokenID = localStorage.getItem(localStorage.key(0));
-    let folder = new Folder(tokenID,this.newFolderName,this.newFolderMaxSize,this.newFolderLabel);
+    let newToken = this.creatToken(-1);
+    let folder = new Folder(newToken.token,this.newFolderName,this.newFolderMaxSize,this.newFolderLabel);
 
     let createFolderOperation: Observable<Status>;
     createFolderOperation = this.fileService.createFolder(folder);
@@ -196,9 +196,7 @@ export class FilesComponent implements OnInit {
   }
 
   deleteFile(id: number){
-    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(id);
+    let newToken = this.creatToken(id);
 
     let deleteFileOperation: Observable<Status>;
     deleteFileOperation = this.fileService.deleteFile(newToken);
@@ -210,9 +208,7 @@ export class FilesComponent implements OnInit {
   }
 
   getStorageInfo(){
-    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(this.currentFolderId);
+    let newToken = this.creatToken(this.currentFolderId);
 
     let getStorageInfoOperation: Observable<StorageInfo>;
     getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
@@ -228,9 +224,7 @@ export class FilesComponent implements OnInit {
   uploadFile(){
     this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
 
-    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(this.currentFolderId);
+    let newToken = this.creatToken(this.currentFolderId);
 
     let uploadFileOperation: Observable<Status>;
     uploadFileOperation = this.fileService.uploadFile(newToken, this.uploadedFilesList[0]);
@@ -256,9 +250,7 @@ export class FilesComponent implements OnInit {
     this.files.length = 0;
     this.filteredFiles.length = 0;
 
-    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(id);
+    let newToken = this.creatToken(id);
 
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
@@ -273,9 +265,7 @@ export class FilesComponent implements OnInit {
 
   ngOnInit() {
     //  let tokenID = localStorage.getItem(localStorage.key(0));
-    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(-1);
+    let newToken = this.creatToken(-1);
 
     this.currentFolderId = -1;
     this.currentFolderName = "Your files";
