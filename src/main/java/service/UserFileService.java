@@ -40,10 +40,13 @@ public class UserFileService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/deleteFile")
-    public boolean deleteUserFile(Token token, @Context HttpServletRequest request) throws IOException {
+    public Status deleteUserFile(Token token, @Context HttpServletRequest request) throws IOException {
         LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
         int fileId = getFileId(token, "deleteUserFile");
         UserFile userFile = userFileController.getUserFile(fileId);
+        if(userFile.getSize() > 0 && userFile.isFolder()) {
+            return new Status(Operation.USERFILE, false, "This folder is not empty!");
+        }
         UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
         double fileSize = -userFile.getSize();
         int parentId = userFile.getParentId();
@@ -52,7 +55,10 @@ public class UserFileService {
         if (folderParentId != 1) {
             userFileController.changeFolderCurrSize(folderParentId, -fileSize);
         }
-        return userFileController.deleteUserFile(token.getId());
+        if (userFileController.deleteUserFile(token.getId())) {
+            return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
+        }
+        return new Status(Operation.USERFILE, false, "There was an error during deleting!");
     }
 
     @POST
@@ -78,7 +84,7 @@ public class UserFileService {
         size /= 1024;
         int folderId = getFileId(token, "uploadFile");
         if (userFileController.checkAvailableSpace(folderId, size)) {
-            UserFileManager.saveUserFile(input, token.getToken(), folderId, false, 0);
+            UserFileManager.saveUserFile(input, token.getToken(), folderId, false);
             userFileController.changeFolderCurrSize(folderId, size);
             int parentId = userFileController.getUserFile(folderId).getParentId();
             if (parentId != 1) {
@@ -90,6 +96,18 @@ public class UserFileService {
             LOG.info("uploadFile method is failed with id: {}", id);
             return new Status(Operation.USERFILE, false, "Not enough space for this file in this folder!");
         }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/uploadTXT")
+    public Status uploadTXTFile(TXT txt, @Context HttpServletRequest request) throws IOException {
+        int parentId = getFileId(txt.getToken(), "uploadTXTFile");
+        if(UserFileManager.createTXTFile(txt, parentId)) {
+            return new Status(Operation.TXT, true, "TXT file successfully created!");
+        }
+        return new Status(Operation.TXT, false, "Cannot create TXT file!");
     }
 
     @POST
