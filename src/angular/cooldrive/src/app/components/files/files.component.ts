@@ -6,6 +6,7 @@ import {StorageInfo} from '../../model/storage-info';
 import {Token} from '../../model/token.model';
 import {Status} from "../../model/status.model";
 import {Folder} from "../../model/folder";
+import {TextFile} from "../../model/text-file";
 
 @Component({
   selector: 'app-files',
@@ -38,6 +39,9 @@ export class FilesComponent implements OnInit {
   newFolderName: string;
   newFolderLabel: string;
   newFolderMaxSize: number;
+
+  newTxtTitle: string;
+  newTxtContent: string;
 
 
   progressBarSytle: string = "progress-bar";
@@ -175,6 +179,17 @@ export class FilesComponent implements OnInit {
     });
   }
 
+  createTxtFile(){
+    let token = this.creatToken(this.currentFolderId);
+    let txt = new TextFile(this.newTxtTitle, this.newTxtContent, token);
+
+    let createTXTOperation: Observable<Status>;
+    createTXTOperation = this.fileService.createTextFile(txt);
+    createTXTOperation.subscribe((status: Status) => {
+      console.log(status.message);
+      this.listFiles(this.currentFolderId);
+    });
+  }
 
   createFolder(){
     let tokenID = localStorage.getItem(localStorage.key(0));
