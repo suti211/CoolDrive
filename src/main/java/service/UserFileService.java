@@ -93,6 +93,15 @@ public class UserFileService {
     }
 
     @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/uploadTXT")
+    public Status uploadTXTFile(TXT txt, @Context HttpServletRequest request) {
+
+        return new Status(Operation.TXT, false, "Cannot create TXT file!");
+    }
+
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/modify")
