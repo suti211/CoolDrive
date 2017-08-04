@@ -15,9 +15,9 @@ import javax.mail.internet.MimeMultipart;
  */
 public class EmailSenderUtil {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EmailSenderUtil.class);
+    private final Logger LOG = LoggerFactory.getLogger(EmailSenderUtil.class);
 
-    public static void sendEmail(User user, String token) {
+    public void sendEmail(User user, String token) {
         LOG.info("sendEmail method is called from: {}", user.getEmail());
         final String username = "cooldrive.codecool@gmail.com";
         final String password = "CoolDrive2017.";
