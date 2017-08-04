@@ -104,7 +104,7 @@ public class UserFileService extends ControllersFactory {
         return new Status(Operation.TXT, false, "Cannot create TXT file!");
     }
 
-    @GET
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getTXT")
