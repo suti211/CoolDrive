@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by David Szilagyi on 2017. 07. 18..
  */
-public class UserFileManager extends ControllersUtil{
+public class UserFileManager extends ControllersFactory {
     private final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
     private String folderName;
     private Path rootPath = Paths.get(PathUtil.ROOT_PATH);
@@ -147,6 +147,17 @@ public class UserFileManager extends ControllersUtil{
             LOG.error("createTXTFile failed with exception", e);
             return false;
         }
+    }
+
+    public TXT readFromTXT(String fileName, String path) throws IOException {
+        String content = "";
+        File file = new File(path);
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String line;
+        while((line = br.readLine()) != null) {
+            content += line;
+        }
+        return new TXT(fileName, content);
     }
 
     private int createUserFile(String fileName, User user, int parentId, boolean isFolder) throws IOException {
