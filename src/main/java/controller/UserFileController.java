@@ -18,8 +18,8 @@ import java.util.List;
  * Created by David Szilagyi on 2017. 07. 11..
  */
 public class UserFileController extends DatabaseController implements UserFileDao {
-    private static final Logger LOG = LoggerFactory.getLogger(UserFileController.class);
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final Logger LOG = LoggerFactory.getLogger(UserFileController.class);
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public UserFileController(ConnectionUtil.DatabaseName database) {
         super(database);
