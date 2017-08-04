@@ -15,7 +15,7 @@ import {TextFile} from "../model/text-file";
 export class FileService {
   files: File[] = [];
   filteredFiles: File[] = [];
-  filesUrl = environment.urlPrefix + "/" + "files";
+  filesUrl = environment.urlPrefix + '/files/';
 
   constructor(private http: Http) {
   }
