@@ -155,8 +155,9 @@ public class UserFileManager extends ControllersFactory {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;
         while((line = br.readLine()) != null) {
-            content += line;
+            content += line + "\n";
         }
+        br.close();
         return new TXT(fileName, content);
     }
 
