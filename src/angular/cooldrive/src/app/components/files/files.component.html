@@ -44,6 +44,7 @@
           </button>
           <div id="floatingButtonDropdown" class="dropdown-menu">
             <a class="dropdown-item" (click)="download(file.id)">Download</a>
+            <a class="dropdown-item" *ngIf="file.extension == '.txt'" data-toggle="modal" data-target="#editTxtModal">Edit Text</a>
             <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
             <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red; cursor: pointer">Delete</a>
           </div>
@@ -184,6 +185,35 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <input id="createTxtButton" type="button" class="btn btn-primary" (click)="createTxtFile()" value="Create">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT TEXT FILE MODAL -->
+  <div class="modal fade" id="editTxtModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Text File</h4>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="false" id="editTxtInfo" class="alert alert-success" role="alert">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon createTxtModal">Title</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newTxtTitle">
+          </div>
+          <div class="form-group">
+            <br>
+            <span class="input-group-addon createTxtModal content">Content</span>
+            <textarea class="form-control" id="editTextarea" rows="3" [(ngModel)]="newTxtContent"></textarea>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <input id="editTxtButton" type="button" class="btn btn-primary" (click)="createTxtFile()" value="Save">
         </div>
       </div>
     </div>
