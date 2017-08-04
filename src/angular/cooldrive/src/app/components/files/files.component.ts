@@ -43,6 +43,9 @@ export class FilesComponent implements OnInit {
   newTxtTitle: string;
   newTxtContent: string;
 
+  editTxtTitle: string;
+  editTxtContent: string;
+
 
   progressBarSytle: string = "progress-bar";
 
@@ -159,7 +162,32 @@ export class FilesComponent implements OnInit {
     let txt = new TextFile(this.newTxtTitle, this.newTxtContent, token);
 
     let createTXTOperation: Observable<Status>;
-    createTXTOperation = this.fileService.createTextFile(txt);
+    createTXTOperation = this.fileService.uploadTextFile(txt);
+    createTXTOperation.subscribe((status: Status) => {
+      console.log(status.message);
+      this.listFiles(this.currentFolderId);
+    });
+  }
+
+  fetchEditTxtData(id: number){
+    let token = this.creatToken(id);
+
+    let fetchTXTOperation: Observable<TextFile>;
+    fetchTXTOperation = this.fileService.getTxtFileData(token);
+    fetchTXTOperation.subscribe((txt: TextFile) => {
+      console.log(txt);
+      this.editTxtTitle = txt.name;
+      this.editTxtContent = txt.content;
+    });
+
+  }
+
+  editTxtFile(){
+    let token = this.creatToken(this.currentFolderId);
+    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, token);
+
+    let createTXTOperation: Observable<Status>;
+    createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
       console.log(status.message);
       this.listFiles(this.currentFolderId);
