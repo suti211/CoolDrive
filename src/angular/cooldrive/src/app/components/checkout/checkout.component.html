@@ -1,7 +1,7 @@
 <h2>Checkout:</h2>
     <h4>Please validate your personal informations!</h4>
 <hr>
-<div class="row" *ngIf="loaded">
+<div class="row">
     <div class="col-sm-5 col-md-4">
         <h4><strong>Customer name </strong></h4>
         <h4><strong>ZIP code: </strong></h4>
@@ -23,10 +23,15 @@
     </div>
 </div>
 <hr>
-<div class="row" *ngIf="loaded">
+<div class="row" *ngIf="displayPaymentButton">
     <div class="col-sm-5 col-md-4 text-center centered">
         <div class="btn-group" role="group" aria-label="...">
-            <button type="button" class="btn btn-primary">Payment</button>
+            <button type="button" class="btn btn-primary" (click)="isConfirmed = true; displayPaymentButton = false">Payment</button>
+            <hr>
         </div>
     </div>
+</div>
+
+<div *ngIf="isConfirmed">
+    <app-payment></app-payment>
 </div>

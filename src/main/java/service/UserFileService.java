@@ -1,14 +1,11 @@
 package service;
 
-import controller.UserController;
-import controller.UserFileController;
 import dto.*;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ConnectionUtil;
+import util.ControllersUtil;
 import util.UserFileManager;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -22,10 +19,9 @@ import java.util.List;
  * Created by David Szilagyi und Dani on 2017. 07. 18..
  */
 @Path("/files")
-public class UserFileService {
-    private static final Logger LOG = LoggerFactory.getLogger(UserFileService.class);
-    private static final UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-    private static final UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
+public class UserFileService extends ControllersUtil {
+    private final Logger LOG = LoggerFactory.getLogger(UserFileService.class);
+    private final UserFileManager userFileManager = new UserFileManager();
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -44,21 +40,18 @@ public class UserFileService {
         LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
         int fileId = getFileId(token, "deleteUserFile");
         UserFile userFile = userFileController.getUserFile(fileId);
-        if(userFile.getSize() > 0 && userFile.isFolder()) {
-            return new Status(Operation.USERFILE, false, "This folder is not empty!");
-        }
-        UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
-        double fileSize = -userFile.getSize();
-        int parentId = userFile.getParentId();
-        userFileController.changeFolderCurrSize(parentId, fileSize);
-        int folderParentId = userFileController.getUserFile(parentId).getParentId();
-        if (folderParentId != 1) {
-            userFileController.changeFolderCurrSize(folderParentId, -fileSize);
-        }
-        if (userFileController.deleteUserFile(token.getId())) {
+        if(userFileController.deleteUserFile(fileId)) {
+            userFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
+            double fileSize = -userFile.getSize();
+            int parentId = userFile.getParentId();
+            userFileController.changeFolderCurrSize(parentId, fileSize);
+            int folderParentId = userFileController.getUserFile(parentId).getParentId();
+            if (folderParentId != 1) {
+                userFileController.changeFolderCurrSize(folderParentId, fileSize);
+            }
             return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
         }
-        return new Status(Operation.USERFILE, false, "There was an error during deleting!");
+            return new Status(Operation.USERFILE, false, "This folder is not empty!");
     }
 
     @POST
@@ -84,7 +77,7 @@ public class UserFileService {
         size /= 1024;
         int folderId = getFileId(token, "uploadFile");
         if (userFileController.checkAvailableSpace(folderId, size)) {
-            UserFileManager.saveUserFile(input, token.getToken(), folderId, false);
+            userFileManager.saveUserFile(input, token.getToken(), folderId, false);
             userFileController.changeFolderCurrSize(folderId, size);
             int parentId = userFileController.getUserFile(folderId).getParentId();
             if (parentId != 1) {
@@ -104,7 +97,7 @@ public class UserFileService {
     @Path("/uploadTXT")
     public Status uploadTXTFile(TXT txt, @Context HttpServletRequest request) throws IOException {
         int parentId = getFileId(txt.getToken(), "uploadTXTFile");
-        if(UserFileManager.createTXTFile(txt, parentId)) {
+        if(userFileManager.createTXTFile(txt, parentId)) {
             return new Status(Operation.TXT, true, "TXT file successfully created!");
         }
         return new Status(Operation.TXT, false, "Cannot create TXT file!");
@@ -148,7 +141,7 @@ public class UserFileService {
     public Response downloadFile(@Context HttpServletRequest request) {
         int id = Integer.valueOf(request.getParameter("id"));
         LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
-        File userFile = UserFileManager.downloadUserFiles(Integer.valueOf(id));
+        File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
         String name = userFile.getName();
         String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
         if (userFile != null) {

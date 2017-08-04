@@ -3,11 +3,11 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Token } from '../model/token.model';
 import { Status } from '../model/status.model';
+import { environment } from "../../environments/environment"
 
 @Injectable()
 export class TokenService{
-    tokenUrl = "http://localhost:8080/CoolDrive/token";
-    //loginUrl = "http://demo1158757.mockable.io/loginTest";
+    tokenUrl = environment.urlPrefix + "/" + "token";
 
     constructor(private http:Http){
 

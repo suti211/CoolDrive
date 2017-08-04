@@ -19,8 +19,11 @@ import { ExtensionComponent } from './components/storage_extension/extension.com
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { TransactionService } from './service/transaction.service';
 import { CheckoutService } from './service/checkout.service';
+import { PaymentComponent } from './components/payment/payment.component';
+import { TransactionStatus } from './components/transaction_status/transaction.status.component';
 import { EmailValidation } from './components/emailValidation/emailValidation.component';
 import {EmailValidationService} from "./service/email-validation.service";
+
 
 @NgModule({
   declarations: [
@@ -31,6 +34,8 @@ import {EmailValidationService} from "./service/email-validation.service";
     FilesComponent,
     ExtensionComponent,
     CheckoutComponent,
+    PaymentComponent,
+    TransactionStatus,
     EmailValidation
   ],
   imports: [
@@ -46,7 +51,9 @@ import {EmailValidationService} from "./service/email-validation.service";
        [
           { path: 'files', component: FilesComponent},
           { path: 'storage', canActivate: [LoginGuard], component: ExtensionComponent},
-          { path: 'checkout/:id', canActivate: [LoginGuard], component: CheckoutComponent}
+          { path: 'checkout', canActivate: [LoginGuard], component: CheckoutComponent},
+          { path: 'payment/:id', canActivate: [LoginGuard], component: PaymentComponent},
+          { path: 'transaction', canActivate: [LoginGuard], component: TransactionStatus},
         ]
       },
       {path: "**", component: LoginComponent}

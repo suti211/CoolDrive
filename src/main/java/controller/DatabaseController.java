@@ -10,7 +10,7 @@ import java.sql.Connection;
  */
 public class DatabaseController {
   
-    private static final Logger LOG = LoggerFactory.getLogger(DatabaseController.class);
+    private final Logger LOG = LoggerFactory.getLogger(DatabaseController.class);
     protected Connection con = null;
 
     public DatabaseController(ConnectionUtil.DatabaseName database) {
