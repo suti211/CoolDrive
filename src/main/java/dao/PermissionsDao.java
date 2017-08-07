@@ -5,7 +5,7 @@ package dao;
  */
 public interface PermissionsDao {
 
-    boolean addFileToUser(int userId, int fileId);
+    boolean addFileToUser(int fileId, int userId, boolean readOnly);
 
     boolean removeFileFromUser(int userId, int fileId);
 }

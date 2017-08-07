@@ -19,12 +19,13 @@ public class PermissionsController extends DatabaseController implements Permiss
         super(database);
     }
 
-    public boolean addFileToUser(int fileId, int userId) {
+    public boolean addFileToUser(int fileId, int userId, boolean readOnly) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("INSERT INTO Permissions(fileId, userId) VALUES (?, ?)");
+            ps = con.prepareStatement("INSERT INTO Permissions(fileId, userId, readOnly) VALUES (?, ?, ?)");
             ps.setInt(1, fileId);
             ps.setInt(2, userId);
+            ps.setBoolean(3, readOnly);
             int success = ps.executeUpdate();
             if (success > 0){
                 LOG.info("Add file to user is succeeded(fileId: {}, userId: {)",fileId,userId);
@@ -46,7 +47,7 @@ public class PermissionsController extends DatabaseController implements Permiss
             ps.setInt(2, userId);
             int success = ps.executeUpdate();
             if(success > 0){
-                LOG.info("Remove file frome user is succeeded(fileId: {}, userId: {)",fileId,userId);
+                LOG.info("Remove file from user is succeeded(fileId: {}, userId: {)",fileId,userId);
                 return true;
             }
         } catch (SQLException e) {
