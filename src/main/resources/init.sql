@@ -69,6 +69,7 @@ CREATE TABLE `Permissions` (
   `readOnly` tinyint(1) DEFAULT NULL,
   KEY `Permissions_Files_id_fk` (`fileId`),
   KEY `Permissions_Users_id_fk` (`userId`),
+  UNIQUE KEY `FileId_userId` (`fileId`, `userId`),
   CONSTRAINT `Permissions_Files_id_fk` FOREIGN KEY (`fileId`) REFERENCES `Files` (`id`),
   CONSTRAINT `Permissions_Users_id_fk` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
