@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -54,6 +55,23 @@ public class PermissionsController extends DatabaseController implements Permiss
             LOG.error("Remove file from user is failed with Exception",e);
         }
         LOG.debug("Remove file from user is failed(fileId: {), userId: {} in removeFileFromUser",fileId,userId);
+        return false;
+    }
+
+    public boolean checkAccess(int fileId, int userId) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("SELECT * FROM Permissions WHERE fileId = ? AND userId = ?");
+            ps.setInt(1, fileId);
+            ps.setInt(2, userId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            LOG.error("checkAccess is failed with Exception",e);
+        }
         return false;
     }
 }
