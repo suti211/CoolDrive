@@ -9,11 +9,11 @@ import dto.Operation;
 import dto.Status;
 import dto.Token;
 import dto.User;
-import util.ControllersUtil;
+import util.ControllersFactory;
 
 
 @Path("/token")
-public class TokenValidationService extends ControllersUtil {
+public class TokenValidationService extends ControllersFactory {
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)

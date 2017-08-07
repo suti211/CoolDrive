@@ -4,7 +4,7 @@ import dto.*;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ControllersUtil;
+import util.ControllersFactory;
 import util.UserFileManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -19,7 +19,7 @@ import java.util.List;
  * Created by David Szilagyi und Dani on 2017. 07. 18..
  */
 @Path("/files")
-public class UserFileService extends ControllersUtil {
+public class UserFileService extends ControllersFactory {
     private final Logger LOG = LoggerFactory.getLogger(UserFileService.class);
     private final UserFileManager userFileManager = new UserFileManager();
 
@@ -96,11 +96,24 @@ public class UserFileService extends ControllersUtil {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/uploadTXT")
     public Status uploadTXTFile(TXT txt, @Context HttpServletRequest request) throws IOException {
+        LOG.info("uploadTXTFile method is called with token:{}, id: {}, from: {}", txt.getToken().getToken(), txt.getToken().getId(), request.getRemoteAddr());
         int parentId = getFileId(txt.getToken(), "uploadTXTFile");
         if(userFileManager.createTXTFile(txt, parentId)) {
             return new Status(Operation.TXT, true, "TXT file successfully created!");
         }
         return new Status(Operation.TXT, false, "Cannot create TXT file!");
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getTXT")
+    public TXT getTXTFile(Token token, @Context HttpServletRequest request) throws IOException {
+        LOG.info("getTXTFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
+        int fileId = getFileId(token, "getTXTFile");
+        UserFile userFile = userFileController.getUserFile(fileId);
+        String path = userFile.getPath() + "\\" + fileId + ".txt";
+        return userFileManager.readFromTXT(userFile.getFileName(), path);
     }
 
     @POST
