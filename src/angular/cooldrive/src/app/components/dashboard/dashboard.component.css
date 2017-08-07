@@ -91,3 +91,7 @@ h1 {
 .sidebar .nav-link {
   border-radius: 0;
 }
+
+.dropdown-item{
+  cursor: pointer;
+}

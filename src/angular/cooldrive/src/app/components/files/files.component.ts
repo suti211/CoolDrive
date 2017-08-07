@@ -6,6 +6,7 @@ import {StorageInfo} from '../../model/storage-info';
 import {Token} from '../../model/token.model';
 import {Status} from "../../model/status.model";
 import {Folder} from "../../model/folder";
+import {TextFile} from "../../model/text-file";
 
 @Component({
   selector: 'app-files',
@@ -39,6 +40,9 @@ export class FilesComponent implements OnInit {
   newFolderLabel: string;
   newFolderMaxSize: number;
 
+  newTxtTitle: string;
+  newTxtContent: string;
+
 
   progressBarSytle: string = "progress-bar";
 
@@ -53,7 +57,7 @@ export class FilesComponent implements OnInit {
   }
 
   creatToken(id: number): Token {
-    let tokenID = localStorage.getItem(localStorage.key(0));
+    let tokenID = sessionStorage.getItem(sessionStorage.key(0));
     let newToken = new Token(tokenID);
     newToken.setID(id);
     return newToken;
@@ -83,22 +87,6 @@ export class FilesComponent implements OnInit {
     }
   }
 
-  getStorageInfo(){
-    let tokenID = localStorage.getItem(localStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(this.currentFolderId);
-
-    let getStorageInfoOperation: Observable<StorageInfo>;
-    getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
-    getStorageInfoOperation.subscribe((info: StorageInfo) => {
-      this.usage = info.usage;
-      this.quantity = info.quantity;
-      this.percentage = info.usage / info.quantity * 100;
-
-      this.setProgressBarStyle();
-    });
-  }
-
   // Files list methods
 
   filterFiles(filt: string) {
@@ -107,27 +95,18 @@ export class FilesComponent implements OnInit {
 
     if (filt.length === 0) {
       for (let file of this.files) {
-        if (file.folder) {
-          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
+        this.filteredFiles.push(file);
+      }
+    }else {
+      for (let file of this.files) {
+        if(file.label === null) {
+          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1) {
             this.filteredFiles.push(file);
           }
-        } else {
+        }else {
           if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
             this.filteredFiles.push(file);
           }
-        }
-      }
-      return;
-    }
-
-    for (let file of this.files) {
-      if (file.folder) {
-        if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
-          this.filteredFiles.push(file);
-        }
-      } else {
-        if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
-          this.filteredFiles.push(file);
         }
       }
     }
@@ -175,10 +154,21 @@ export class FilesComponent implements OnInit {
     });
   }
 
+  createTxtFile(){
+    let token = this.creatToken(this.currentFolderId);
+    let txt = new TextFile(this.newTxtTitle, this.newTxtContent, token);
+
+    let createTXTOperation: Observable<Status>;
+    createTXTOperation = this.fileService.createTextFile(txt);
+    createTXTOperation.subscribe((status: Status) => {
+      console.log(status.message);
+      this.listFiles(this.currentFolderId);
+    });
+  }
 
   createFolder(){
-    let tokenID = localStorage.getItem(localStorage.key(0));
-    let folder = new Folder(tokenID,this.newFolderName,this.newFolderMaxSize,this.newFolderLabel);
+    let newToken = this.creatToken(-1);
+    let folder = new Folder(newToken.token,this.newFolderName,this.newFolderMaxSize,this.newFolderLabel);
 
     let createFolderOperation: Observable<Status>;
     createFolderOperation = this.fileService.createFolder(folder);
@@ -206,9 +196,7 @@ export class FilesComponent implements OnInit {
   }
 
   deleteFile(id: number){
-    let tokenID = localStorage.getItem(localStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(id);
+    let newToken = this.creatToken(id);
 
     let deleteFileOperation: Observable<Status>;
     deleteFileOperation = this.fileService.deleteFile(newToken);
@@ -219,12 +207,24 @@ export class FilesComponent implements OnInit {
     });
   }
 
+  getStorageInfo(){
+    let newToken = this.creatToken(this.currentFolderId);
+
+    let getStorageInfoOperation: Observable<StorageInfo>;
+    getStorageInfoOperation = this.fileService.getStorageInfo(newToken);
+    getStorageInfoOperation.subscribe((info: StorageInfo) => {
+      this.usage = info.usage;
+      this.quantity = info.quantity;
+      this.percentage = info.usage / info.quantity * 100;
+
+      this.setProgressBarStyle();
+    });
+  }
+
   uploadFile(){
     this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
 
-    let tokenID = localStorage.getItem(localStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(this.currentFolderId);
+    let newToken = this.creatToken(this.currentFolderId);
 
     let uploadFileOperation: Observable<Status>;
     uploadFileOperation = this.fileService.uploadFile(newToken, this.uploadedFilesList[0]);
@@ -250,9 +250,7 @@ export class FilesComponent implements OnInit {
     this.files.length = 0;
     this.filteredFiles.length = 0;
 
-    let tokenID = localStorage.getItem(localStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(id);
+    let newToken = this.creatToken(id);
 
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
@@ -267,9 +265,7 @@ export class FilesComponent implements OnInit {
 
   ngOnInit() {
     //  let tokenID = localStorage.getItem(localStorage.key(0));
-    let tokenID = localStorage.getItem(localStorage.key(0));
-    let newToken = new Token(tokenID);
-    newToken.setID(-1);
+    let newToken = this.creatToken(-1);
 
     this.currentFolderId = -1;
     this.currentFolderName = "Your files";

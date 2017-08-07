@@ -1,6 +1,8 @@
 package util;
 
 import dto.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -13,7 +15,10 @@ import javax.mail.internet.MimeMultipart;
  */
 public class EmailSenderUtil {
 
-    public static void sendEmail(User user, String token) {
+    private final Logger LOG = LoggerFactory.getLogger(EmailSenderUtil.class);
+
+    public void sendEmail(User user, String token) {
+        LOG.info("sendEmail method is called from: {}", user.getEmail());
         final String username = "cooldrive.codecool@gmail.com";
         final String password = "CoolDrive2017.";
 
@@ -29,7 +34,7 @@ public class EmailSenderUtil {
             }
         });
 
-        String regURL = String.format("<a href=http://localhost:8080/CoolDrive/user/verify?email=%s&token=%s>Verify my account</a>", user.getEmail(), token);
+        String regURL = String.format("<a href=http://localhost:4200/verify/%s>Verify my account</a>", token);
         String text = String.format("Dear %s,<br>Thank you for registration for <b>CoolDrive!</b><br>" +
                 "Your account informations:<br>" +
                 "<hr>Username: %s<br>Starting quantity: 50 MB<br>" +
@@ -50,8 +55,9 @@ public class EmailSenderUtil {
             message.setSubject("Verification e-mail for CoolDrive");
 //            message.setText(text);
             Transport.send(message);
-            System.out.println("Done");
+            LOG.info("Email send to {} and waiting for validation", user.getEmail());
         } catch (MessagingException e) {
+            LOG.error("sendEmail method is failed with exception", e);
             throw new RuntimeException(e);
         }
     }

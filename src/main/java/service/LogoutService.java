@@ -5,24 +5,22 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import controller.UserController;
 import dto.Operation;
 import dto.Status;
 import dto.Token;
 import dto.User;
-import util.ConnectionUtil;
+import util.ControllersUtil;
 
 @Path("/logout")
-public class LogoutService {
+public class LogoutService extends ControllersUtil {
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("")
 	public Status deleteUserToken(Token token){
-		UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-		User user = userController.getUser(token.getToken());
+
+		User user = userController.getUser("token", token.getToken());
 		
 		boolean tokenRemoved = userController.deleteToken(user.getUserName());
 		

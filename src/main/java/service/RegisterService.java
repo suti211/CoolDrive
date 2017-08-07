@@ -7,25 +7,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
-import controller.UserController;
-import controller.UserFileController;
 import dto.Operation;
 import dto.Status;
 import dto.User;
 import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ConnectionUtil;
-import util.EmailSenderUtil;
-import util.PathUtil;
-import util.UserFileManager;
+import util.*;
 
 @Path("/register")
-public class RegisterService {
-	private static final Logger LOG = LoggerFactory.getLogger(RegisterService.class);
-	private static final UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-	private static final UserFileController ufc = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
+public class RegisterService extends ControllersUtil {
+	private final Logger LOG = LoggerFactory.getLogger(RegisterService.class);
+	private final UserFileManager userFileManager = new UserFileManager();
+	private final EmailSenderUtil emailSenderUtil = new EmailSenderUtil();
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -39,11 +33,11 @@ public class RegisterService {
 			int startQuantity = 50;
 			int parentId = 1;
 			int userId = userController.registerUser(input);
-			int userHomeId = ufc.addNewUserFile(new UserFile(PathUtil.ROOT_PATH, 0, input.getUserName(), "dir", startQuantity, true, userId, parentId));
+			int userHomeId = userFileController.addNewUserFile(new UserFile(PathUtil.ROOT_PATH, 0, input.getUserName(), "dir", startQuantity, true, userId, parentId));
 			if(userController.setHomeId(userId, userHomeId)){
-				UserFileManager.saveFolder(input.getUserName());
+				userFileManager.saveFolder(input.getUserName());
 				userController.setToken(input.getUserName());
-				EmailSenderUtil.sendEmail(input, userController.getUserbyemail(input.getEmail()).getToken());
+				emailSenderUtil.sendEmail(input, userController.getUser("email", input.getEmail()).getToken());
 				return new Status(Operation.REGISTER, true, "User successfully registered!");
 			} else {
 				return new Status(Operation.REGISTER, false, "Failed to add user to DB!");

@@ -18,8 +18,8 @@ import java.util.List;
  * Created by David Szilagyi on 2017. 07. 11..
  */
 public class UserFileController extends DatabaseController implements UserFileDao {
-    private static final Logger LOG = LoggerFactory.getLogger(UserFileController.class);
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final Logger LOG = LoggerFactory.getLogger(UserFileController.class);
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public UserFileController(ConnectionUtil.DatabaseName database) {
         super(database);
@@ -107,8 +107,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
     public boolean changeFolderCurrSize(int id, double size) {
         PreparedStatement ps = null;
         try {
-             ps = con.prepareStatement(
-                     "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
+            ps = con.prepareStatement(
+                    "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
             ps.setDouble(1, size);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
@@ -162,32 +162,31 @@ public class UserFileController extends DatabaseController implements UserFileDa
             if (success > 0) {
                 LOG.info("Userfile is successfully deleted with this id: {}", id);
                 return true;
-
             }
         } catch (SQLException e) {
             LOG.error("Delete userfile is failed with Exception", e);
+            return false;
         }
         LOG.debug("File not found with this id: {} in deleteUserFile method", id);
         return false;
     }
 
-    public int checkUserFile(UserFile userFile) {
+    public int checkUserFile(String filename, String extension, int parentId) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SELECT id FROM Files WHERE path = ? AND filename = ?");
-            ps.setString(1, userFile.getPath());
-            ps.setString(2, userFile.getFileName());
-            int success = ps.executeUpdate();
-            if (success > 0) {
-                ResultSet rs = ps.executeQuery();
-                LOG.info("Userfile(filename: {}, path: {}) is successfully checked", userFile.getFileName(), userFile.getPath());
-                rs.first();
+            ps = con.prepareStatement("SELECT id FROM Files WHERE filename = ? AND extension = ? AND parentId = ?");
+            ps.setString(1, filename);
+            ps.setString(2, extension);
+            ps.setInt(3, parentId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                LOG.info("UserFile(filename: {}, extension: {}, parentId: {}) is found", filename, extension, parentId);
                 return rs.getInt("id");
             }
         } catch (SQLException e) {
-            LOG.error("check userfile is failed with Exception", e);
+            LOG.error("check UserFile is failed with Exception", e);
         }
-        return 0;
+        return -1;
     }
 
     public boolean checkAvailableSpace(int id, double fileSize) {
@@ -196,8 +195,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
             ps = con.prepareStatement("SELECT `size`, maxSize FROM Files WHERE id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                if((rs.getDouble("maxSize") - rs.getDouble("size")) > fileSize) {
+            if (rs.next()) {
+                if ((rs.getDouble("maxSize") - rs.getDouble("size")) > fileSize) {
                     return true;
                 } else {
                     return false;
@@ -225,6 +224,25 @@ public class UserFileController extends DatabaseController implements UserFileDa
             LOG.error("setFileSize is failed with Exception", e);
         }
         LOG.debug("File not found with this id: {} in setFileSize method", id);
+        return false;
+    }
+
+    public boolean increaseFileSize(int homeId, double increment) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement(
+                    "UPDATE Files SET `maxSize`= `maxSize` + ? WHERE id = ?");
+            ps.setDouble(1, increment);
+            ps.setInt(2, homeId);
+            int success = ps.executeUpdate();
+            if (success > 0) {
+                LOG.info("increaseFileSize(increment: {}) is successfully modified with this homeId: {}", increment, homeId);
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("setFileSize is failed with Exception", e);
+        }
+        LOG.debug("File not found with this id: {} in setFileSize method", homeId);
         return false;
     }
 }

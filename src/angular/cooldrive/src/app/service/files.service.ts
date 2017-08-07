@@ -2,19 +2,20 @@ import {Injectable} from '@angular/core';
 import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import {File} from '../model/file.model';
-
+import { environment } from "../../environments/environment.live"
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
 import {StorageInfo} from '../model/storage-info';
 import {Token} from '../model/token.model';
 import {Status} from "../model/status.model";
 import {Folder} from "../model/folder";
+import {TextFile} from "../model/text-file";
 
 @Injectable()
 export class FileService {
   files: File[] = [];
   filteredFiles: File[] = [];
-  filesUrl = "http://localhost:8080/CoolDrive/files/";
+  filesUrl = environment.urlPrefix + "/" + "files";
 
   constructor(private http: Http) {
   }
@@ -25,6 +26,16 @@ export class FileService {
 
   getFilteredFilesArray(): File[] {
     return this.filteredFiles;
+  }
+
+  createTextFile(txt: TextFile): Observable<Status>{
+    let bodyString = JSON.stringify(txt);
+    console.log(bodyString);
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.filesUrl + 'uploadTXT', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw('Server Error'));
   }
 
   createFolder(folder: Folder): Observable<Status>{

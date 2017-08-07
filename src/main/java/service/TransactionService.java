@@ -7,29 +7,21 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import controller.TransactionsController;
-import controller.UserController;
 import dto.Operation;
 import dto.Status;
 import dto.Transaction;
 import dto.User;
-import util.ConnectionUtil;
-import util.ConnectionUtil.DatabaseName;
+import util.ControllersUtil;
 
 @Path("/transaction")
-public class TransactionService {
+public class TransactionService extends ControllersUtil {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Status createNewTransaction(Transaction	transaction){
-		final DatabaseName DATABASE_NAME = ConnectionUtil.DatabaseName.CoolDrive;
-		UserController userController = new UserController(DATABASE_NAME);
-		TransactionsController transactionsController = new TransactionsController(DATABASE_NAME);
-		
-		
-		User user = userController.getUser(transaction.getUserToken());
+	public Status createNewTransaction(Transaction transaction){
+
+		User user = userController.getUser("token", transaction.getUserToken());
 		
 		if(user == null){
 			return new Status(Operation.NEWTRANSACTION, false, "Token mismatch, no such user!");
@@ -40,16 +32,17 @@ public class TransactionService {
 		java.util.Date utilDate = cal.getTime();
 		java.sql.Date sqlDate = new Date(utilDate.getTime());
 		
-		Transaction newTransaction = new Transaction(user.getId(), transaction.getFirstName(), transaction.getLastName(), transaction.getZip(), transaction.getCity(), transaction.getAddress1(), null, transaction.getPhone(), transaction.getBought(), sqlDate.toString());
+		Transaction newTransaction = new Transaction(user.getId(), transaction.getFirstName(), transaction.getLastName(), transaction.getZip(), transaction.getCity(), transaction.getAddress1(), transaction.getAddress2(), transaction.getPhone(), transaction.getBought(), sqlDate.toString());
 		
 		int transactionID = transactionsController.addTransaction(newTransaction);
 		
 		System.out.println(transaction.toString());
 		
 		if(transactionID != -1){
-			return new Status(Operation.NEWTRANSACTION, true, String.valueOf(transactionID));
+			userFileController.increaseFileSize(user.getUserHomeId(), Double.parseDouble(newTransaction.getBought()));
+			return new Status(Operation.NEWTRANSACTION, true, "Transaction added succesfully!");
 		} else {
-			return new Status(Operation.NEWTRANSACTION, false, "Transaction creation failed because of reasons!");
+			return new Status(Operation.NEWTRANSACTION, false, "Transaction wasn't added to database.");
 		}
 		
 	}

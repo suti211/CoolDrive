@@ -19,7 +19,7 @@ public interface UserFileDao {
 
     boolean deleteUserFile(int id);
 
-    int checkUserFile(UserFile userFile);
+    int checkUserFile(String filename, String extension, int parentId);
 
     boolean checkAvailableSpace(int id, double fileSize);
 

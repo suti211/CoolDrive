@@ -1,43 +1,33 @@
 package util;
 
-import controller.UserController;
-import controller.UserFileController;
+import dto.TXT;
 import dto.User;
 import dto.UserFile;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Created by David Szilagyi on 2017. 07. 18..
  */
-public class UserFileManager {
-    private static final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
-    private static UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-    private static UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
-    private static String folderName;
-    private static Path rootPath = Paths.get(PathUtil.ROOT_PATH);
-    private static Path tempPath = Paths.get(PathUtil.TEMP_PATH);
+public class UserFileManager extends ControllersUtil{
+    private final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
+    private String folderName;
+    private Path rootPath = Paths.get(PathUtil.ROOT_PATH);
+    private Path tempPath = Paths.get(PathUtil.TEMP_PATH);
 
-    public static void saveUserFile(MultipartFormDataInput input, String token, int parentId, boolean isFolder, double maxSize) {
-        User user = userController.getUser(token);
+    public void saveUserFile(MultipartFormDataInput input, String token, int parentId, boolean isFolder) {
+        User user = userController.getUser("token", token);
         folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("input");
@@ -48,7 +38,7 @@ public class UserFileManager {
                 String fileName = getFileName(inputPart.getHeaders());
                 String extension = fileName.substring(fileName.lastIndexOf("."));
                 InputStream body = inputPart.getBody(new GenericType<>(InputStream.class));
-                fileId = createUserFile(fileName, user, parentId, isFolder, maxSize, body) + extension;
+                fileId = createUserFile(fileName, user, parentId, isFolder) + extension;
                 streams.put(String.valueOf(fileId), body);
             } catch (IOException e) {
                 LOG.error("The save user method was failed due to an exception", e);
@@ -64,7 +54,7 @@ public class UserFileManager {
         });
     }
 
-    private static String getFileName(MultivaluedMap<String, String> header) {
+    private String getFileName(MultivaluedMap<String, String> header) {
 
         String[] contentDisPosition = header.get("Content-Disposition").get(0).split(";");
 
@@ -77,7 +67,7 @@ public class UserFileManager {
         return "unknown";
     }
 
-    public static boolean saveFolder(String folderName) {
+    public boolean saveFolder(String folderName) {
         Path realPath = Paths.get(rootPath.toString(), folderName);
         File file = realPath.toFile();
         if (file.exists() && file.isDirectory()) {
@@ -88,7 +78,7 @@ public class UserFileManager {
         return file.mkdirs();
     }
 
-    private static void writeFile(String filename, InputStream inputStream) throws IOException {
+    private void writeFile(String filename, InputStream inputStream) throws IOException {
         Path path = Paths.get(rootPath.toString(), folderName, filename);
         File file = path.toFile();
         if (!file.exists()) {
@@ -103,13 +93,34 @@ public class UserFileManager {
             fileOutputStream.flush();
         }
         fileOutputStream.close();
+        setFileSize(file, filename);
+    }
+
+    private void writeTXTFile(TXT txt, String fileName) throws IOException {
+        LOG.info("writeTXTFile method called with fileName: {}", fileName);
+        Path path = Paths.get(rootPath.toString(), folderName, fileName);
+        File file = path.toFile();
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        String[] content = txt.getContent().split("\\n");
+        for (String line : content) {
+            bw.append(line);
+            bw.newLine();
+        }
+        bw.close();
+        setFileSize(file, fileName);
+    }
+
+    private void setFileSize(File file, String filename) {
         int fileId = Integer.valueOf(filename.substring(0, filename.lastIndexOf(".")));
         double size = ((double) file.length()) / 1024;
         size /= 1024;
         userFileController.setFileSize(fileId, size);
     }
 
-    public static boolean deleteFile(String path) throws IOException {
+    public boolean deleteFile(String path) throws IOException {
         File file = Paths.get(path).toFile();
         if (file.exists()) {
             Files.delete(file.toPath());
@@ -120,7 +131,25 @@ public class UserFileManager {
         return false;
     }
 
-    private static int createUserFile(String fileName, User user, int parentId, boolean isFolder, double maxSize, InputStream inputStream) throws IOException {
+    public boolean createTXTFile(TXT txt, int parentId) {
+        LOG.info("createTXTFile method called with parentId: {}, file: {}", parentId, txt.getName());
+        User user = userController.getUser("token", txt.getToken().getToken());
+        folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
+        String fileName = txt.getName() + ".txt";
+        try {
+            int fileId = userFileController.checkUserFile(txt.getName(), ".txt", parentId);
+            if (fileId <= 0) {
+                fileId = createUserFile(fileName, user, parentId, false);
+            }
+            writeTXTFile(txt, fileId + ".txt");
+            return true;
+        } catch (IOException e) {
+            LOG.error("createTXTFile failed with exception", e);
+            return false;
+        }
+    }
+
+    private int createUserFile(String fileName, User user, int parentId, boolean isFolder) throws IOException {
         Path path = Paths.get(rootPath.toString(), folderName);
         String extension = "dir";
         String name = fileName;
@@ -132,11 +161,11 @@ public class UserFileManager {
         return userFileController.addNewUserFile(userFile);
     }
 
-    public static void setrootPath(Path path) {
+    public void setrootPath(Path path) {
         rootPath = path;
     }
 
-    public static File downloadUserFiles(int id) {
+    public File downloadUserFiles(int id) {
         byte[] bytes = new byte[1024];
         UserFile userFile = userFileController.getUserFile(id);
         File downloadFile = new File(Paths.get(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension()).toString());
@@ -199,7 +228,7 @@ public class UserFileManager {
 //                .build();
 //    }
 
-    private static String[] getPathFromUserFiles(int[] userFileIds) {
+    private String[] getPathFromUserFiles(int[] userFileIds) {
         String[] result = new String[userFileIds.length];
         for (int i = 0; i < userFileIds.length; i++) {
             result[i] = userFileController.getUserFile(userFileIds[i]).getPath();

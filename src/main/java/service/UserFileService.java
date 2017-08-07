@@ -1,14 +1,11 @@
 package service;
 
-import controller.UserController;
-import controller.UserFileController;
 import dto.*;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ConnectionUtil;
+import util.ControllersUtil;
 import util.UserFileManager;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -22,10 +19,9 @@ import java.util.List;
  * Created by David Szilagyi und Dani on 2017. 07. 18..
  */
 @Path("/files")
-public class UserFileService {
-    private static final Logger LOG = LoggerFactory.getLogger(UserFileService.class);
-    private static final UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-    private static final UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
+public class UserFileService extends ControllersUtil {
+    private final Logger LOG = LoggerFactory.getLogger(UserFileService.class);
+    private final UserFileManager userFileManager = new UserFileManager();
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -40,19 +36,22 @@ public class UserFileService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/deleteFile")
-    public boolean deleteUserFile(Token token, @Context HttpServletRequest request) throws IOException {
+    public Status deleteUserFile(Token token, @Context HttpServletRequest request) throws IOException {
         LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
         int fileId = getFileId(token, "deleteUserFile");
         UserFile userFile = userFileController.getUserFile(fileId);
-        UserFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
-        double fileSize = -userFile.getSize();
-        int parentId = userFile.getParentId();
-        userFileController.changeFolderCurrSize(parentId, fileSize);
-        int folderParentId = userFileController.getUserFile(parentId).getParentId();
-        if (folderParentId != 1) {
-            userFileController.changeFolderCurrSize(folderParentId, -fileSize);
+        if(userFileController.deleteUserFile(fileId)) {
+            userFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
+            double fileSize = -userFile.getSize();
+            int parentId = userFile.getParentId();
+            userFileController.changeFolderCurrSize(parentId, fileSize);
+            int folderParentId = userFileController.getUserFile(parentId).getParentId();
+            if (folderParentId != 1) {
+                userFileController.changeFolderCurrSize(folderParentId, fileSize);
+            }
+            return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
         }
-        return userFileController.deleteUserFile(token.getId());
+            return new Status(Operation.USERFILE, false, "This folder is not empty!");
     }
 
     @POST
@@ -78,7 +77,7 @@ public class UserFileService {
         size /= 1024;
         int folderId = getFileId(token, "uploadFile");
         if (userFileController.checkAvailableSpace(folderId, size)) {
-            UserFileManager.saveUserFile(input, token.getToken(), folderId, false, 0);
+            userFileManager.saveUserFile(input, token.getToken(), folderId, false);
             userFileController.changeFolderCurrSize(folderId, size);
             int parentId = userFileController.getUserFile(folderId).getParentId();
             if (parentId != 1) {
@@ -90,6 +89,18 @@ public class UserFileService {
             LOG.info("uploadFile method is failed with id: {}", id);
             return new Status(Operation.USERFILE, false, "Not enough space for this file in this folder!");
         }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/uploadTXT")
+    public Status uploadTXTFile(TXT txt, @Context HttpServletRequest request) throws IOException {
+        int parentId = getFileId(txt.getToken(), "uploadTXTFile");
+        if(userFileManager.createTXTFile(txt, parentId)) {
+            return new Status(Operation.TXT, true, "TXT file successfully created!");
+        }
+        return new Status(Operation.TXT, false, "Cannot create TXT file!");
     }
 
     @POST
@@ -118,7 +129,7 @@ public class UserFileService {
         int fileId = token.getId();
         LOG.info("getFileId method is called with token:{}, id: {}, from: {}", userToken, fileId, methodName);
         if (fileId <= 0) {
-            fileId = userController.getUser(userToken).getUserHomeId();
+            fileId = userController.getUser("token", userToken).getUserHomeId();
         }
         return fileId;
     }
@@ -130,7 +141,7 @@ public class UserFileService {
     public Response downloadFile(@Context HttpServletRequest request) {
         int id = Integer.valueOf(request.getParameter("id"));
         LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
-        File userFile = UserFileManager.downloadUserFiles(Integer.valueOf(id));
+        File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
         String name = userFile.getName();
         String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
         if (userFile != null) {
@@ -152,7 +163,7 @@ public class UserFileService {
         LOG.info("createFolder method is called with id: {}, from: {}", request.getRemoteAddr());
         Token token = new Token(folder.getToken(), -1);
         int parentId = getFileId(token, "createFolder");
-        User user = userController.getUser(token.getToken());
+        User user = userController.getUser("token", token.getToken());
         UserFile userFile = userFileController.getUserFile(parentId);
         String path = userFile.getPath() + "\\" + userFile.getFileName();
         if (userFileController.checkAvailableSpace(parentId, folder.getMaxSize())) {

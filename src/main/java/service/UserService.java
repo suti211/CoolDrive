@@ -1,12 +1,11 @@
 package service;
 
-import controller.UserController;
 import dto.Operation;
 import dto.Status;
 import dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ConnectionUtil;
+import util.ControllersUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -15,29 +14,29 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by David Szilagyi on 2017. 08. 01..
  */
-@Path("/user")
-public class UserService {
-    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
-    private static final UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
+@Path("")
+public class UserService extends ControllersUtil{
+    private final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
-    @GET
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/verify")
-    public Status verifyUser(@Context HttpServletRequest request) {
-        String email = request.getParameter("email");
-        String token = request.getParameter("token");
-        User user = userController.getUserbyemail(email);
-        if (!user.isValidated()) {
-            if (user.getToken().equalsIgnoreCase(token)) {
-                userController.deleteToken(user.getUserName());
-                userController.changeValidation(user.getId(), true);
-                return new Status(Operation.VERIFICATION, true, email + " is now validated!");
+    public Status verifyUser(Object userToken, @Context HttpServletRequest request) {
+        String token = String.valueOf(userToken);
+        User user = userController.getUser("token", token);
+        if(user != null) {
+            LOG.info("user found with this token: {}, email: {}", token, user.getEmail());
+            if (!user.isValidated()) {
+                    userController.deleteToken(user.getUserName());
+                    userController.changeValidation(user.getId(), true);
+                    return new Status(Operation.VERIFICATION, true, user.getEmail() + " is now validated!");
             } else {
-                return new Status(Operation.VERIFICATION, false, "Invalid token or email!");
+                LOG.info("user is already validated with this email: {}", user.getEmail());
+                return new Status(Operation.VERIFICATION, false, user.getEmail() + " is already validated!");
             }
-        } else {
-            return new Status(Operation.VERIFICATION, false, email +" is already validated!");
         }
+        LOG.error("user is null in verifyUser with this token: {}", token);
+        return new Status(Operation.VERIFICATION, false, "Invalid token!");
     }
 }
