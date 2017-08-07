@@ -7,33 +7,37 @@ import { environment } from "../../environments/environment"
 
 @Injectable()
 export class TokenService{
-    tokenUrl = environment.urlPrefix + "/" + "token";
+    tokenUrl = environment.urlPrefix + "/";
+
+    headers = new Headers({'Content-Type' : 'application/json'});
+    options = new RequestOptions({headers : this.headers});
 
     constructor(private http:Http){
 
     }
 
-    getToken(body: Object): Observable<Token>{
+    getToken(body: Object, requestUrl: string): Observable<Token>{
 
         let bodyString = JSON.stringify(body);
         console.log("body JSON: " + bodyString);
 
-        let headers = new Headers({'Content-Type' : 'application/json'});
-        let options = new RequestOptions({headers : headers});
-
-        return this.http.post(this.tokenUrl, bodyString, options)
+        return this.http.post(this.tokenUrl + requestUrl, bodyString, this.options)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
     }
 
-    validateToken(token: Token): Observable<Status>{
+    validateToken(token: Token, requestUrl: string): Observable<Status>{
         let bodyString = JSON.stringify(token);
-        //console.log("body JSON: " + bodyString);
 
-        let headers = new Headers({'Content-Type' : 'application/json'});
-        let options = new RequestOptions({headers : headers});
+        return this.http.post(this.tokenUrl + requestUrl, bodyString, this.options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+    }
 
-         return this.http.post(this.tokenUrl, bodyString, options)
+    isTokenAdmin(token: Token, requestUrl: string): Observable<Status>{
+        let bodyString = JSON.stringify(token);
+
+        return this.http.post(this.tokenUrl + requestUrl, bodyString, this.options)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
     }
