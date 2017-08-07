@@ -66,6 +66,7 @@ DROP TABLE IF EXISTS `Permissions`;
 CREATE TABLE `Permissions` (
   `fileId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
+  `readOnly` tinyint(1) DEFAULT NULL,
   KEY `Permissions_Files_id_fk` (`fileId`),
   KEY `Permissions_Users_id_fk` (`userId`),
   CONSTRAINT `Permissions_Files_id_fk` FOREIGN KEY (`fileId`) REFERENCES `Files` (`id`),
