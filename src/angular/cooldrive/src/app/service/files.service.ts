@@ -28,7 +28,17 @@ export class FileService {
     return this.filteredFiles;
   }
 
-  createTextFile(txt: TextFile): Observable<Status>{
+  getTxtFileData(token: Token): Observable<TextFile>{
+    let bodyString = JSON.stringify(token);
+    console.log(bodyString);
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.filesUrl + 'getTXT', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw('Server Error'));
+  }
+
+  uploadTextFile(txt: TextFile): Observable<Status>{
     let bodyString = JSON.stringify(txt);
     console.log(bodyString);
     let headers = new Headers({'Content-Type': 'application/json'});
