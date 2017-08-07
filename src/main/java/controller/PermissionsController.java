@@ -90,7 +90,7 @@ public class PermissionsController extends DatabaseController implements Permiss
             ps = con.prepareStatement(sql);
             ps.setInt(1, value);
             ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
+            while (rs.next()) {
                 userFiles.add(new UserFile(
                         rs.getInt("id"),
                         rs.getString("path"),
@@ -113,9 +113,12 @@ public class PermissionsController extends DatabaseController implements Permiss
     public boolean checkAccess(int fileId, int userId) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SELECT * FROM Permissions WHERE fileId = ? AND userId = ?");
+            ps = con.prepareStatement("SELECT Permissions.* FROM Permissions JOIN Files " +
+                    "ON(Files.id = Permissions.fileId) WHERE Permissions.fileId = ? " +
+                    "AND (Permissions.userId = ? OR Files.ownerId = ?)");
             ps.setInt(1, fileId);
             ps.setInt(2, userId);
+            ps.setInt(3, userId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return true;

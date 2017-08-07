@@ -39,7 +39,7 @@ public class PermissionService extends ControllersFactory {
                 return new Status(Operation.SHARE, true, status);
             }
             LOG.error("Share - Add share file method is failed(email: {}, id: {})",share.getEmail(), share.getToken().getId());
-            status = String.format("Failed to added permission to %s", share.getEmail());
+            status = String.format("This file is already shared with this user: %s", share.getEmail());
             return new Status(Operation.SHARE, false, status);
         }
         LOG.debug("Share - Add share file method is failed because no user found(email: {}, id: {}",share.getEmail(), share.getToken().getId());
