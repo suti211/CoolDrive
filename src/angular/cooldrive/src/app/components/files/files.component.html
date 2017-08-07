@@ -46,6 +46,7 @@
             <a class="dropdown-item" *ngIf="file.extension == '.txt'" (click)="fetchEditTxtData(file.id)" data-toggle="modal" data-target="#editTxtModal">Open TextFile</a>
             <div *ngIf="file.extension == '.txt'" class="dropdown-divider"></div>
             <a class="dropdown-item" (click)="download(file.id)">Download</a>
+            <a class="dropdown-item" (click)="share(file)">Share</a>
             <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
             <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red; cursor: pointer">Delete</a>
           </div>
