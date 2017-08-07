@@ -61,4 +61,23 @@ public class PermissionService extends ControllersFactory {
         status = String.format("User not found with this email: %s", share.getEmail());
         return new Status(Operation.SHARE, false, status);
     }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/changeAccess")
+    public Status changeAccess(Share share, @Context HttpServletRequest request) {
+        User user = getUser(share.getEmail());
+        String status;
+        if (user != null) {
+            if(permissionsController.changeAccess(share.getToken().getId(),user.getId(), share.isReadOnly())) {
+                status = String.format("Access changed to this email: %s", share.getEmail());
+                return new Status(Operation.SHARE, true, status);
+            }
+            status = String.format("Access changed failed to this email: %s", share.getEmail());
+            return new Status(Operation.SHARE, false, status);
+        }
+        status = String.format("User not found with this email: %s", share.getEmail());
+        return new Status(Operation.SHARE, false, status);
+    }
 }

@@ -12,7 +12,7 @@ import java.sql.SQLException;
 /**
  * Created by David Szilagyi on 2017. 07. 11..
  */
-public class PermissionsController extends DatabaseController implements PermissionsDao{
+public class PermissionsController extends DatabaseController implements PermissionsDao {
 
     private final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
 
@@ -28,15 +28,15 @@ public class PermissionsController extends DatabaseController implements Permiss
             ps.setInt(2, userId);
             ps.setBoolean(3, readOnly);
             int success = ps.executeUpdate();
-            if (success > 0){
-                LOG.info("Add file to user is succeeded(fileId: {}, userId: {})",fileId,userId);
+            if (success > 0) {
+                LOG.info("Add file to user is succeeded(fileId: {}, userId: {})", fileId, userId);
                 return true;
             }
 
         } catch (SQLException e) {
-            LOG.error("Add file to user is failed with Exception",e);
+            LOG.error("Add file to user is failed with Exception", e);
         }
-        LOG.debug("Add file to user is failed(fileId: {}, userId: {} in addFileToUser method",fileId,userId);
+        LOG.debug("Add file to user is failed(fileId: {}, userId: {} in addFileToUser method", fileId, userId);
         return false;
     }
 
@@ -47,14 +47,32 @@ public class PermissionsController extends DatabaseController implements Permiss
             ps.setInt(1, fileId);
             ps.setInt(2, userId);
             int success = ps.executeUpdate();
-            if(success > 0){
-                LOG.info("Remove file from user is succeeded(fileId: {}, userId: {})",fileId,userId);
+            if (success > 0) {
+                LOG.info("Remove file from user is succeeded(fileId: {}, userId: {})", fileId, userId);
                 return true;
             }
         } catch (SQLException e) {
-            LOG.error("Remove file from user is failed with Exception",e);
+            LOG.error("Remove file from user is failed with Exception", e);
         }
-        LOG.debug("Remove file from user is failed(fileId: {}, userId: {} in removeFileFromUser",fileId,userId);
+        LOG.debug("Remove file from user is failed(fileId: {}, userId: {} in removeFileFromUser", fileId, userId);
+        return false;
+    }
+
+    public boolean changeAccess(int fileId, int userId, boolean readOnly) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("UPDATE Permissions SET readOnly = ? WHERE fileId = ? AND userId = ?");
+            ps.setBoolean(1, readOnly);
+            ps.setInt(2, fileId);
+            ps.setInt(3, userId);
+            int success = ps.executeUpdate();
+            if (success > 0) {
+                LOG.info("Access changed(fileId: {}, userId: {})", fileId, userId);
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("checkAccess is failed with Exception", e);
+        }
         return false;
     }
 
@@ -65,12 +83,12 @@ public class PermissionsController extends DatabaseController implements Permiss
             ps.setInt(1, fileId);
             ps.setInt(2, userId);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 return true;
             }
             return false;
         } catch (SQLException e) {
-            LOG.error("checkAccess is failed with Exception",e);
+            LOG.error("checkAccess is failed with Exception", e);
         }
         return false;
     }
