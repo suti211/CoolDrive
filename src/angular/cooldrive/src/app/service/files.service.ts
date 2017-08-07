@@ -58,10 +58,10 @@ export class FileService {
       .catch((error: any) => Observable.throw('Server Error'));
   }
 
-  downloadFile(fileId: number) {
+  downloadFile(fileId: number, token: Token) {
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
-    this.http.get(this.filesUrl + 'download?id=' + fileId, options).toPromise()
+    this.http.get(this.filesUrl + 'download?id=' + fileId + "&token=" + token.token, options).toPromise()
       .then(function(response) {
         window.location.href = response.url;
       })
