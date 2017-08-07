@@ -1,9 +1,6 @@
 package service;
 
-import dto.Operation;
-import dto.Share;
-import dto.Status;
-import dto.User;
+import dto.*;
 import util.ControllersFactory;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created by David Szilagyi on 2017. 08. 07..
@@ -79,5 +77,23 @@ public class PermissionService extends ControllersFactory {
         }
         status = String.format("User not found with this email: %s", share.getEmail());
         return new Status(Operation.SHARE, false, status);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/sharedWithMe")
+    public List<UserFile> sharedWithMe(Token token) {
+        int userId = userController.getUser("token", token.getToken()).getId();
+        return permissionsController.sharedFiles("Permissions.userId", userId);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/sharedFiles")
+    public List<UserFile> sharedFiles(Token token) {
+        int userId = userController.getUser("token", token.getToken()).getId();
+        return permissionsController.sharedFiles("Files.ownerId", userId);
     }
 }

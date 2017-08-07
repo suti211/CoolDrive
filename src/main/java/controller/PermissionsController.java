@@ -1,6 +1,7 @@
 package controller;
 
 import dao.PermissionsDao;
+import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
@@ -8,6 +9,9 @@ import util.ConnectionUtil;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by David Szilagyi on 2017. 07. 11..
@@ -15,6 +19,7 @@ import java.sql.SQLException;
 public class PermissionsController extends DatabaseController implements PermissionsDao {
 
     private final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public PermissionsController(ConnectionUtil.DatabaseName database) {
         super(database);
@@ -74,6 +79,35 @@ public class PermissionsController extends DatabaseController implements Permiss
             LOG.error("checkAccess is failed with Exception", e);
         }
         return false;
+    }
+
+    public List<UserFile> sharedFiles(String columnName, int value) {
+        List<UserFile> userFiles = new ArrayList<>();
+        String sql = String.format("SELECT Files.* FROM Files " +
+                "JOIN Permissions ON(Files.id = Permissions.fileId) WHERE %s = ?", columnName);
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, value);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                userFiles.add(new UserFile(
+                        rs.getInt("id"),
+                        rs.getString("path"),
+                        rs.getDouble("size"),
+                        sdf.format(rs.getTimestamp("uploadDate")),
+                        rs.getString("filename"),
+                        rs.getString("extension"),
+                        rs.getDouble("maxSize"),
+                        rs.getBoolean("isFolder"),
+                        rs.getInt("ownerId"),
+                        rs.getInt("parentId"),
+                        rs.getString("label")));
+            }
+        } catch (SQLException e) {
+            LOG.error("sharedWithMe is failed with Exception", e);
+        }
+        return userFiles;
     }
 
     public boolean checkAccess(int fileId, int userId) {
