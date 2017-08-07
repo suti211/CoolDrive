@@ -46,6 +46,11 @@ export class FilesComponent implements OnInit {
   editTxtTitle: string;
   editTxtContent: string;
 
+  shareFileId: number;
+  shareFileName: string;
+  shareAbleToModify: boolean;
+  shareWithEmail: string;
+
 
   progressBarSytle: string = "progress-bar";
 
@@ -155,6 +160,15 @@ export class FilesComponent implements OnInit {
       }
       console.log(this.files);
     });
+  }
+
+  setShare(file: File){
+    this.shareFileId = file.id;
+    this.shareFileName = file.fileName;
+  }
+
+  share(){
+    console.log(this.shareAbleToModify);
   }
 
   createTxtFile(){

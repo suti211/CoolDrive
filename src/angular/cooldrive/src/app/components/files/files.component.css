@@ -14,6 +14,10 @@
   right: 0px;
 }
 
+.custom-controls-stacked{
+  padding-left: 20px;
+}
+
 .input-group-addon.modifyModal{
   width: 85px;
 }
