@@ -8,4 +8,6 @@ public interface PermissionsDao {
     boolean addFileToUser(int fileId, int userId, boolean readOnly);
 
     boolean removeFileFromUser(int userId, int fileId);
+
+    boolean checkAccess(int fileId, int userId);
 }

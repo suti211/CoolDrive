@@ -14,6 +14,11 @@ public class Share {
         this.token = token;
     }
 
+    public Share(String email, Token token) {
+        this.email = email;
+        this.token = token;
+    }
+
     public Share() {
     }
 
