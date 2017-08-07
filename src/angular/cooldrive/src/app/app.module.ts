@@ -23,6 +23,7 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { TransactionStatus } from './components/transaction_status/transaction.status.component';
 import { EmailValidation } from './components/emailValidation/emailValidation.component';
 import {EmailValidationService} from "./service/email-validation.service";
+import {ShareService} from "./service/share.service";
 
 
 @NgModule({
@@ -62,7 +63,7 @@ import {EmailValidationService} from "./service/email-validation.service";
     ])
   ],
 
-  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService],
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService, ShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

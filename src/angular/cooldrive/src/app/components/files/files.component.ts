@@ -7,6 +7,8 @@ import {Token} from '../../model/token.model';
 import {Status} from "../../model/status.model";
 import {Folder} from "../../model/folder";
 import {TextFile} from "../../model/text-file";
+import {ShareService} from "../../service/share.service";
+import {Share} from "../../model/shared";
 
 @Component({
   selector: 'app-files',
@@ -54,7 +56,7 @@ export class FilesComponent implements OnInit {
 
   progressBarSytle: string = "progress-bar";
 
-  constructor(private fileService: FileService) {
+  constructor(private fileService: FileService, private shareService: ShareService) {
     this.files = fileService.getFilesArray();
     this.filteredFiles = fileService.getFilteredFilesArray();
     this.infoPanelDisplayed = false;
@@ -168,7 +170,14 @@ export class FilesComponent implements OnInit {
   }
 
   share(){
-    console.log(this.shareReadOnly);
+    let token = this.creatToken(this.shareFileId);
+    let shared = new Share(this.shareWithEmail, this.shareReadOnly, token);
+
+    let shareFileOperation: Observable<Status>;
+    shareFileOperation = this.shareService.shareFile(shared);
+    shareFileOperation.subscribe((status: Status) => {
+      console.log(status.message);
+    });
   }
 
   createTxtFile(){
