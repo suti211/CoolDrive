@@ -1,8 +1,9 @@
 package service;
 
 import dto.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.ControllersFactory;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -18,6 +19,8 @@ import java.util.List;
 @Path("/share")
 public class PermissionService extends ControllersFactory {
 
+    private final Logger LOG = LoggerFactory.getLogger(RegisterService.class);
+
     private User getUser(String email) {
         return userController.getUser("email", email);
     }
@@ -32,11 +35,14 @@ public class PermissionService extends ControllersFactory {
         if (user != null) {
             if (permissionsController.addFileToUser(share.getToken().getId(), user.getId(), share.isReadOnly())) {
                 status = String.format("Successfully added permission to %s", share.getEmail());
+                LOG.info("Share - Add share file method is success(email: {}, id: {})",share.getEmail(), share.getToken().getId());
                 return new Status(Operation.SHARE, true, status);
             }
+            LOG.error("Share - Add share file method is failed(email: {}, id: {})",share.getEmail(), share.getToken().getId());
             status = String.format("Failed to added permission to %s", share.getEmail());
             return new Status(Operation.SHARE, false, status);
         }
+        LOG.debug("Share - Add share file method is failed because no user found(email: {}, id: {}",share.getEmail(), share.getToken().getId());
         status = String.format("User not found with this email: %s", share.getEmail());
         return new Status(Operation.SHARE, false, status);
     }
@@ -50,12 +56,15 @@ public class PermissionService extends ControllersFactory {
         String status;
         if (user != null) {
             if (permissionsController.removeFileFromUser(share.getToken().getId(), user.getId())) {
+                LOG.info("Share - Remove file method is success(email: {}, id: {})",share.getEmail(), share.getToken().getId());
                 status = String.format("Successfully removed permission from %s", share.getEmail());
                 return new Status(Operation.SHARE, true, status);
             }
+            LOG.error("Share - Remove file method is failed(email: {}, id: {})",share.getEmail(), share.getToken().getId());
             status = String.format("Failed to remove permission from %s", share.getEmail());
             return new Status(Operation.SHARE, false, status);
         }
+        LOG.debug("Share - Remove file method is failed because no user found(email: {}, id: {}",share.getEmail(), share.getToken().getId());
         status = String.format("User not found with this email: %s", share.getEmail());
         return new Status(Operation.SHARE, false, status);
     }
@@ -69,12 +78,15 @@ public class PermissionService extends ControllersFactory {
         String status;
         if (user != null) {
             if(permissionsController.changeAccess(share.getToken().getId(),user.getId(), share.isReadOnly())) {
+                LOG.info("Share - change access method is success(email: {}, id: {}",share.getEmail(), share.getToken().getId());
                 status = String.format("Access changed to this email: %s", share.getEmail());
                 return new Status(Operation.SHARE, true, status);
             }
+            LOG.error("Share - change access method is failed(email: {}, id: {}",share.getEmail(), share.getToken().getId());
             status = String.format("Access changed failed to this email: %s", share.getEmail());
             return new Status(Operation.SHARE, false, status);
         }
+        LOG.debug("Share - change access method is failed because no user found(email: {}, id: {}",share.getEmail(), share.getToken().getId());
         status = String.format("User not found with this email: %s", share.getEmail());
         return new Status(Operation.SHARE, false, status);
     }
@@ -85,6 +97,7 @@ public class PermissionService extends ControllersFactory {
     @Path("/sharedWithMe")
     public List<UserFile> sharedWithMe(Token token) {
         int userId = userController.getUser("token", token.getToken()).getId();
+        LOG.info("sharedWithMe method called with userId: {}", userId);
         return permissionsController.sharedFiles("Permissions.userId", userId);
     }
 
@@ -94,6 +107,7 @@ public class PermissionService extends ControllersFactory {
     @Path("/sharedFiles")
     public List<UserFile> sharedFiles(Token token) {
         int userId = userController.getUser("token", token.getToken()).getId();
+        LOG.info("sharedFiles method called with userId: {}", userId);
         return permissionsController.sharedFiles("Files.ownerId", userId);
     }
 }
