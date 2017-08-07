@@ -48,7 +48,7 @@ export class FilesComponent implements OnInit {
 
   shareFileId: number;
   shareFileName: string;
-  shareAbleToModify: boolean;
+  shareReadOnly: boolean;
   shareWithEmail: string;
 
 
@@ -168,7 +168,7 @@ export class FilesComponent implements OnInit {
   }
 
   share(){
-    console.log(this.shareAbleToModify);
+    console.log(this.shareReadOnly);
   }
 
   createTxtFile(){
