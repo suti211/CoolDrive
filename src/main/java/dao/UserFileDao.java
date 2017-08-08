@@ -9,11 +9,9 @@ import java.util.List;
 public interface UserFileDao {
     UserFile getUserFile(int id);
 
-    boolean addNewUserFile(UserFile userFile);
+    int addNewUserFile(UserFile userFile);
 
-    boolean modifyUserFile(int id, UserFile userFile);
-
-    boolean changeFolderSize(int id, double maxSize);
+    boolean modifyUserFile(UserFile userFile);
 
     boolean changeFolderCurrSize(int id, double size);
 
@@ -21,5 +19,9 @@ public interface UserFileDao {
 
     boolean deleteUserFile(int id);
 
-    int checkUserFile(UserFile userFile);
+    int checkUserFile(String filename, String extension, int parentId);
+
+    boolean checkAvailableSpace(int id, double fileSize);
+
+    boolean setFileSize(int id, double fileSize);
 }

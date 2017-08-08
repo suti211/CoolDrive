@@ -1,7 +1,22 @@
 <div class="app flex-row align-items-center">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-9">
+                <div class="alert alert-warning info" role="alert" *ngIf="showInputWarning">
+                    <h3 style="margin: auto">Some required fields are left empty!</h3>
+                </div>
+                <div class="alert alert-warning info" role="alert" *ngIf="showIncorrectCredentials">
+                    <h3 style="margin: auto">{{statusMessage}}</h3>
+                </div>
+                <div class="alert alert-success info" role="alert" *ngIf="showSuccesfulLogin">
+                    <h3 style="margin: auto">Succesful Login!</h3>
+                </div>
+              <div class="alert alert-success info" role="alert" *ngIf="showValidatedEmail">
+                <h3 style="margin: auto">{{emailStatus.message}}</h3>
+              </div>
+              <div class="alert alert-warning info" role="alert" *ngIf="showWrongValidatedEmail">
+                <h3 style="margin: auto">{{emailStatus.message}}</h3>
+              </div>
                 <div class="card-group mb-0">
                     <div class="card p-4">
                         <div class="card-block">

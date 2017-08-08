@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 public class PermissionsController extends DatabaseController implements PermissionsDao{
 
-    private static final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
+    private final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
 
     public PermissionsController(ConnectionUtil.DatabaseName database) {
         super(database);

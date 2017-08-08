@@ -1,22 +1,14 @@
-<!-- FLOATING BUTTON -->
-<div id="floatingButton" class="btn-group dropup">
-  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    New
-  </button>
-  <div id="floatingButtonDropdown" class="dropdown-menu">
-    <a class="dropdown-item" href="#">Action</a>
-    <a class="dropdown-item" href="#">Another action</a>
-    <a class="dropdown-item" href="#">Something else here</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="#">Separated link</a>
-  </div>
-</div>
-
-<h1>Your files
+<h1>{{currentFolderName}}
   <div class="progress">
-    <div id="progress-bar" class="progress-bar" role="progressbar" [style.width]="percentageStyle">{{usage}}/{{quantity}} MB</div>
+    <div id="progress-bar" ngClass="{{progressBarSytle}}" role="progressbar" [style.width]="percentage+'%'">
+      {{usage}}/{{quantity}} MB
+    </div>
   </div>
 </h1>
+
+<div *ngIf="infoPanelDisplayed" id="filesInfo" class="alert alert-success" role="alert">
+  {{infoPanelText}}
+</div>
 
 <div class="table-responsive">
   <table class="table table-striped">
@@ -31,14 +23,11 @@
     </tr>
     </thead>
 
-
-
     <tbody id="FileListDisplay">
-
-    <tr *ngFor="let file of files">
+    <tr *ngFor="let file of filteredFiles">
       <td>
-        <div *ngIf="file.folder == false"> <span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
-        <div *ngIf="file.folder == true"> <span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
+        <div *ngIf="file.folder == false"><span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
+        <div style="cursor: pointer" *ngIf="file.folder == true" (dblclick)="openFolder(file.id, file.fileName)"><span class="glyphicon glyphicon-folder-close"></span> {{file.fileName}}</div>
       </td>
       <td>{{file.extension}}</td>
       <td>
@@ -48,17 +37,18 @@
       <td>{{file.uploadDate}}</td>
       <td>{{file.label}}</td>
       <td>
-        <div class="dropdown">
-        <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          More
-        </button>
-        <div id="floatingButtonDropdown" class="dropdown-menu">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Separated link</a>
-        </div>
+        <div *ngIf="file.id > 0" class="dropdown">
+          <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+            More
+          </button>
+          <div id="floatingButtonDropdown" class="dropdown-menu">
+            <a class="dropdown-item" *ngIf="file.extension == '.txt'" (click)="fetchEditTxtData(file.id)" data-toggle="modal" data-target="#editTxtModal">Open TextFile</a>
+            <div *ngIf="file.extension == '.txt'" class="dropdown-divider"></div>
+            <a class="dropdown-item" (click)="download(file.id)">Download</a>
+            <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
+            <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red; cursor: pointer">Delete</a>
+          </div>
         </div>
       </td>
     </tr>
@@ -66,4 +56,161 @@
     </tbody>
 
   </table>
+
+
+  <!-- FLOATING BUTTON -->
+  <div id="floatingButton" class="btn-group dropup">
+    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+      New
+    </button>
+    <div id="floatingButtonDropdown" class="dropdown-menu">
+      <a class="dropdown-item" data-toggle="modal" data-target="#uploadModal">Upload</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" data-toggle="modal" data-target="#createTxtModal">Create text file</a>
+      <a *ngIf="currentFolderId === -1" class="dropdown-item" href="" data-toggle="modal" data-target="#createFolderModal">Create Folder</a>
+    </div>
+  </div>
+
+
+  <!-- FileModify -->
+  <div class="modal fade" id="fileModifyModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modify file details</h5>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="false" id="modifyInfo" class="alert alert-success" role="alert">
+            <strong>Well done!</strong> You successfully read this important alert message.
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon modifyModal" id="modifyName">FileName</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.fileName">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon modifyModal" id="modifyLabel">Label</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.label">
+          </div>
+          <div class="input-group" *ngIf="selectedFile.folder">
+            <span class="input-group-addon modifyModal" id="modifyMaxSize">Max size</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.maxSize">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="listFiles(currentFolderId)">Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="modifyFile()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD MODAL -->
+  <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="uploadModalButton">Upload</h4>
+        </div>
+        <form>
+          <div class="modal-body">
+            <div *ngIf="uploadInfoPanelDisplayed" id="filesUploadInfo" class="alert alert-danger" role="alert">
+              {{uploadInfoPanelText}}
+            </div>
+            <input id="uploadedFiles" type="file" formenctype="multipart/form-data" (change)="listUploadedFiles()"><br>
+            <div *ngFor="let file of uploadedFilesList">
+              {{file.name}} : {{(file.size/1024)/1024 | number:0 }} MB
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="uploadCloseButton" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input type="button" class="btn btn-primary" (click)="uploadFile()" value="Upload">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE FOLDER MODAL -->
+  <div class="modal fade" id="createFolderModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Create folder</h4>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="false" id="createFolderInfo" class="alert alert-success" role="alert">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon createFolderModal">Folder name*</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" (change)="enableCreateFolderBtn()" [(ngModel)]="newFolderName">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon createFolderModal">Label</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderLabel">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon createFolderModal">Max size*</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" (change)="enableCreateFolderBtn()" [(ngModel)]="newFolderMaxSize">
+          </div>
+        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input id="createFolderButton" type="button" class="btn btn-primary" (click)="createFolder()" value="Create">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE TEXT FILE MODAL -->
+  <div class="modal fade" id="createTxtModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Create Text File</h4>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="false" id="createTxtInfo" class="alert alert-success" role="alert">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon createTxtModal">Title*</span>
+            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newTxtTitle">
+          </div>
+          <div class="form-group">
+            <br>
+            <span class="input-group-addon createTxtModal content">Content</span>
+            <textarea class="form-control" id="Textarea" rows="3" [(ngModel)]="newTxtContent"></textarea>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <input id="createTxtButton" type="button" class="btn btn-primary" (click)="createTxtFile()" value="Create">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT TEXT FILE MODAL -->
+  <div class="modal fade" id="editTxtModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{{editTxtTitle}}</h4>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="false" id="editTxtInfo" class="alert alert-success" role="alert">
+          </div>
+          <div class="form-group">
+            <textarea class="form-control" id="editTextarea" rows="3" [(ngModel)]="editTxtContent"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <input id="editTxtButton" type="button" class="btn btn-primary" (click)="editTxtFile()" value="Save">
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

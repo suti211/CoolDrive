@@ -12,7 +12,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterService } from './service/register.service';
 import { LoginGuard } from './guard/login.guard';
 import { FilesComponent } from './components/files/files.component';
-import {FileService} from './service/files.service';
+import { FileService } from './service/files.service';
+import { TokenService } from './service/token.service';
+import { LogoutService } from './service/logout.service';
+import { ExtensionComponent } from './components/storage_extension/extension.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
+import { TransactionService } from './service/transaction.service';
+import { CheckoutService } from './service/checkout.service';
+import { PaymentComponent } from './components/payment/payment.component';
+import { TransactionStatus } from './components/transaction_status/transaction.status.component';
+import { EmailValidation } from './components/emailValidation/emailValidation.component';
+import {EmailValidationService} from "./service/email-validation.service";
+
 
 @NgModule({
   declarations: [
@@ -20,7 +31,12 @@ import {FileService} from './service/files.service';
     LoginComponent,
     RegisterComponent,
     DashboardComponent,
-    FilesComponent
+    FilesComponent,
+    ExtensionComponent,
+    CheckoutComponent,
+    PaymentComponent,
+    TransactionStatus,
+    EmailValidation
   ],
   imports: [
     BrowserAnimationsModule,
@@ -28,15 +44,25 @@ import {FileService} from './service/files.service';
     FormsModule,
     HttpModule,
     RouterModule.forRoot([
+      { path: 'verify/:token', component: EmailValidation },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'dashboard', component: DashboardComponent,
-        children: [
-          {path: 'files', component: FilesComponent}
-        ]}
+      { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard], children:
+       [
+          { path: 'files', component: FilesComponent},
+          { path: 'storage', canActivate: [LoginGuard], component: ExtensionComponent},
+          { path: 'checkout', canActivate: [LoginGuard], component: CheckoutComponent},
+          { path: 'payment/:id', canActivate: [LoginGuard], component: PaymentComponent},
+          { path: 'transaction', canActivate: [LoginGuard], component: TransactionStatus},
+        ]
+      },
+      {path: "**", component: LoginComponent}
+
+
     ])
   ],
-  providers: [LoginService, RegisterService, LoginGuard, FileService],
+
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
