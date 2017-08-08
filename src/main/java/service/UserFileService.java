@@ -170,7 +170,7 @@ public class UserFileService extends ControllersFactory {
                 LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
                 return null;
             }
-        } return Response.noContent().header("No-Access", "You don't have access to download this file")
+        } return Response.noContent().header("Access Denied", "You don't have access to download this file")
                 .build();
     }
 
