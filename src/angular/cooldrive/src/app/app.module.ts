@@ -57,6 +57,7 @@ import { SharedWithMeComponent } from './components/shared-with-me/shared-with-m
           { path: 'checkout', canActivate: [LoginGuard], component: CheckoutComponent},
           { path: 'payment/:id', canActivate: [LoginGuard], component: PaymentComponent},
           { path: 'transaction', canActivate: [LoginGuard], component: TransactionStatus},
+          { path: 'shared', canActivate: [LoginGuard], component: SharedWithMeComponent},
         ]
       },
       {path: "**", component: LoginComponent}
