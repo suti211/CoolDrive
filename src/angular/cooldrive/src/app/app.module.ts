@@ -24,6 +24,7 @@ import { TransactionStatus } from './components/transaction_status/transaction.s
 import { EmailValidation } from './components/emailValidation/emailValidation.component';
 import {EmailValidationService} from "./service/email-validation.service";
 import {ShareService} from "./service/share.service";
+import { SharedWithMeComponent } from './components/shared-with-me/shared-with-me.component';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import {ShareService} from "./service/share.service";
     CheckoutComponent,
     PaymentComponent,
     TransactionStatus,
-    EmailValidation
+    EmailValidation,
+    SharedWithMeComponent
   ],
   imports: [
     BrowserAnimationsModule,
