@@ -23,8 +23,10 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { TransactionStatus } from './components/transaction_status/transaction.status.component';
 import { EmailValidation } from './components/emailValidation/emailValidation.component';
 import {EmailValidationService} from "./service/email-validation.service";
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import {ShareService} from "./service/share.service";
 import { SharedWithMeComponent } from './components/shared-with-me/shared-with-me.component';
+
 
 
 @NgModule({
@@ -39,6 +41,7 @@ import { SharedWithMeComponent } from './components/shared-with-me/shared-with-m
     PaymentComponent,
     TransactionStatus,
     EmailValidation,
+    LandingPageComponent,
     SharedWithMeComponent
   ],
   imports: [
@@ -47,6 +50,7 @@ import { SharedWithMeComponent } from './components/shared-with-me/shared-with-m
     FormsModule,
     HttpModule,
     RouterModule.forRoot([
+      { path: 'landing', component: LandingPageComponent },
       { path: 'verify/:token', component: EmailValidation },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
@@ -60,7 +64,7 @@ import { SharedWithMeComponent } from './components/shared-with-me/shared-with-m
           { path: 'shared', canActivate: [LoginGuard], component: SharedWithMeComponent},
         ]
       },
-      {path: "**", component: LoginComponent}
+      {path: "**", component: LandingPageComponent}
 
 
     ])
