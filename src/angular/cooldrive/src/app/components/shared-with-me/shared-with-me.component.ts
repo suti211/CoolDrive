@@ -20,6 +20,7 @@ export class SharedWithMeComponent implements OnInit {
   currentFolderId: number;
   currentFolderName: string = "";
 
+  editTxtFileID: number;
   editTxtTitle: string;
   editTxtContent: string;
 
@@ -83,8 +84,9 @@ export class SharedWithMeComponent implements OnInit {
     });
   }
 
-  fetchEditTxtData(id: number){
+  fetchEditTxtData(id: number, parentId: number){
     let token = this.creatToken(id);
+    this.editTxtFileID = parentId;
 
     let fetchTXTOperation: Observable<TextFile>;
     fetchTXTOperation = this.fileService.getTxtFileData(token);
@@ -96,14 +98,13 @@ export class SharedWithMeComponent implements OnInit {
   }
 
   editTxtFile(){
-    let token = this.creatToken(this.currentFolderId);
+    let token = this.creatToken(this.editTxtFileID);
     let txt = new TextFile(this.editTxtTitle, this.editTxtContent, token);
 
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
       console.log(status.message);
-      this.listFiles(this.currentFolderId);
     });
   }
 

@@ -35,7 +35,7 @@
             More
           </button>
           <div id="floatingButtonDropdown" class="dropdown-menu">
-            <a class="dropdown-item" *ngIf="file.extension == '.txt' && file.readOnly==false" (click)="fetchEditTxtData(file.id)"
+            <a class="dropdown-item" *ngIf="file.extension == '.txt' && file.readOnly==false" (click)="fetchEditTxtData(file.id, file.parentId)"
                data-toggle="modal" data-target="#editTxtModal">Open TextFile</a>
             <div *ngIf="file.extension == '.txt' && file.readOnly==false" class="dropdown-divider"></div>
             <a class="dropdown-item" (click)="download(file.id)">Download</a>
