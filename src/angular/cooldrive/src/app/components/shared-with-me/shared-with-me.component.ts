@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {File} from '../../model/file.model';
-import {FileService} from "../../service/files.service";
 import {Token} from "../../model/token.model";
 import {Observable} from "rxjs/Observable";
+import {ShareService} from "../../service/share.service";
+import {FileService} from "../../service/files.service";
+import {Status} from "../../model/status.model";
+import {TextFile} from "../../model/text-file";
 
 @Component({
   selector: 'app-shared-with-me',
@@ -17,10 +20,13 @@ export class SharedWithMeComponent implements OnInit {
   currentFolderId: number;
   currentFolderName: string = "";
 
+  editTxtTitle: string;
+  editTxtContent: string;
 
-  constructor(private fileService: FileService) {
-    this.files = fileService.getFilesArray();
-    this.filteredFiles = fileService.getFilteredFilesArray();
+
+  constructor(private fileService: FileService, private shareService: ShareService) {
+    this.files = shareService.getFilesArray();
+    this.filteredFiles = shareService.getFilteredFilesArray();
   }
 
 
@@ -37,13 +43,67 @@ export class SharedWithMeComponent implements OnInit {
     let newToken = this.creatToken(id);
 
     let getFilesOperation: Observable<File[]>;
-    getFilesOperation = this.fileService.getFiles(newToken);
+    getFilesOperation = this.shareService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
       for (let file of newFiles) {
         this.files.push(file);
         this.filteredFiles.push(file);
       }
       console.log(this.files);
+    });
+  }
+
+  openFolder(id: number, name: string) {
+    this.currentFolderId = id;
+
+    if (name === "...") {
+      this.currentFolderName = "Files shared with You";
+    } else {
+      this.currentFolderName = name;
+    }
+
+    this.files.length = 0;
+    this.filteredFiles.length = 0;
+
+    let newToken = this.creatToken(this.currentFolderId);
+    let getFilesOperation: Observable<File[]>;
+    getFilesOperation = this.shareService.getFiles(newToken);
+    getFilesOperation.subscribe((newFiles: File[]) => {
+      let backButton = new File(-1, '', 0, '', "...", '', 0, true, 0, 0, '', true);
+      if (id > 0) {
+        this.files.push(backButton);
+        this.filteredFiles.push(backButton);
+      }
+
+      for (let file of newFiles) {
+        this.files.push(file);
+        this.filteredFiles.push(file);
+      }
+      console.log(this.files);
+    });
+  }
+
+  fetchEditTxtData(id: number){
+    let token = this.creatToken(id);
+
+    let fetchTXTOperation: Observable<TextFile>;
+    fetchTXTOperation = this.fileService.getTxtFileData(token);
+    fetchTXTOperation.subscribe((txt: TextFile) => {
+      console.log(txt);
+      this.editTxtTitle = txt.name;
+      this.editTxtContent = txt.content;
+    });
+  }
+
+  editTxtFile(){
+    let token = this.creatToken(this.currentFolderId);
+    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, token);
+
+    let createTXTOperation: Observable<Status>;
+    createTXTOperation = this.fileService.uploadTextFile(txt);
+    createTXTOperation.subscribe((status: Status) => {
+      console.log(status.message);
+      this.listFiles(this.currentFolderId);
     });
   }
 

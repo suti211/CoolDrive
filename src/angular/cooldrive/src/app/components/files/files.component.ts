@@ -20,7 +20,7 @@ export class FilesComponent implements OnInit {
   currentFolderId: number;
   currentFolderName: string = "";
 
-  selectedFile: File = new File(-1, "", 0, "", "", "", 0, true, 0, 0, "");
+  selectedFile: File = new File(-1, "", 0, "", "", "", 0, true, 0, 0, "", false);
 
   infoPanelDisplayed: boolean;
   infoPanelText: string;
@@ -150,7 +150,7 @@ export class FilesComponent implements OnInit {
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-      let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "");
+      let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "", false);
       if (id > 0) {
         this.files.push(backButton);
         this.filteredFiles.push(backButton);
@@ -202,7 +202,6 @@ export class FilesComponent implements OnInit {
       this.editTxtTitle = txt.name;
       this.editTxtContent = txt.content;
     });
-
   }
 
   editTxtFile(){

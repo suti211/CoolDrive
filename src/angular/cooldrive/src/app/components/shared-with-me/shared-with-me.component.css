@@ -1,4 +1,35 @@
+.table-responsive {
+  overflow: inherit;
+}
+
 #floatingButtonDropdown{
   left: auto;
   right: 0px;
+}
+
+.custom-controls-stacked{
+  padding-left: 20px;
+}
+
+.input-group-addon.modifyModal{
+  width: 85px;
+}
+
+.input-group-addon.createFolderModal{
+  width: 110px;
+}
+
+.input-group-addon.createTxtModal{
+  width: 110px;
+}
+
+.input-group-addon.createTxtModal.content{
+  border-right-color: rgb(204, 204, 204);
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-bottom-width: 0px;
+}
+
+.modal-content{
+  margin-top: 190px;
 }
