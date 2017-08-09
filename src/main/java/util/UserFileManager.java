@@ -140,6 +140,8 @@ public class UserFileManager extends ControllersFactory {
             int fileId = userFileController.checkUserFile(txt.getName(), ".txt", parentId);
             if (fileId <= 0) {
                 fileId = createUserFile(fileName, user, parentId, false);
+            } else {
+                folderName = userFileController.getUserFile(fileId).getPath();
             }
             writeTXTFile(txt, fileId + ".txt");
             return true;
