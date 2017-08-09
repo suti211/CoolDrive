@@ -154,17 +154,27 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public boolean deleteUserFile(int id) {
-        PreparedStatement ps = null;
+        PreparedStatement fkSet = null;
+        PreparedStatement deleteFiles = null;
+        PreparedStatement deletePermissions = null;
         try {
-            ps = con.prepareStatement("DELETE FROM Files WHERE id = ?");
-            ps.setInt(1, id);
-            int success = ps.executeUpdate();
-            if (success > 0) {
-                LOG.info("Userfile is successfully deleted with this id: {}", id);
+            fkSet = con.prepareStatement("SET foreign_key_checks = ?");
+            deleteFiles = con.prepareStatement("DELETE FROM Files WHERE id = ?");
+            deleteFiles.setInt(1, id);
+            deletePermissions = con.prepareStatement("DELETE FROM Permissions WHERE fileId = ?");
+            deletePermissions.setInt(1, id);
+            fkSet.setInt(1, 0);
+            fkSet.executeUpdate();
+            int successFiles = deleteFiles.executeUpdate();
+            int successPermissions = deletePermissions.executeUpdate();
+            fkSet.setInt(1, 1);
+            fkSet.executeUpdate();
+            if ((successFiles > 0) && (successPermissions > 0)) {
+                LOG.info("UserFile is successfully deleted with this id: {}", id);
                 return true;
             }
         } catch (SQLException e) {
-            LOG.error("Delete userfile is failed with Exception", e);
+            LOG.error("Delete userFile is failed with Exception", e);
             return false;
         }
         LOG.debug("File not found with this id: {} in deleteUserFile method", id);

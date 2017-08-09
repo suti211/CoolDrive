@@ -7,6 +7,8 @@ import {Token} from '../../model/token.model';
 import {Status} from "../../model/status.model";
 import {Folder} from "../../model/folder";
 import {TextFile} from "../../model/text-file";
+import {ShareService} from "../../service/share.service";
+import {Share} from "../../model/shared";
 
 @Component({
   selector: 'app-files',
@@ -18,7 +20,7 @@ export class FilesComponent implements OnInit {
   currentFolderId: number;
   currentFolderName: string = "";
 
-  selectedFile: File = new File(-1, "", 0, "", "", "", 0, true, 0, 0, "");
+  selectedFile: File = new File(-1, "", 0, "", "", "", 0, true, 0, 0, "", false);
 
   infoPanelDisplayed: boolean;
   infoPanelText: string;
@@ -46,10 +48,15 @@ export class FilesComponent implements OnInit {
   editTxtTitle: string;
   editTxtContent: string;
 
+  shareFileId: number;
+  shareFileName: string;
+  shareReadOnly: boolean;
+  shareWithEmail: string;
+
 
   progressBarSytle: string = "progress-bar";
 
-  constructor(private fileService: FileService) {
+  constructor(private fileService: FileService, private shareService: ShareService) {
     this.files = fileService.getFilesArray();
     this.filteredFiles = fileService.getFilteredFilesArray();
     this.infoPanelDisplayed = false;
@@ -143,7 +150,7 @@ export class FilesComponent implements OnInit {
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-      let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "");
+      let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "", false);
       if (id > 0) {
         this.files.push(backButton);
         this.filteredFiles.push(backButton);
@@ -154,6 +161,22 @@ export class FilesComponent implements OnInit {
         this.filteredFiles.push(file);
       }
       console.log(this.files);
+    });
+  }
+
+  setShare(file: File){
+    this.shareFileId = file.id;
+    this.shareFileName = file.fileName;
+  }
+
+  share(){
+    let token = this.creatToken(this.shareFileId);
+    let shared = new Share(this.shareWithEmail, this.shareReadOnly, token);
+
+    let shareFileOperation: Observable<Status>;
+    shareFileOperation = this.shareService.shareFile(shared);
+    shareFileOperation.subscribe((status: Status) => {
+      console.log(status.message);
     });
   }
 
@@ -179,7 +202,6 @@ export class FilesComponent implements OnInit {
       this.editTxtTitle = txt.name;
       this.editTxtContent = txt.content;
     });
-
   }
 
   editTxtFile(){
@@ -209,7 +231,8 @@ export class FilesComponent implements OnInit {
   // File action methods
 
   download(fileId: number) {
-    this.fileService.downloadFile(fileId);
+    let token = this.creatToken(-1);
+    this.fileService.downloadFile(fileId, token);
   }
 
   modifyFile(){

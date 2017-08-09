@@ -23,6 +23,8 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { TransactionStatus } from './components/transaction_status/transaction.status.component';
 import { EmailValidation } from './components/emailValidation/emailValidation.component';
 import {EmailValidationService} from "./service/email-validation.service";
+import {ShareService} from "./service/share.service";
+import { SharedWithMeComponent } from './components/shared-with-me/shared-with-me.component';
 
 
 @NgModule({
@@ -36,7 +38,8 @@ import {EmailValidationService} from "./service/email-validation.service";
     CheckoutComponent,
     PaymentComponent,
     TransactionStatus,
-    EmailValidation
+    EmailValidation,
+    SharedWithMeComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -54,6 +57,7 @@ import {EmailValidationService} from "./service/email-validation.service";
           { path: 'checkout', canActivate: [LoginGuard], component: CheckoutComponent},
           { path: 'payment/:id', canActivate: [LoginGuard], component: PaymentComponent},
           { path: 'transaction', canActivate: [LoginGuard], component: TransactionStatus},
+          { path: 'shared', canActivate: [LoginGuard], component: SharedWithMeComponent},
         ]
       },
       {path: "**", component: LoginComponent}
@@ -62,7 +66,7 @@ import {EmailValidationService} from "./service/email-validation.service";
     ])
   ],
 
-  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService],
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService, ShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
