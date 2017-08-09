@@ -110,4 +110,14 @@ public class PermissionService extends ControllersFactory {
         LOG.info("sharedFiles method called with userId: {}", userId);
         return permissionsController.sharedFiles("Files.ownerId", userId);
     }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/sharedWith")
+    public List<Share> sharedWith(Token token) {
+        int userId = userController.getUser("token", token.getToken()).getId();
+        LOG.info("sharedWith method called with userId: {}", userId);
+        return permissionsController.sharedWith(token.getId());
+    }
 }

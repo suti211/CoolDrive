@@ -1,11 +1,11 @@
 package controller;
 
 import dao.PermissionsDao;
+import dto.Share;
 import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -109,6 +109,23 @@ public class PermissionsController extends DatabaseController implements Permiss
             LOG.error("sharedWithMe is failed with Exception", e);
         }
         return userFiles;
+    }
+
+    public List<Share> sharedWith(int fileId) {
+        List<Share> shares = new ArrayList<>();
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("SELECT Users.email, Permissions.readOnly FROM Users " +
+                    "JOIN Permissions ON(Users.id = Permissions.userId) WHERE fileId =  ?");
+            ps.setInt(1, fileId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                shares.add(new Share(rs.getString("email"), rs.getBoolean("readOnly")));
+            }
+        } catch (SQLException e) {
+            LOG.error("sharedWith is failed with Exception", e);
+        }
+        return shares;
     }
 
     public boolean checkAccess(int fileId, int userId) {
