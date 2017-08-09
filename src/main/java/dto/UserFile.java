@@ -15,6 +15,22 @@ public class UserFile {
     private int ownerId;
     private int parentId;
     private String label;
+    private boolean readOnly;
+
+    public UserFile(int id, String path, double size, String uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label, boolean readOnly) {
+        this.id = id;
+        this.path = path;
+        this.size = size;
+        this.uploadDate = uploadDate;
+        this.fileName = fileName;
+        this.extension = extension;
+        this.maxSize = maxSize;
+        this.isFolder = isFolder;
+        this.ownerId = ownerId;
+        this.parentId = parentId;
+        this.label = label;
+        this.readOnly = readOnly;
+    }
 
     public UserFile(int id, String path, double size, String uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label) {
         this.id = id;
