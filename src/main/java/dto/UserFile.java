@@ -114,6 +114,10 @@ public class UserFile {
         return label;
     }
 
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -158,5 +162,9 @@ public class UserFile {
 
     public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 }
