@@ -11,7 +11,8 @@ export class File {
     public folder: boolean,
     public ownerId: number,
     public parentId: number,
-    public label: string
+    public label: string,
+    public readOnly: boolean
     ) {
   }
 }
