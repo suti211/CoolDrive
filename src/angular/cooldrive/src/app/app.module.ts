@@ -24,6 +24,9 @@ import { TransactionStatus } from './components/transaction_status/transaction.s
 import { EmailValidation } from './components/emailValidation/emailValidation.component';
 import {EmailValidationService} from "./service/email-validation.service";
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import {ShareService} from "./service/share.service";
+import { SharedWithMeComponent } from './components/shared-with-me/shared-with-me.component';
+
 
 
 @NgModule({
@@ -38,7 +41,8 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
     PaymentComponent,
     TransactionStatus,
     EmailValidation,
-    LandingPageComponent
+    LandingPageComponent,
+    SharedWithMeComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -57,6 +61,7 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
           { path: 'checkout', canActivate: [LoginGuard], component: CheckoutComponent},
           { path: 'payment/:id', canActivate: [LoginGuard], component: PaymentComponent},
           { path: 'transaction', canActivate: [LoginGuard], component: TransactionStatus},
+          { path: 'shared', canActivate: [LoginGuard], component: SharedWithMeComponent},
         ]
       },
       {path: "**", component: LandingPageComponent}
@@ -65,7 +70,7 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
     ])
   ],
 
-  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService],
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService, ShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

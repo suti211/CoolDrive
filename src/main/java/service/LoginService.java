@@ -1,27 +1,22 @@
 package service;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
-import controller.UserController;
 import dto.Operation;
 import dto.Status;
 import dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ConnectionUtil;
+import util.ControllersFactory;
 
 @Path("/login")
-public class LoginService {
-    private static final Logger LOG = LoggerFactory.getLogger(LoginService.class);
-    UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
+public class LoginService extends ControllersFactory {
+    private final Logger LOG = LoggerFactory.getLogger(LoginService.class);
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

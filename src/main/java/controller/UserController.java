@@ -12,7 +12,7 @@ import java.sql.*;
  * Created by David Szilagyi on 2017. 07. 10..
  */
 public class UserController extends DatabaseController implements UserDao {
-    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
+    private final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     public UserController(ConnectionUtil.DatabaseName database) {
         super(database);

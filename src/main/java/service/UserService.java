@@ -1,12 +1,11 @@
 package service;
 
-import controller.UserController;
 import dto.Operation;
 import dto.Status;
 import dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ConnectionUtil;
+import util.ControllersFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -16,9 +15,8 @@ import javax.ws.rs.core.MediaType;
  * Created by David Szilagyi on 2017. 08. 01..
  */
 @Path("")
-public class UserService {
-    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
-    private static final UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
+public class UserService extends ControllersFactory {
+    private final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

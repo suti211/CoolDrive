@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import {File} from '../model/file.model';
-
+import { environment } from "../../environments/environment.live"
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
 import {StorageInfo} from '../model/storage-info';
@@ -15,7 +15,7 @@ import {TextFile} from "../model/text-file";
 export class FileService {
   files: File[] = [];
   filteredFiles: File[] = [];
-  filesUrl = "http://localhost:8080/CoolDrive/files/";
+  filesUrl = environment.urlPrefix + '/files/';
 
   constructor(private http: Http) {
   }
@@ -28,7 +28,17 @@ export class FileService {
     return this.filteredFiles;
   }
 
-  createTextFile(txt: TextFile): Observable<Status>{
+  getTxtFileData(token: Token): Observable<TextFile>{
+    let bodyString = JSON.stringify(token);
+    console.log(bodyString);
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.filesUrl + 'getTXT', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw('Server Error'));
+  }
+
+  uploadTextFile(txt: TextFile): Observable<Status>{
     let bodyString = JSON.stringify(txt);
     console.log(bodyString);
     let headers = new Headers({'Content-Type': 'application/json'});
@@ -48,10 +58,10 @@ export class FileService {
       .catch((error: any) => Observable.throw('Server Error'));
   }
 
-  downloadFile(fileId: number) {
+  downloadFile(fileId: number, token: Token) {
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
-    this.http.get(this.filesUrl + 'download?id=' + fileId, options).toPromise()
+    this.http.get(this.filesUrl + 'download?id=' + fileId + "&token=" + token.token, options).toPromise()
       .then(function(response) {
         window.location.href = response.url;
       })
