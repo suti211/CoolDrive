@@ -4,15 +4,13 @@ import { Observable } from 'rxjs/Rx';
 import { Token } from '../model/token.model';
 import { Status } from '../model/status.model';
 import { environment } from "../../environments/environment"
+import {HttpClient} from "./http.client";
 
 @Injectable()
 export class TokenService{
     tokenUrl = environment.urlPrefix + "/";
 
-    headers = new Headers({'Content-Type' : 'application/json'});
-    options = new RequestOptions({headers : this.headers});
-
-    constructor(private http:Http){
+    constructor(private http: HttpClient) {
 
     }
 
@@ -21,7 +19,7 @@ export class TokenService{
         let bodyString = JSON.stringify(body);
         console.log("body JSON: " + bodyString);
 
-        return this.http.post(this.tokenUrl + requestUrl, bodyString, this.options)
+        return this.http.post(this.tokenUrl + requestUrl, <String> bodyString)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
     }
@@ -29,7 +27,7 @@ export class TokenService{
     validateToken(token: Token, requestUrl: string): Observable<Status>{
         let bodyString = JSON.stringify(token);
 
-        return this.http.post(this.tokenUrl + requestUrl, bodyString, this.options)
+        return this.http.post(this.tokenUrl + requestUrl, <String>bodyString)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
     }
@@ -37,7 +35,7 @@ export class TokenService{
     isTokenAdmin(token: Token, requestUrl: string): Observable<Status>{
         let bodyString = JSON.stringify(token);
 
-        return this.http.post(this.tokenUrl + requestUrl, bodyString, this.options)
+        return this.http.post(this.tokenUrl + requestUrl, <String>bodyString)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
     }
