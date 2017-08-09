@@ -156,9 +156,9 @@ public class UserFileController extends DatabaseController implements UserFileDa
     public boolean deleteUserFile(int id) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("SET foreign_key_checks = 0; " +
-                    "DELETE FROM Files WHERE id = ?;" +
-                    "DELETE FROM Permissions WHERE id = ?;" +
+            ps = con.prepareStatement("SET foreign_key_checks = 0 THEN " +
+                    "DELETE FROM Files WHERE id = ? THEN " +
+                    "DELETE FROM Permissions WHERE id = ? THEN " +
                     "SET foreign_key_checks = 1;");
             ps.setInt(1, id);
             ps.setInt(2, id);
