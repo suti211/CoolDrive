@@ -83,7 +83,7 @@ public class PermissionsController extends DatabaseController implements Permiss
 
     public List<UserFile> sharedFiles(String columnName, int value) {
         List<UserFile> userFiles = new ArrayList<>();
-        String sql = String.format("SELECT Files.* FROM Files " +
+        String sql = String.format("SELECT Files.*, Permissions.readOnly FROM Files " +
                 "JOIN Permissions ON(Files.id = Permissions.fileId) WHERE %s = ?", columnName);
         PreparedStatement ps = null;
         try {
@@ -102,7 +102,8 @@ public class PermissionsController extends DatabaseController implements Permiss
                         rs.getBoolean("isFolder"),
                         rs.getInt("ownerId"),
                         rs.getInt("parentId"),
-                        rs.getString("label")));
+                        rs.getString("label"),
+                        rs.getBoolean("readOnly")));
             }
         } catch (SQLException e) {
             LOG.error("sharedWithMe is failed with Exception", e);
