@@ -158,7 +158,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
         try {
             ps = con.prepareStatement("SET foreign_key_checks = 0 THEN " +
                     "DELETE FROM Files WHERE id = ? THEN " +
-                    "DELETE FROM Permissions WHERE id = ? THEN " +
+                    "DELETE FROM Permissions WHERE fileId = ? THEN " +
                     "SET foreign_key_checks = 1;");
             ps.setInt(1, id);
             ps.setInt(2, id);
