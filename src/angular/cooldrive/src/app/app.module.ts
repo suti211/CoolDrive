@@ -47,7 +47,7 @@ import { SharedWithMeComponent } from './components/shared-with-me/shared-with-m
     EmailValidation,
     TransactionList,
     UnauthorizedComponent,
-    UsersComponent
+    UsersComponent,
     LandingPageComponent,
     SharedWithMeComponent
   ],

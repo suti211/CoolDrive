@@ -31,10 +31,8 @@ export class FileService {
 
   getTxtFileData(token: Token): Observable<TextFile>{
     let bodyString = JSON.stringify(token);
-    console.log(bodyString);
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    return this.http.post(this.filesUrl + 'getTXT', bodyString, options)
+    console.log(bodyString)
+    return this.http.post(this.filesUrl + 'getTXT', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
   }
@@ -57,8 +55,8 @@ export class FileService {
       .catch((error: any) => Observable.throw('Server Error'));
   }
 
-  downloadFile(fileId: number) {
-    this.http.get(this.filesUrl + 'download?id=' + fileId).toPromise()
+  downloadFile(fileId: number, token: Token) {
+    this.http.get(this.filesUrl + 'download?id=' + fileId + "&token" + token.token).toPromise()
       .then(function(response) {
         window.location.href = response.url;
       })
