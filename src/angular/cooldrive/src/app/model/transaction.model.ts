@@ -1,4 +1,4 @@
-export class Transaction{
+export class Transaction {
     userToken: string;
     id: number;
     firstName: string;
@@ -6,9 +6,10 @@ export class Transaction{
     zip: string;
     city: string;
     address1: string;
-    address2: string
+    address2: string;
     bought: number;
     phone: string;
+    boughtDate: string;
 
     constructor(userToken: string, firstName: string, lastName: string, zipCode: string, city: string, address: string, phone: string, storagePack: number){
         this.userToken = userToken;
@@ -27,6 +28,15 @@ export class Transaction{
 
     getBillingAddress(): string{
         return this.address2;
+    }
+
+
+    getDate(): string {
+      return this.boughtDate;
+    }
+
+    setDate(value: string) {
+      this.boughtDate = value;
     }
 
     setId(id: number): void{

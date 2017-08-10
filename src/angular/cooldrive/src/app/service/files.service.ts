@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import {File} from '../model/file.model';
-import { environment } from "../../environments/environment.live"
+import { environment } from "../../environments/environment"
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
 import {StorageInfo} from '../model/storage-info';
@@ -10,6 +10,7 @@ import {Token} from '../model/token.model';
 import {Status} from "../model/status.model";
 import {Folder} from "../model/folder";
 import {TextFile} from "../model/text-file";
+import {HttpClient} from "./http.client";
 
 @Injectable()
 export class FileService {
@@ -17,7 +18,7 @@ export class FileService {
   filteredFiles: File[] = [];
   filesUrl = environment.urlPrefix + '/files/';
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient, private oHttp: Http) {
   }
 
   getFilesArray(): File[] {
@@ -30,10 +31,8 @@ export class FileService {
 
   getTxtFileData(token: Token): Observable<TextFile>{
     let bodyString = JSON.stringify(token);
-    console.log(bodyString);
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    return this.http.post(this.filesUrl + 'getTXT', bodyString, options)
+    console.log(bodyString)
+    return this.http.post(this.filesUrl + 'getTXT', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
   }
@@ -41,9 +40,8 @@ export class FileService {
   uploadTextFile(txt: TextFile): Observable<Status>{
     let bodyString = JSON.stringify(txt);
     console.log(bodyString);
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    return this.http.post(this.filesUrl + 'uploadTXT', bodyString, options)
+
+    return this.http.post(this.filesUrl + 'uploadTXT', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
   }
@@ -51,17 +49,14 @@ export class FileService {
   createFolder(folder: Folder): Observable<Status>{
     console.log(folder);
     let bodyString = JSON.stringify(folder);
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    return this.http.post(this.filesUrl + 'createFolder', bodyString, options)
+
+    return this.http.post(this.filesUrl + 'createFolder', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
   }
 
   downloadFile(fileId: number, token: Token) {
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    this.http.get(this.filesUrl + 'download?id=' + fileId + "&token=" + token.token, options).toPromise()
+    this.http.get(this.filesUrl + 'download?id=' + fileId + "&token=" + token.token).toPromise()
       .then(function(response) {
         window.location.href = response.url;
       })
@@ -73,9 +68,7 @@ export class FileService {
 
     console.log(bodyString);
 
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    return this.http.post(this.filesUrl + 'modify', bodyString, options)
+    return this.http.post(this.filesUrl + 'modify', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
   }
@@ -83,9 +76,7 @@ export class FileService {
   deleteFile(token: Token): Observable<Status>{
     let bodyString = JSON.stringify(token);
 
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    return this.http.post(this.filesUrl + 'deleteFile', bodyString, options)
+    return this.http.post(this.filesUrl + 'deleteFile', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
@@ -101,7 +92,7 @@ export class FileService {
     let options = new RequestOptions({headers: headers});
 
     console.log(fd);
-    return this.http.post(this.filesUrl + 'upload', fd, options)
+    return this.oHttp.post(this.filesUrl + 'upload', fd, options)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
   }
@@ -109,10 +100,7 @@ export class FileService {
   getStorageInfo(token: Token): Observable<StorageInfo> {
     let bodyString = JSON.stringify(token);
 
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-
-    return this.http.post(this.filesUrl + 'getStorageInfo', bodyString, options)
+    return this.http.post(this.filesUrl + 'getStorageInfo', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
@@ -120,9 +108,7 @@ export class FileService {
   getFiles(token: Token): Observable<File[]> {
     let bodyString = JSON.stringify(token);
 
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    return this.http.post(this.filesUrl + 'getFiles', bodyString, options)
+    return this.http.post(this.filesUrl + 'getFiles', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
