@@ -19,9 +19,7 @@ public class UserController extends DatabaseController implements UserDao {
     }
 
     public User getUser(int id) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT * FROM Users WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM Users WHERE id = ?")) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -49,9 +47,7 @@ public class UserController extends DatabaseController implements UserDao {
 
     public User getUser(String columnName, String value) {
         String sql = String.format("SELECT * FROM Users WHERE %s = ?", columnName);
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(sql);
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, value);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -78,10 +74,10 @@ public class UserController extends DatabaseController implements UserDao {
     }
 
     public int registerUser(User user) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(
-                    "INSERT INTO Users(username, pass, email, validated, firstname, lastname, admin, token, registerdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_DATE)", Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement ps = con.prepareStatement(
+                "INSERT INTO Users" +
+                        "(username, pass, email, validated, firstname, lastname, admin, token, registerdate) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_DATE)", Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getUserName());
             ps.setString(2, user.getPass());
             ps.setString(3, user.getEmail());
@@ -110,10 +106,8 @@ public class UserController extends DatabaseController implements UserDao {
     }
 
     public boolean modifyUser(int id, User user) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(
-                    "UPDATE Users SET pass = ?," + "email = ?," + "firstname = ?," + "lastname =? WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("UPDATE Users SET pass = ?, email = ?," +
+                "firstname = ?, lastname = ? WHERE id = ?")) {
             ps.setString(1, user.getPass());
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getFirstName());
@@ -132,10 +126,7 @@ public class UserController extends DatabaseController implements UserDao {
     }
 
     public boolean setHomeId(int id, int userHomeID) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(
-                    "UPDATE Users SET userhomeid = ? WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("UPDATE Users SET userhomeid = ? WHERE id = ?")) {
             ps.setInt(1, userHomeID);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
@@ -150,9 +141,7 @@ public class UserController extends DatabaseController implements UserDao {
     }
 
     public boolean changeValidation(int id, boolean validate) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("UPDATE Users SET validated = ? WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("UPDATE Users SET validated = ? WHERE id = ?")) {
             ps.setBoolean(1, validate);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
@@ -168,9 +157,8 @@ public class UserController extends DatabaseController implements UserDao {
     }
 
     public int checkUser(String userName, String pass) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT id FROM Users WHERE username = ? AND pass = ?");
+        try (PreparedStatement ps = con.prepareStatement("SELECT id FROM Users " +
+                "WHERE username = ? AND pass = ?")) {
             ps.setString(1, userName);
             ps.setString(2, pass);
             ResultSet rs = ps.executeQuery();
@@ -187,9 +175,7 @@ public class UserController extends DatabaseController implements UserDao {
 
     public boolean setToken(String userName) {
         String token = TokenGenerator.createToken();
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("UPDATE Users SET token = ? WHERE username = ?");
+        try (PreparedStatement ps = con.prepareStatement("UPDATE Users SET token = ? WHERE username = ?")) {
             ps.setString(1, token);
             ps.setString(2, userName);
             int success = ps.executeUpdate();
@@ -204,9 +190,7 @@ public class UserController extends DatabaseController implements UserDao {
     }
 
     public boolean deleteToken(String userName) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("UPDATE Users SET token = NULL WHERE username = ?");
+        try (PreparedStatement ps = con.prepareStatement("UPDATE Users SET token = NULL WHERE username = ?")) {
             ps.setString(1, userName);
             int success = ps.executeUpdate();
             if (success > 0) {
