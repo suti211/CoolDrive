@@ -170,6 +170,7 @@ export class FilesComponent implements OnInit {
   }
 
   share(){
+    let close = document.getElementById("shareClose");
     let token = this.creatToken(this.shareFileId);
     let shared = new Share(this.shareWithEmail, this.shareReadOnly, token);
 
@@ -177,10 +178,12 @@ export class FilesComponent implements OnInit {
     shareFileOperation = this.shareService.shareFile(shared);
     shareFileOperation.subscribe((status: Status) => {
       console.log(status.message);
+      close.click();
     });
   }
 
   createTxtFile(){
+    let close = document.getElementById("createTxtClose");
     let token = this.creatToken(this.currentFolderId);
     let txt = new TextFile(this.newTxtTitle, this.newTxtContent, token);
 
@@ -188,6 +191,7 @@ export class FilesComponent implements OnInit {
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
       console.log(status.message);
+      close.click();
       this.listFiles(this.currentFolderId);
     });
   }
@@ -205,6 +209,7 @@ export class FilesComponent implements OnInit {
   }
 
   editTxtFile(){
+    let close = document.getElementById("editTxtClose");
     let token = this.creatToken(this.currentFolderId);
     let txt = new TextFile(this.editTxtTitle, this.editTxtContent, token);
 
@@ -212,11 +217,13 @@ export class FilesComponent implements OnInit {
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
       console.log(status.message);
+      close.click();
       this.listFiles(this.currentFolderId);
     });
   }
 
   createFolder(){
+    let close = document.getElementById("createFolderClose");
     let newToken = this.creatToken(-1);
     let folder = new Folder(newToken.token,this.newFolderName,this.newFolderMaxSize,this.newFolderLabel);
 
@@ -224,6 +231,7 @@ export class FilesComponent implements OnInit {
     createFolderOperation = this.fileService.createFolder(folder);
     createFolderOperation.subscribe((status: Status) => {
       console.log(status.message);
+      close.click();
       this.listFiles(this.currentFolderId);
     });
   }
