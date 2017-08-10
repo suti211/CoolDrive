@@ -1,6 +1,5 @@
 package service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -12,13 +11,13 @@ import dto.StorageInfo;
 import dto.Transaction;
 import dto.User;
 import dto.UserFile;
-import util.ControllersUtil;
+import util.ControllersFactory;
 
 /**
  * Created by mudzso on 2017.08.07..
  */
 @Path("/adminpage")
-public class AdminService extends ControllersUtil {
+public class AdminService extends ControllersFactory {
 
 	@GET
 	@Path("/transactions")

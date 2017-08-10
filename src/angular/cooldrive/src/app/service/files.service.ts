@@ -56,7 +56,7 @@ export class FileService {
   }
 
   downloadFile(fileId: number, token: Token) {
-    this.http.get(this.filesUrl + 'download?id=' + fileId + "&token" + token.token).toPromise()
+    this.http.get(this.filesUrl + 'download?id=' + fileId + "&token=" + token.token).toPromise()
       .then(function(response) {
         window.location.href = response.url;
       })
