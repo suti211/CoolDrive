@@ -300,12 +300,19 @@ export class FilesComponent implements OnInit {
   listFiles(id: number){
     this.files.length = 0;
     this.filteredFiles.length = 0;
+    let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "", false);
+    if(this.currentFolderId != -1){
+      console.log("pluszba");
+      this.files.push(backButton);
+      this.filteredFiles.push(backButton);
+    }
 
     let newToken = this.creatToken(id);
 
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
+
       for (let file of newFiles) {
         this.files.push(file);
         this.filteredFiles.push(file);
