@@ -6,7 +6,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
+import controller.TransactionsController;
+import controller.UserController;
+import controller.UserFileController;
 import dto.StorageInfo;
 import dto.Transaction;
 import dto.User;
@@ -23,23 +25,28 @@ public class AdminService extends ControllersFactory {
 	@Path("/transactions")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Transaction> getAllTransaction() {
-		return transactionsController.getAllTransaction();
+		try (TransactionsController transactionsController = getTransactionsController()) {
+			return transactionsController.getAllTransaction();
+		}
 	}
 
 	@GET
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<User> getAllUser() {
-		List<User> users = userController.getAllUser();
+		try (UserController userController = getUserController();
+			 UserFileController userFileController = getUserFileController()) {
+			List<User> users = userController.getAllUser();
 
-		UserFile uf;
+			UserFile uf;
 
-		for (User user : users) {
-			uf = userFileController.getUserFile(user.getUserHomeId());
-			user.setUserStorage(new StorageInfo(uf.getSize(), uf.getMaxSize()));
+			for (User user : users) {
+				uf = userFileController.getUserFile(user.getUserHomeId());
+				user.setUserStorage(new StorageInfo(uf.getSize(), uf.getMaxSize()));
+			}
+
+			return users;
 		}
-
-		return users;
 	}
 
 }
