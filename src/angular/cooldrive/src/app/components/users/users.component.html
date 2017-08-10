@@ -1,0 +1,71 @@
+<h1>User list:</h1>
+<hr>
+<div class="row">
+  <div class="col-md-10 col-sm-12 center">
+    <div id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="card" *ngFor="let user of users; let i = index">
+        <div class="card-header" role="tab" [attr.id]="i">
+          <h5 class="mb-0">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" [attr.href]="'#collapse' + i" aria-expanded="false" [attr.aria-controls]="'collapse' + i">
+              <span class="glyphicon glyphicon-user"> </span> {{user.userName}} || <span class="glyphicon glyphicon-envelope"> </span> {{user.email}} || <strong> Validated: </strong>
+              <span class="glyphicon glyphicon-ok" *ngIf="user.validated"></span><span class="glyphicon glyphicon-remove" *ngIf="!user.validated"></span>
+            </a>
+          </h5>
+        </div>
+
+        <div [attr.id]="'collapse' + i" class="collapse" role="tabpanel" [attr.aria-labelledby]="'heading' + i">
+          <div class="card-block">
+            <table>
+              <tr>
+                <td><strong>ID: </strong></td>
+                <td class="left">{{user.id}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>First name: </strong></td>
+                <td class="left">{{user.firstName}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>Last name: </strong></td>
+                <td class="left">{{user.lastName}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>Register date: </strong></td>
+                <td class="left">{{user.registerDate}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>Token: </strong></td>
+                <td class="left">{{user.token}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>Home folder ID: </strong></td>
+                <td class="left">{{user.userHomeId}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>Has admin privileges: </strong></td>
+                <td class="left">{{user.admin}}</td>
+              </tr>
+
+            </table>
+            <hr>
+            <div class="bars">
+              <h3>Storage status: {{user.userStorage.usage}} / {{user.userStorage.quantity}} MB </h3>
+              <div class="progress progress-xs">
+                <div class="progress-bar bg-info" role="progressbar" [style.width]="user.userStorage.usage / user.userStorage.quantity * 100 + '%'">
+                  <div class="bartitle">
+                    {{(user.userStorage.usage / user.userStorage.quantity * 100).toFixed(1) + "%"}}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -25,7 +25,7 @@ export class LoginGuard implements CanActivate {
         }
 
         this.token = new Token(sessionStorage.getItem(sessionStorage.key(0)));
-        this.validateOperation = this.tokenService.validateToken(this.token);
+        this.validateOperation = this.tokenService.validateToken(this.token, "token");
 
         return this.validateOperation.map(status => status.success);
     }

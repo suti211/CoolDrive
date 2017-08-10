@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
 import util.TokenGenerator;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by David Szilagyi on 2017. 07. 10..
@@ -45,6 +47,38 @@ public class UserController extends DatabaseController implements UserDao {
         }
         LOG.debug("User not found with this id: {} in getUser(id) method", id);
         return null;
+    }
+    
+    public List<User> getAllUser(){
+    	String sql = String.format("SELECT * FROM Users");
+    	List<User> users = new ArrayList<>();
+    	PreparedStatement ps = null;
+    	
+    	try{
+    		LOG.info("getAllUser() method invoked!");
+    		ps = con.prepareStatement(sql);
+    		ResultSet rs = ps.executeQuery();
+    		
+    		while(rs.next()){
+    			users.add(new User(
+    					rs.getInt("id"),
+    					rs.getString("userName"),
+    					rs.getString("email"),
+    					rs.getBoolean("validated"),
+    					rs.getString("firstName"),
+    					rs.getString("lastName"),
+    					rs.getBoolean("admin"),
+    					rs.getString("token"),
+    					rs.getDate("registerDate"),
+    					rs.getInt("userHomeId")
+    				));
+    		}
+    		return users;
+    	} catch (SQLException e) {
+    		LOG.error("getAllUser() failed with Exception {}", e);
+		}
+    	LOG.debug("getAllUsers() failed (null)!");
+    	return null;
     }
 
     public User getUser(String columnName, String value) {
