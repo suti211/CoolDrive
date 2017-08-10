@@ -26,9 +26,8 @@ public class PermissionsController extends DatabaseController implements Permiss
     }
 
     public boolean addFileToUser(int fileId, int userId, boolean readOnly) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("INSERT INTO Permissions(fileId, userId, readOnly) VALUES (?, ?, ?)");
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO Permissions(fileId, userId, readOnly) " +
+                "VALUES (?, ?, ?)")) {
             ps.setInt(1, fileId);
             ps.setInt(2, userId);
             ps.setBoolean(3, readOnly);
@@ -46,9 +45,8 @@ public class PermissionsController extends DatabaseController implements Permiss
     }
 
     public boolean removeFileFromUser(int fileId, int userId) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("DELETE FROM Permissions WHERE fileId = ? AND userId = ?");
+        try (PreparedStatement ps = con.prepareStatement("DELETE FROM Permissions " +
+                "WHERE fileId = ? AND userId = ?")) {
             ps.setInt(1, fileId);
             ps.setInt(2, userId);
             int success = ps.executeUpdate();
@@ -64,9 +62,8 @@ public class PermissionsController extends DatabaseController implements Permiss
     }
 
     public boolean changeAccess(int fileId, int userId, boolean readOnly) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("UPDATE Permissions SET readOnly = ? WHERE fileId = ? AND userId = ?");
+        try (PreparedStatement ps = con.prepareStatement("UPDATE Permissions SET readOnly = ? " +
+                "WHERE fileId = ? AND userId = ?")) {
             ps.setBoolean(1, readOnly);
             ps.setInt(2, fileId);
             ps.setInt(3, userId);
@@ -85,9 +82,7 @@ public class PermissionsController extends DatabaseController implements Permiss
         List<UserFile> userFiles = new ArrayList<>();
         String sql = String.format("SELECT Files.*, Permissions.readOnly FROM Files " +
                 "JOIN Permissions ON(Files.id = Permissions.fileId) WHERE %s = ?", columnName);
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(sql);
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, value);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -113,10 +108,8 @@ public class PermissionsController extends DatabaseController implements Permiss
 
     public List<Share> sharedWith(int fileId) {
         List<Share> shares = new ArrayList<>();
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT Users.email, Permissions.readOnly FROM Users " +
-                    "JOIN Permissions ON(Users.id = Permissions.userId) WHERE fileId =  ?");
+        try (PreparedStatement ps = con.prepareStatement("SELECT Users.email, Permissions.readOnly FROM Users " +
+                "JOIN Permissions ON(Users.id = Permissions.userId) WHERE fileId =  ?")) {
             ps.setInt(1, fileId);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -129,11 +122,9 @@ public class PermissionsController extends DatabaseController implements Permiss
     }
 
     public boolean checkAccess(int fileId, int userId) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT Permissions.* FROM Permissions JOIN Files " +
-                    "ON(Files.id = Permissions.fileId) WHERE Permissions.fileId = ? " +
-                    "AND (Permissions.userId = ? OR Files.ownerId = ?)");
+        try (PreparedStatement ps = con.prepareStatement("SELECT Permissions.* FROM Permissions JOIN Files " +
+                "ON(Files.id = Permissions.fileId) WHERE Permissions.fileId = ? " +
+                "AND (Permissions.userId = ? OR Files.ownerId = ?)")) {
             ps.setInt(1, fileId);
             ps.setInt(2, userId);
             ps.setInt(3, userId);
