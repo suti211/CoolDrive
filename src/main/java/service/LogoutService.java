@@ -9,10 +9,10 @@ import dto.Operation;
 import dto.Status;
 import dto.Token;
 import dto.User;
-import util.ControllersUtil;
+import util.ControllersFactory;
 
 @Path("/logout")
-public class LogoutService extends ControllersUtil {
+public class LogoutService extends ControllersFactory {
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)

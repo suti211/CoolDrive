@@ -47,7 +47,7 @@ export class LoginComponent{
 
   login(){
 
-    if(this.isThereInput()){    
+    if(this.isThereInput()){
       sessionStorage.clear();
       //console.log(this.username, this.password);
       //console.log("Login Attempt!");
@@ -66,6 +66,9 @@ export class LoginComponent{
           //console.log("Login Component: Successful login!");
           this.showIncorrectCredentials = false;
           this.showInputWarning = false;
+          this.showValidatedEmail = false;
+          this.showWrongValidatedEmail = false;
+          localStorage.removeItem("emailStatus");
           this.showSuccesfulLogin = true;
           this.statusMessage = status.message;
           setTimeout(() => this.router.navigate(['dashboard/files']), 2000);

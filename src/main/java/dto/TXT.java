@@ -14,6 +14,11 @@ public class TXT {
         this.token = token;
     }
 
+    public TXT(String name, String content) {
+        this.name = name;
+        this.content = content;
+    }
+
     public TXT() {
     }
 

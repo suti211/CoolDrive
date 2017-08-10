@@ -22,11 +22,15 @@ import { CheckoutService } from "./service/checkout.service";
 import { PaymentComponent } from "./components/payment/payment.component";
 import { TransactionStatus } from "./components/transaction_status/transaction.status.component";
 import { EmailValidation } from "./components/emailValidation/emailValidation.component";
-import {EmailValidationService} from "./service/email-validation.service";
-import {TransactionList} from "./components/maintenance/transactionlist.component";
-import {HttpClient} from "./service/http.client";
-import {UnauthorizedComponent} from "./components/unauthorized/unauthorized.component";
+import { EmailValidationService } from "./service/email-validation.service";
+import { TransactionList } from "./components/maintenance/transactionlist.component";
+import { HttpClient } from "./service/http.client";
+import { UnauthorizedComponent } from "./components/unauthorized/unauthorized.component";
 import { UsersComponent } from './components/users/users.component';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { ShareService } from "./service/share.service";
+import { SharedWithMeComponent } from './components/shared-with-me/shared-with-me.component';
+
 
 
 @NgModule({
@@ -44,6 +48,8 @@ import { UsersComponent } from './components/users/users.component';
     TransactionList,
     UnauthorizedComponent,
     UsersComponent
+    LandingPageComponent,
+    SharedWithMeComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -64,15 +70,14 @@ import { UsersComponent } from './components/users/users.component';
           { path: "users", component: UsersComponent },
           { path: "transactions", component: TransactionList },
           { path: "unauthorized", component: UnauthorizedComponent },
+          { path: 'shared', canActivate: [LoginGuard], component: SharedWithMeComponent},
         ]
       },
-      {path: "**", component: LoginComponent}
-
-
+      {path: "**", component: LandingPageComponent}
     ])
   ],
 
-  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService, HttpClient],
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService, HttpClient, ShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

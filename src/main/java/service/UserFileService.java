@@ -4,8 +4,9 @@ import dto.*;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ControllersUtil;
+import util.ControllersFactory;
 import util.UserFileManager;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -19,7 +20,7 @@ import java.util.List;
  * Created by David Szilagyi und Dani on 2017. 07. 18..
  */
 @Path("/files")
-public class UserFileService extends ControllersUtil {
+public class UserFileService extends ControllersFactory {
     private final Logger LOG = LoggerFactory.getLogger(UserFileService.class);
     private final UserFileManager userFileManager = new UserFileManager();
 
@@ -40,7 +41,7 @@ public class UserFileService extends ControllersUtil {
         LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
         int fileId = getFileId(token, "deleteUserFile");
         UserFile userFile = userFileController.getUserFile(fileId);
-        if(userFileController.deleteUserFile(fileId)) {
+        if (userFileController.deleteUserFile(fileId)) {
             userFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
             double fileSize = -userFile.getSize();
             int parentId = userFile.getParentId();
@@ -51,7 +52,7 @@ public class UserFileService extends ControllersUtil {
             }
             return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
         }
-            return new Status(Operation.USERFILE, false, "This folder is not empty!");
+        return new Status(Operation.USERFILE, false, "This folder is not empty!");
     }
 
     @POST
@@ -96,8 +97,9 @@ public class UserFileService extends ControllersUtil {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/uploadTXT")
     public Status uploadTXTFile(TXT txt, @Context HttpServletRequest request) throws IOException {
+        LOG.info("uploadTXTFile method is called with token:{}, id: {}, from: {}", txt.getToken().getToken(), txt.getToken().getId(), request.getRemoteAddr());
         int parentId = getFileId(txt.getToken(), "uploadTXTFile");
-        if(userFileManager.createTXTFile(txt, parentId)) {
+        if (userFileManager.createTXTFile(txt, parentId)) {
             return new Status(Operation.TXT, true, "TXT file successfully created!");
         }
         return new Status(Operation.TXT, false, "Cannot create TXT file!");
@@ -106,13 +108,25 @@ public class UserFileService extends ControllersUtil {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getTXT")
+    public TXT getTXTFile(Token token, @Context HttpServletRequest request) throws IOException {
+        LOG.info("getTXTFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
+        int fileId = getFileId(token, "getTXTFile");
+        UserFile userFile = userFileController.getUserFile(fileId);
+        String path = userFile.getPath() + "\\" + fileId + ".txt";
+        return userFileManager.readFromTXT(userFile.getFileName(), path);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/modify")
     public Status modifyFile(UserFile userFile, @Context HttpServletRequest request) {
         LOG.info("modifyFile method is called with id: {}, from: {}", userFile.getId(), request.getRemoteAddr());
-        if(userFile.isFolder() && !userFileController.checkAvailableSpace(userFile.getParentId(), userFile.getMaxSize())) {
+        if (userFile.isFolder() && !userFileController.checkAvailableSpace(userFile.getParentId(), userFile.getMaxSize())) {
             LOG.info("modifyFile method is failed with id: {} because of not enough space", userFile.getId());
             return new Status(Operation.USERFILE, false, "Not enough space on the parent folder!");
-        } else if(userFile.isFolder() && userFile.getMaxSize() < userFile.getSize()) {
+        } else if (userFile.isFolder() && userFile.getMaxSize() < userFile.getSize()) {
             LOG.info("modifyFile method is failed with id: {} because of wrong maxSize", userFile.getId());
             return new Status(Operation.USERFILE, false, "Max size cannot be lower than current size!");
         }
@@ -140,19 +154,24 @@ public class UserFileService extends ControllersUtil {
     @Path("/download")
     public Response downloadFile(@Context HttpServletRequest request) {
         int id = Integer.valueOf(request.getParameter("id"));
+        String token = request.getParameter("token");
         LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
-        File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
-        String name = userFile.getName();
-        String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
-        if (userFile != null) {
-            LOG.info("File is found and ready to send to user with this id: {}", id);
-            return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
-                    .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-                    .build();
-        } else {
-            LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
-            return null;
-        }
+        int userId = userController.getUser("token", token).getId();
+        if (permissionsController.checkAccess(id, userId)) {
+            File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
+            String name = userFile.getName();
+            String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
+            if (userFile != null) {
+                LOG.info("File is found and ready to send to user with this id: {}", id);
+                return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                        .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                        .build();
+            } else {
+                LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
+                return null;
+            }
+        } return Response.noContent().header("Access Denied", "You don't have access to download this file")
+                .build();
     }
 
     @POST

@@ -11,10 +11,10 @@ import dto.Operation;
 import dto.Status;
 import dto.Transaction;
 import dto.User;
-import util.ControllersUtil;
+import util.ControllersFactory;
 
 @Path("/transaction")
-public class TransactionService extends ControllersUtil {
+public class TransactionService extends ControllersFactory {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
