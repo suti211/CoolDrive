@@ -46,7 +46,7 @@ public class UserFile {
         this.label = label;
     }
 
-    public UserFile(String path, double size, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId) {
+    public UserFile(String path, double size, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label) {
         this.path = path;
         this.size = size;
         this.fileName = fileName;
@@ -55,6 +55,7 @@ public class UserFile {
         this.isFolder = isFolder;
         this.ownerId = ownerId;
         this.parentId = parentId;
+        this.label = label;
     }
 
     public UserFile(String path, double size, String fileName, String extension, boolean isFolder, int ownerId, int parentId) {

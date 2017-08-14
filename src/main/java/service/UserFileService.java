@@ -209,7 +209,7 @@ public class UserFileService extends ControllersFactory {
             UserFile userFile = userFileController.getUserFile(parentId);
             String path = userFile.getPath() + "\\" + userFile.getFileName();
             if (userFileController.checkAvailableSpace(parentId, folder.getMaxSize())) {
-                int id = userFileController.addNewUserFile(new UserFile(path, 0, folder.getName(), "dir", folder.getMaxSize(), true, user.getId(), parentId));
+                int id = userFileController.addNewUserFile(new UserFile(path, 0, folder.getName(), "dir", folder.getMaxSize(), true, user.getId(), parentId, folder.getLabel()));
                 if (id > 0) {
                     LOG.info("Folder added to this path: {} with this id: {}", path, id);
                     return new Status(Operation.CREATEFOLDER, true, "Folder successfully created!");
