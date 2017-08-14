@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ControllersFactory;
 import util.UserFileManager;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -46,16 +47,19 @@ public class UserFileService extends ControllersFactory {
         try (UserFileController userFileController = getUserFileController()) {
             int fileId = getFileId(token, "deleteUserFile");
             UserFile userFile = userFileController.getUserFile(fileId);
-            if (userFileController.deleteUserFile(fileId)) {
-                userFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
-                double fileSize = -userFile.getSize();
-                int parentId = userFile.getParentId();
-                userFileController.changeFolderCurrSize(parentId, fileSize);
-                int folderParentId = userFileController.getUserFile(parentId).getParentId();
-                if (folderParentId != 1) {
-                    userFileController.changeFolderCurrSize(folderParentId, fileSize);
+            if ((userFile.isFolder() && userFile.getSize() == 0) || (!userFile.isFolder())) {
+                if (userFileController.deleteUserFile(fileId)) {
+                    userFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
+                    double fileSize = -userFile.getSize();
+                    int parentId = userFile.getParentId();
+                    userFileController.changeFolderCurrSize(parentId, fileSize);
+                    int folderParentId = userFileController.getUserFile(parentId).getParentId();
+                    if (folderParentId != 1) {
+                        userFileController.changeFolderCurrSize(folderParentId, fileSize);
+                    }
+                    return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
                 }
-                return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
+                return new Status(Operation.USERFILE, false, "There was an error during deleting this folder/file!");
             }
             return new Status(Operation.USERFILE, false, "This folder is not empty!");
         }

@@ -156,7 +156,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
             int successPermissions = deletePermissions.executeUpdate();
             fkSet.setInt(1, 1);
             fkSet.executeUpdate();
-            if ((successFiles > 0) && (successPermissions > 0)) {
+            if ((successFiles > 0) && (successPermissions >= 0)) {
                 LOG.info("UserFile is successfully deleted with this id: {}", id);
                 return true;
             }
