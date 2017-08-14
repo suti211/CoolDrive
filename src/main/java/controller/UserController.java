@@ -209,8 +209,9 @@ public class UserController extends DatabaseController implements UserDao {
 
     public boolean setToken(String userName) {
         String token = TokenGenerator.createToken();
-        try (PreparedStatement ps = con.prepareStatement("UPDATE Users SET token = ?, " +
-                "loggedIn = loggedIn + 1 WHERE username = ?")) {
+        try (PreparedStatement ps = con.prepareStatement(
+                "UPDATE Users SET token = IF(loggedIn = 0, ?, token), " +
+                        "loggedIn = IF(loggedIn = 0, 1, loggedIn + 1) WHERE username = ?")) {
             ps.setString(1, token);
             ps.setString(2, userName);
             int success = ps.executeUpdate();
