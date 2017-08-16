@@ -85,13 +85,12 @@ public class PermissionsController extends DatabaseController implements Permiss
         List<UserFile> userFiles = new ArrayList<>();
         String sql;
         if(columnName.equalsIgnoreCase("Files.parentId")) {
-            sql = String.format("SELECT * FROM " +
-                    "(SELECT Files.*, Permissions.readOnly FROM Files JOIN Permissions ON(Files.id = Permissions.fileId) " +
-                    "WHERE %s = ?) AS all_files;", columnName);
+            sql = String.format("SELECT Files.*, Permissions.readOnly FROM Files JOIN Permissions ON" +
+                    "(Files.id = Permissions.fileId) WHERE %s = ?", columnName);
         } else {
             sql = String.format("SELECT * FROM " +
-                    "(SELECT Files.*, Permissions.readOnly FROM Files JOIN Permissions ON(Files.id = Permissions.fileId) " +
-                    "WHERE %s = ?) AS all_files " +
+                    "(SELECT Files.*, Permissions.readOnly FROM Files JOIN Permissions ON" +
+                    "(Files.id = Permissions.fileId) WHERE %s = ?) AS all_files " +
                     "WHERE parentId NOT IN (SELECT Permissions.fileId FROM Permissions);", columnName);
         }
         try (PreparedStatement ps = con.prepareStatement(sql)) {
