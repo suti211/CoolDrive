@@ -191,8 +191,12 @@ export class FilesComponent implements OnInit {
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
       console.log(status.message);
-      close.click();
-      this.listFiles(this.currentFolderId);
+      if(status.success){
+        this.newTxtTitle=null;
+        this.newTxtContent=null;
+        close.click();
+        this.listFiles(this.currentFolderId);
+      }
     });
   }
 
