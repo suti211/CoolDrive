@@ -158,26 +158,28 @@
           <h4 class="modal-title">Create folder</h4>
           <button id="createFolderClose" type="button" class="close" data-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
-          <div *ngIf="false" id="createFolderInfo" class="alert alert-success" role="alert">
+        <form #createFolderForm="ngForm">
+          <div class="modal-body">
+            <div *ngIf="false" id="createFolderInfo" class="alert alert-success" role="alert">
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon createFolderModal">Folder name*</span>
+              <input name="name" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderName" required>
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon createFolderModal">Label</span>
+              <input name="label" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderLabel">
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon createFolderModal">Max size*</span>
+              <input name="maxSize" type="number" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderMaxSize" required>
+            </div>
           </div>
-          <div class="input-group">
-            <span class="input-group-addon createFolderModal">Folder name*</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderName">
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input id="createFolderButton" type="button" class="btn btn-primary" [disabled]=createFolderForm.invalid (click)="createFolder()" value="Create">
           </div>
-          <div class="input-group">
-            <span class="input-group-addon createFolderModal">Label</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderLabel">
-          </div>
-          <div class="input-group">
-            <span class="input-group-addon createFolderModal">Max size*</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderMaxSize">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <input id="createFolderButton" type="button" class="btn btn-primary" (click)="createFolder()" value="Create">
-        </div>
+        </form>
       </div>
     </div>
   </div>
