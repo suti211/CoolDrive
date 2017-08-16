@@ -235,9 +235,9 @@ export class FilesComponent implements OnInit {
         this.newFolderName= null;
         this.newFolderMaxSize= null;
         this.newFolderLabel = null;
+        this.listFiles(this.currentFolderId);
+        close.click();
       }
-      this.listFiles(this.currentFolderId);
-      close.click();
     });
   }
 
