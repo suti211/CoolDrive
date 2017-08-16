@@ -34,6 +34,10 @@
   width: 110px;
 }
 
+.custom-file-input{
+  width: 500px;
+}
+
 .input-group-addon.createTxtModal.content{
   border-right-color: rgb(204, 204, 204);
   border-right-style: solid;
