@@ -231,8 +231,13 @@ export class FilesComponent implements OnInit {
     createFolderOperation = this.fileService.createFolder(folder);
     createFolderOperation.subscribe((status: Status) => {
       console.log(status.message);
-      close.click();
+      if(status.success){
+        this.newFolderName= null;
+        this.newFolderMaxSize= null;
+        this.newFolderLabel = null;
+      }
       this.listFiles(this.currentFolderId);
+      close.click();
     });
   }
 
