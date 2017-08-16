@@ -126,14 +126,14 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form>
+        <form #uploadForm="ngForm">
           <div class="modal-body">
             <div *ngIf="uploadInfoPanelDisplayed" id="filesUploadInfo" class="alert alert-danger" role="alert">
               {{uploadInfoPanelText}}
             </div>
             <label class="custom-file">
-              <input class="custom-file-input" id="uploadedFiles" type="file" formenctype="multipart/form-data"
-                     (change)="listUploadedFiles()">
+              <input name="files" class="custom-file-input" id="uploadedFiles" type="file" formenctype="multipart/form-data"
+                     (change)="listUploadedFiles()" required>
               <span class="custom-file-control"></span>
             </label>
             <br>
@@ -143,7 +143,7 @@
           </div>
           <div class="modal-footer">
             <button id="uploadCloseButton" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input type="button" class="btn btn-primary" (click)="uploadFile()" value="Upload">
+            <input type="button" class="btn btn-primary" [disabled]='!uploadedFilesList?.length > 0' (click)="uploadFile()" value="Upload">
           </div>
         </form>
       </div>
