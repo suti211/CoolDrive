@@ -188,24 +188,25 @@
           <h4 class="modal-title">Create Text File</h4>
           <button id="createTxtClose" type="button" class="close" data-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
-          <div *ngIf="false" id="createTxtInfo" class="alert alert-success" role="alert">
+        <form #createTxtForm="ngForm">
+          <div class="modal-body">
+            <div *ngIf="false" id="createTxtInfo" class="alert alert-success" role="alert">
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon createTxtModal">Title*</span>
+              <input name="title" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newTxtTitle" required>
+            </div>
+            <div class="form-group">
+              <br>
+              <span class="input-group-addon createTxtModal content">Content*</span>
+              <textarea name="content" class="form-control" id="Textarea" rows="3" [(ngModel)]="newTxtContent" required></textarea>
+            </div>
           </div>
-          <div class="input-group">
-            <span class="input-group-addon createTxtModal">Title*</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newTxtTitle">
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input id="createTxtButton" type="button" class="btn btn-primary" [disabled]="createTxtForm.invalid" (click)="createTxtFile()" value="Create">
           </div>
-          <div class="form-group">
-            <br>
-            <span class="input-group-addon createTxtModal content">Content</span>
-            <textarea class="form-control" id="Textarea" rows="3" [(ngModel)]="newTxtContent"></textarea>
-          </div>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <input id="createTxtButton" type="button" class="btn btn-primary" (click)="createTxtFile()" value="Create">
-        </div>
+        </form>
       </div>
     </div>
   </div>
