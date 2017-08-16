@@ -300,6 +300,7 @@ export class FilesComponent implements OnInit {
       if(status.success){
         this.setInfoPanelDisplay(status.message,true);
         document.getElementById("uploadCloseButton").click();
+        this.uploadedFilesList=null;
       }else{
         this.setUploadInfoPanelDisplay(status.message,true);
       }
