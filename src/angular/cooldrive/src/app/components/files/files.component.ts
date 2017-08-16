@@ -177,8 +177,11 @@ export class FilesComponent implements OnInit {
     let shareFileOperation: Observable<Status>;
     shareFileOperation = this.shareService.shareFile(shared);
     shareFileOperation.subscribe((status: Status) => {
-      console.log(status.message);
-      close.click();
+      if(status.success){
+        this.setInfoPanelDisplay(status.message,true);
+        close.click();
+      }
+
     });
   }
 
@@ -190,12 +193,12 @@ export class FilesComponent implements OnInit {
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
-      console.log(status.message);
       if(status.success){
         this.newTxtTitle=null;
         this.newTxtContent=null;
-        close.click();
+        this.setInfoPanelDisplay(status.message,true);
         this.listFiles(this.currentFolderId);
+        close.click();
       }
     });
   }
@@ -220,9 +223,11 @@ export class FilesComponent implements OnInit {
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
-      console.log(status.message);
-      close.click();
-      this.listFiles(this.currentFolderId);
+      if(status.success){
+        this.listFiles(this.currentFolderId);
+        this.setInfoPanelDisplay(status.message,true);
+        close.click();
+      }
     });
   }
 
@@ -234,12 +239,12 @@ export class FilesComponent implements OnInit {
     let createFolderOperation: Observable<Status>;
     createFolderOperation = this.fileService.createFolder(folder);
     createFolderOperation.subscribe((status: Status) => {
-      console.log(status.message);
       if(status.success){
         this.newFolderName= null;
         this.newFolderMaxSize= null;
         this.newFolderLabel = null;
         this.listFiles(this.currentFolderId);
+        this.setInfoPanelDisplay(status.message,true);
         close.click();
       }
     });
@@ -258,8 +263,10 @@ export class FilesComponent implements OnInit {
     let deleteFileOperation: Observable<Status>;
     deleteFileOperation = this.fileService.modifyFile(modifiedFile);
     deleteFileOperation.subscribe((status: Status) => {
-      console.log(status.message);
-      this.listFiles(this.currentFolderId);
+      if(status.success){
+        this.listFiles(this.currentFolderId);
+        this.setInfoPanelDisplay(status.message,true);
+      }
     });
   }
 
@@ -269,9 +276,11 @@ export class FilesComponent implements OnInit {
     let deleteFileOperation: Observable<Status>;
     deleteFileOperation = this.fileService.deleteFile(newToken);
     deleteFileOperation.subscribe((status: Status) => {
-      console.log(status.message);
-      this.listFiles(this.currentFolderId);
-      this.getStorageInfo();
+      if(status.success){
+        this.listFiles(this.currentFolderId);
+        this.getStorageInfo();
+        this.setInfoPanelDisplay(status.message,true);
+      }
     });
   }
 
@@ -301,6 +310,7 @@ export class FilesComponent implements OnInit {
         this.setInfoPanelDisplay(status.message,true);
         document.getElementById("uploadCloseButton").click();
         this.uploadedFilesList=null;
+        this.setInfoPanelDisplay(status.message,true);
       }else{
         this.setUploadInfoPanelDisplay(status.message,true);
       }
