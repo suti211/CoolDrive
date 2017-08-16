@@ -246,37 +246,39 @@
           <h4 class="modal-title">Share file</h4>
           <button id="shareClose" type="button" class="close" data-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
-          <div *ngIf="false" id="shareFileInfo" class="alert alert-success" role="alert">
+        <form #shareFileForm="ngForm">
+          <div class="modal-body">
+            <div *ngIf="false" id="shareFileInfo" class="alert alert-success" role="alert">
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon createTxtModal">File name</span>
+              <input name="filename" type="text" class="form-control" disabled aria-describedby="basic-addon1" [(ngModel)]="shareFileName">
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon createTxtModal">Share with:*</span>
+              <input name="email" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="shareWithEmail"
+                     placeholder="Email" required>
+            </div>
           </div>
-          <div class="input-group">
-            <span class="input-group-addon createTxtModal">File name</span>
-            <input type="text" class="form-control" disabled aria-describedby="basic-addon1" [(ngModel)]="shareFileName">
-          </div>
-          <div class="input-group">
-            <span class="input-group-addon createTxtModal">Share with:*</span>
-            <input type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="shareWithEmail"
-                   placeholder="Email">
-          </div>
-        </div>
 
-        <div class="custom-controls-stacked">
-          <label class="custom-control custom-radio">
-            <input id="radioStacked1" name="radio-stacked" type="radio" class="custom-control-input" [(ngModel)]="shareReadOnly" value="true">
-            <span class="custom-control-indicator"></span>
-            <span class="custom-control-description">Download only</span>
-          </label>
-          <label class="custom-control custom-radio">
-            <input id="radioStacked2" name="radio-stacked" type="radio" class="custom-control-input" [(ngModel)]="shareReadOnly" value="false">
-            <span class="custom-control-indicator"></span>
-            <span class="custom-control-description">Full Access</span>
-          </label>
-        </div>
+          <div class="custom-controls-stacked">
+            <label class="custom-control custom-radio">
+              <input id="radioStacked1" name="radio-stacked" type="radio" class="custom-control-input" [(ngModel)]="shareReadOnly" value="true" required>
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Download only</span>
+            </label>
+            <label class="custom-control custom-radio">
+              <input id="radioStacked2" name="radio-stacked" type="radio" class="custom-control-input" [(ngModel)]="shareReadOnly" value="false" required>
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Full Access</span>
+            </label>
+          </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <input id="shareButton" type="button" class="btn btn-primary" (click)="share()" value="Share">
-        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input id="shareButton" type="button" class="btn btn-primary" [disabled]=shareFileForm.invalid (click)="share()" value="Share">
+          </div>
+        </form>
       </div>
     </div>
   </div>
