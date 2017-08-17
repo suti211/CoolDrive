@@ -9,7 +9,6 @@ import {Folder} from "../../model/folder";
 import {TextFile} from "../../model/text-file";
 import {ShareService} from "../../service/share.service";
 import {Share} from "../../model/shared";
-import {stat} from "fs";
 
 @Component({
   selector: 'app-files',

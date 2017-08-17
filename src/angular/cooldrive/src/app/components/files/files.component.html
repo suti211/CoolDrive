@@ -327,9 +327,7 @@
                             <input class="form-check-input" type="radio" [name]="share.email" id="inlineRadio2" value="option2" [checked]="!share.readOnly" (click)="changeAccess(false, share.email)"> Full Access
                           </label>
                         </div>
-                        <button  type="button" class="btn btn-danger removeShare">
-                          <button type="button" class="btn btn-outline-danger removeShareIcon" (click)="removeAccess(share.email)">Remove</button>
-                        </button>
+                        <button type="button" class="btn btn-danger removeShare" (click)="removeAccess(share.email)"><span class="glyphicon glyphicon-remove"></span> Remove</button>
                       </span>
                     </td>
                   </tr>
