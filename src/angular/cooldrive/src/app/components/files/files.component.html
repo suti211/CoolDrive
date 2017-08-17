@@ -263,22 +263,22 @@
             </div>
           </div>
 
-          <div class="custom-controls-stacked">
-            <label class="custom-control custom-radio">
-              <input id="radioStacked1" name="radio-stacked" type="radio" class="custom-control-input" [(ngModel)]="shareReadOnly" value="true" required>
-              <span class="custom-control-indicator"></span>
-              <span class="custom-control-description">Download only</span>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" [(ngModel)]="shareReadOnly" value="true" required>
+              Download only
             </label>
-            <label class="custom-control custom-radio">
-              <input id="radioStacked2" name="radio-stacked" type="radio" class="custom-control-input" [(ngModel)]="shareReadOnly" value="false" required>
-              <span class="custom-control-indicator"></span>
-              <span class="custom-control-description">Full Access</span>
+          </div>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" [(ngModel)]="shareReadOnly" value="false" required>
+              Full Access
             </label>
           </div>
 
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input id="shareButton" type="button" class="btn btn-primary" [disabled]=shareFileForm.invalid (click)="share()" value="Share">
+            <input id="shareButton" type="button" class="btn btn-primary" [disabled]="shareFileForm.invalid" (click)="share()" value="Share">
           </div>
         </form>
       </div>
@@ -294,7 +294,6 @@
           <h4 class="modal-title">Shared with</h4>
           <button id="sharedWithClose" type="button" class="close" data-dismiss="modal"></button>
         </div>
-        <form #shareFileForm="ngForm">
           <div class="modal-body">
             <div *ngIf="false" id="sharedWithInfo" class="alert alert-success" role="alert">
             </div>
@@ -340,9 +339,8 @@
 
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input id="modifyShareButton" type="button" class="btn btn-primary" [disabled]=shareFileForm.invalid (click)="share()" value="Share">
           </div>
-        </form>
+
       </div>
     </div>
   </div>
