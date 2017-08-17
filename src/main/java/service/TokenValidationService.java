@@ -19,11 +19,30 @@ public class TokenValidationService extends ControllersFactory {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/tokentest")
 	public Status validateToken(Token token) {
 		try (UserController userController = getUserController()) {
 			User user = userController.getUser("token", token.getToken());
 
 			if (user != null) {
+
+				return new Status(Operation.TOKENVALIDATION, true, "Token is valid!");
+			} else {
+				return new Status(Operation.TOKENVALIDATION, false, "Token is invalid!");
+			}
+		}
+	}
+
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/admintest")
+	public Status isAdmin(Token token) {
+		try (UserController userController = getUserController()) {
+			User user = userController.getUser("token", token.getToken());
+
+			if (user != null) {
+				if (user.isAdmin())return new Status(Operation.ADMINAUTH, true, "User is admin");
 				return new Status(Operation.TOKENVALIDATION, true, "Token is valid!");
 			} else {
 				return new Status(Operation.TOKENVALIDATION, false, "Token is invalid!");

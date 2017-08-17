@@ -1,3 +1,4 @@
+<div data-spy="scroll" data-target=".orderbutton">
 <div class="animated fadeIn">
   <div class="row">
       <div class="col-sm-6 col-md-4">
@@ -68,7 +69,7 @@
                         <input type="radio" name="storage" value="5" aria-label="..." (click)=" change5mbHeader()" [(ngModel)]="storage">
                     </span>
                     <h4 class="storage-option">+ 5 MB Storage (5$)</h4>
-                    
+
                 </div><!-- /input-group -->
                 <br>
                 <div class="input-group">
@@ -96,20 +97,22 @@
             <div *ngSwitchCase="10">
                 <h4><strong>Premium pack:</strong> Additional 10MB of space will be added to your storage. Nice that's almost 2 high quality picture...</h4>
             </div>
-        
+
             <div *ngSwitchDefault>
                 <h4>Select one item from the options panel.</h4>
             </div>
 
             <div class="alert alert-danger" role="alert" *ngIf="showStorageWarning">
                     <strong>Warning: </strong> You didn't chose any storage pack!
-            </div>  
+            </div>
         </div>
     </div>
     <hr>
-    <div class="animated fadeIn" *ngIf="showOrderDetails">
+
+
+    <div class="animated fadeIn collapse" id="orderForm">
         <div class="row">
-            
+
             <div class="col-sm-8 col-md-6 order-form" id="form">
                 <div>
                     <h3>Order form:</h3>
@@ -131,7 +134,7 @@
                 <div class="input-group">
                     <span class="input-group-addon fixed-size">Last name: </span>
                     <input type="text" class="form-control" id="lNameField" placeholder="Last name" [(ngModel)]="lastName">
-                </div> 
+                </div>
                 <div class="input-group">
                     <span class="input-group-addon fixed-size">ZIP code: </span>
                     <input type="text" class="form-control" id="zipField" placeholder="ZipCode" [(ngModel)]="zipCode">
@@ -143,7 +146,7 @@
                 <div class="input-group">
                     <span class="input-group-addon fixed-size">Phone: </span>
                     <input type="text" class="form-control" id="phoneField" placeholder="Phone number" [(ngModel)]="phone">
-                </div> 
+                </div>
                 <div class="input-group">
                     <span class="input-group-addon fixed-size">Address: </span>
                     <input type="text" class="form-control" id="addressField" placeholder="Street name, house number" [(ngModel)]="address">
@@ -160,7 +163,7 @@
 
     <div class="col-sm-12 col-md-10 order text-center" *ngIf="!showOrderDetails">
             <div class="btn-group" role="group" aria-label="...">
-                <button (click)="showForm()" type="button" class="btn btn-primary orderbutton">Show Order form</button>
+                <button (click)="showForm()" type="button" class="btn btn-primary orderbutton" data-toggle="collapse" data-target="#orderForm" aria-expanded="false">Show Order form</button>
             </div>
     </div>
 
@@ -170,4 +173,5 @@
             </div>
     </div>
 
+</div>
 </div>
