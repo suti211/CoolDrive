@@ -9,6 +9,7 @@ import {Folder} from "../../model/folder";
 import {TextFile} from "../../model/text-file";
 import {ShareService} from "../../service/share.service";
 import {Share} from "../../model/shared";
+import {stat} from "fs";
 
 @Component({
   selector: 'app-files',
@@ -52,6 +53,7 @@ export class FilesComponent implements OnInit {
   shareFileName: string;
   shareReadOnly: boolean;
   shareWithEmail: string;
+  sharedWith: Share[];
 
 
   progressBarSytle: string = "progress-bar";
@@ -62,7 +64,7 @@ export class FilesComponent implements OnInit {
     this.infoPanelDisplayed = false;
   }
 
-  setSelectedFile(file: File){
+  setSelectedFile(file: File) {
     this.selectedFile = file;
   }
 
@@ -107,13 +109,13 @@ export class FilesComponent implements OnInit {
       for (let file of this.files) {
         this.filteredFiles.push(file);
       }
-    }else {
+    } else {
       for (let file of this.files) {
-        if(file.label === null) {
+        if (file.label === null) {
           if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1) {
             this.filteredFiles.push(file);
           }
-        }else {
+        } else {
           if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
             this.filteredFiles.push(file);
           }
@@ -164,12 +166,58 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  setShare(file: File){
+  setShare(file: File) {
     this.shareFileId = file.id;
     this.shareFileName = file.fileName;
   }
 
-  share(){
+  getShareInfo(file: File) {
+    this.shareFileId = file.id;
+    this.shareFileName = file.fileName;
+    let close = document.getElementById("shareClose");
+    let token = this.creatToken(file.id);
+
+    let sharedWith: Observable<Share[]>;
+    sharedWith = this.shareService.getShareInfo(token);
+    sharedWith.subscribe((share: Share[]) => {
+      this.sharedWith = share;
+      console.log(this.sharedWith);
+    });
+  }
+
+  changeAccess(readOnly: boolean, email: string) {
+    let token = this.creatToken(this.shareFileId);
+    let share = new Share(email, readOnly, token)
+
+    let sharedWith: Observable<Status>;
+    sharedWith = this.shareService.changeAccess(share);
+    sharedWith.subscribe((status: Status) => {
+      console.log(status);
+    });
+  }
+
+  removeAccess(email: string) {
+    console.log("remove");
+    let token = this.creatToken(this.shareFileId);
+    let share = new Share(email, false, token)
+
+    let removeShared: Observable<Status>;
+    removeShared = this.shareService.removeAccess(share);
+    removeShared.subscribe((status: Status) => {
+      if (status.success) {
+        let index = 0;
+        for (var i = 0; i < this.sharedWith.length; i++) {
+          if (this.sharedWith[i].email == email) {
+            index = i;
+          }
+        }
+        this.sharedWith.splice(index, 1);
+        console.log(status);
+      }
+    });
+  }
+
+  share() {
     let close = document.getElementById("shareClose");
     let token = this.creatToken(this.shareFileId);
     let shared = new Share(this.shareWithEmail, this.shareReadOnly, token);
@@ -177,15 +225,15 @@ export class FilesComponent implements OnInit {
     let shareFileOperation: Observable<Status>;
     shareFileOperation = this.shareService.shareFile(shared);
     shareFileOperation.subscribe((status: Status) => {
-      if(status.success){
-        this.setInfoPanelDisplay(status.message,true);
+      if (status.success) {
+        this.setInfoPanelDisplay(status.message, true);
         close.click();
       }
 
     });
   }
 
-  createTxtFile(){
+  createTxtFile() {
     let close = document.getElementById("createTxtClose");
     let token = this.creatToken(this.currentFolderId);
     let txt = new TextFile(this.newTxtTitle, this.newTxtContent, token);
@@ -193,17 +241,17 @@ export class FilesComponent implements OnInit {
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
-      if(status.success){
-        this.newTxtTitle=null;
-        this.newTxtContent=null;
-        this.setInfoPanelDisplay(status.message,true);
+      if (status.success) {
+        this.newTxtTitle = null;
+        this.newTxtContent = null;
+        this.setInfoPanelDisplay(status.message, true);
         this.listFiles(this.currentFolderId);
         close.click();
       }
     });
   }
 
-  fetchEditTxtData(id: number){
+  fetchEditTxtData(id: number) {
     let token = this.creatToken(id);
 
     let fetchTXTOperation: Observable<TextFile>;
@@ -215,7 +263,7 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  editTxtFile(){
+  editTxtFile() {
     let close = document.getElementById("editTxtClose");
     let token = this.creatToken(this.currentFolderId);
     let txt = new TextFile(this.editTxtTitle, this.editTxtContent, token);
@@ -223,28 +271,28 @@ export class FilesComponent implements OnInit {
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
-      if(status.success){
+      if (status.success) {
         this.listFiles(this.currentFolderId);
-        this.setInfoPanelDisplay(status.message,true);
+        this.setInfoPanelDisplay(status.message, true);
         close.click();
       }
     });
   }
 
-  createFolder(){
+  createFolder() {
     let close = document.getElementById("createFolderClose");
     let newToken = this.creatToken(-1);
-    let folder = new Folder(newToken.token,this.newFolderName,this.newFolderMaxSize,this.newFolderLabel);
+    let folder = new Folder(newToken.token, this.newFolderName, this.newFolderMaxSize, this.newFolderLabel);
 
     let createFolderOperation: Observable<Status>;
     createFolderOperation = this.fileService.createFolder(folder);
     createFolderOperation.subscribe((status: Status) => {
-      if(status.success){
-        this.newFolderName= null;
-        this.newFolderMaxSize= null;
+      if (status.success) {
+        this.newFolderName = null;
+        this.newFolderMaxSize = null;
         this.newFolderLabel = null;
         this.listFiles(this.currentFolderId);
-        this.setInfoPanelDisplay(status.message,true);
+        this.setInfoPanelDisplay(status.message, true);
         close.click();
       }
     });
@@ -257,34 +305,34 @@ export class FilesComponent implements OnInit {
     this.fileService.downloadFile(fileId, token);
   }
 
-  modifyFile(){
+  modifyFile() {
     const modifiedFile = this.selectedFile;
 
     let deleteFileOperation: Observable<Status>;
     deleteFileOperation = this.fileService.modifyFile(modifiedFile);
     deleteFileOperation.subscribe((status: Status) => {
-      if(status.success){
+      if (status.success) {
         this.listFiles(this.currentFolderId);
-        this.setInfoPanelDisplay(status.message,true);
+        this.setInfoPanelDisplay(status.message, true);
       }
     });
   }
 
-  deleteFile(id: number){
+  deleteFile(id: number) {
     let newToken = this.creatToken(id);
 
     let deleteFileOperation: Observable<Status>;
     deleteFileOperation = this.fileService.deleteFile(newToken);
     deleteFileOperation.subscribe((status: Status) => {
-      if(status.success){
+      if (status.success) {
         this.listFiles(this.currentFolderId);
         this.getStorageInfo();
-        this.setInfoPanelDisplay(status.message,true);
+        this.setInfoPanelDisplay(status.message, true);
       }
     });
   }
 
-  getStorageInfo(){
+  getStorageInfo() {
     let newToken = this.creatToken(this.currentFolderId);
 
     let getStorageInfoOperation: Observable<StorageInfo>;
@@ -298,7 +346,7 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  uploadFile(){
+  uploadFile() {
     this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
 
     let newToken = this.creatToken(this.currentFolderId);
@@ -306,13 +354,13 @@ export class FilesComponent implements OnInit {
     let uploadFileOperation: Observable<Status>;
     uploadFileOperation = this.fileService.uploadFile(newToken, this.uploadedFilesList[0]);
     uploadFileOperation.subscribe((status: Status) => {
-      if(status.success){
-        this.setInfoPanelDisplay(status.message,true);
+      if (status.success) {
+        this.setInfoPanelDisplay(status.message, true);
         document.getElementById("uploadCloseButton").click();
-        this.uploadedFilesList=null;
-        this.setInfoPanelDisplay(status.message,true);
-      }else{
-        this.setUploadInfoPanelDisplay(status.message,true);
+        this.uploadedFilesList = null;
+        this.setInfoPanelDisplay(status.message, true);
+      } else {
+        this.setUploadInfoPanelDisplay(status.message, true);
       }
       this.getStorageInfo()
       this.listFiles(this.currentFolderId);
@@ -325,11 +373,11 @@ export class FilesComponent implements OnInit {
     console.log(this.uploadedFilesList);
   }
 
-  listFiles(id: number){
+  listFiles(id: number) {
     this.files.length = 0;
     this.filteredFiles.length = 0;
     let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "", false);
-    if(this.currentFolderId != -1){
+    if (this.currentFolderId != -1) {
       console.log("pluszba");
       this.files.push(backButton);
       this.filteredFiles.push(backButton);

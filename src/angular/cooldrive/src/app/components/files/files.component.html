@@ -51,7 +51,7 @@
             <a class="dropdown-item" (click)="download(file.id)">Download</a>
             <a class="dropdown-item" (click)="setShare(file)" data-toggle="modal"
                data-target="#shareFileModal">Share file</a>
-            <a class="dropdown-item" (click)="setShare(file)" data-toggle="modal"
+            <a class="dropdown-item" (click)="getShareInfo(file)" data-toggle="modal"
                data-target="#sharedWithModal">Shared with</a>
             <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
             <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red; cursor: pointer">Delete</a>
@@ -313,22 +313,22 @@
                 </thead>
 
                 <tbody id="FileListDisplay">
-                  <tr *ngFor="let file of filteredFiles">
-                    <td>faramirex070@gmail.comfsdfsdfsdfsdfsdfsdfsdfs</td>
+                  <tr *ngFor="let share of sharedWith">
+                    <td>{{share.email}}</td>
                     <td>
                       <span>
                         <div class="form-check form-check-inline">
                         <label class="form-check-label">
-                          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> Download Only
+                          <input class="form-check-input" type="radio" [name]="share.email" id="inlineRadio1" value="option1" [checked]="share.readOnly" (click)="changeAccess(true, share.email)"> Download Only
                         </label>
                         </div>
                         <div class="form-check form-check-inline">
                           <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" > Full Access
+                            <input class="form-check-input" type="radio" [name]="share.email" id="inlineRadio2" value="option2" [checked]="!share.readOnly" (click)="changeAccess(false, share.email)"> Full Access
                           </label>
                         </div>
                         <button  type="button" class="btn btn-danger removeShare">
-                          <span id="removeShare" class="glyphicon glyphicon-remove removeShareIcon"></span> Remove
+                          <button type="button" class="btn btn-outline-danger removeShareIcon" (click)="removeAccess(share.email)">Remove</button>
                         </button>
                       </span>
                     </td>

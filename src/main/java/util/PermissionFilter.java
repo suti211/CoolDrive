@@ -55,7 +55,6 @@ public class PermissionFilter extends ControllersFactory implements ContainerReq
             if (containerRequestContext.getUriInfo().getPath().contains("/adminpage")) {
                 if (!user.isAdmin())
                     containerRequestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
-                containerRequestContext.
             }
         }
     }
