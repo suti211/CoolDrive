@@ -49,8 +49,10 @@
                data-toggle="modal" data-target="#editTxtModal">Open TextFile</a>
             <div *ngIf="file.extension == '.txt'" class="dropdown-divider"></div>
             <a class="dropdown-item" (click)="download(file.id)">Download</a>
-            <a class="dropdown-item" *ngIf="!file.folder" (click)="setShare(file)" data-toggle="modal"
-               data-target="#shareFileModal">Share</a>
+            <a class="dropdown-item" (click)="setShare(file)" data-toggle="modal"
+               data-target="#shareFileModal">Share file</a>
+            <a class="dropdown-item" (click)="setShare(file)" data-toggle="modal"
+               data-target="#sharedWithModal">Shared with</a>
             <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
             <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red; cursor: pointer">Delete</a>
           </div>
@@ -272,6 +274,39 @@
               <span class="custom-control-indicator"></span>
               <span class="custom-control-description">Full Access</span>
             </label>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input id="shareButton" type="button" class="btn btn-primary" [disabled]=shareFileForm.invalid (click)="share()" value="Share">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SHARED with FILE MODAL -->
+  <div class="modal fade" id="sharedWithModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Shared with</h4>
+          <button id="sharedWithClose" type="button" class="close" data-dismiss="modal"></button>
+        </div>
+        <form #shareFileForm="ngForm">
+          <div class="modal-body">
+            <div *ngIf="false" id="sharedWithInfo" class="alert alert-success" role="alert">
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon createTxtModal">File name</span>
+              <input name="filename" type="text" class="form-control" disabled aria-describedby="basic-addon1" [(ngModel)]="shareFileName">
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon createTxtModal">Share with:*</span>
+              <input name="email" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="shareWithEmail"
+                     placeholder="Email" required>
+            </div>
           </div>
 
           <div class="modal-footer">
