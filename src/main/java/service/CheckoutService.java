@@ -11,6 +11,7 @@ import util.ControllersFactory;
 
 @Path("/checkout")
 public class CheckoutService extends ControllersFactory {
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

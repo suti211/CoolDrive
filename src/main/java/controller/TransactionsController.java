@@ -22,7 +22,7 @@ public class TransactionsController extends DatabaseController implements Transa
 
     private final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
 
-    public TransactionsController(ConnectionUtil.DatabaseName database) {
+    public TransactionsController(String  database) {
         super(database);
     }
 

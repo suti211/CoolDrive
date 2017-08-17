@@ -15,7 +15,7 @@ public class PermissionsController extends DatabaseController implements Permiss
 
     private final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
 
-    public PermissionsController(ConnectionUtil.DatabaseName database) {
+    public PermissionsController(String database) {
         super(database);
     }
 

@@ -14,7 +14,7 @@ import java.sql.*;
 public class UserController extends DatabaseController implements UserDao {
     private final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
-    public UserController(ConnectionUtil.DatabaseName database) {
+    public UserController(String database) {
         super(database);
     }
 

@@ -3,6 +3,7 @@ package util;
 import dto.TXT;
 import dto.User;
 import dto.UserFile;
+import org.apache.commons.io.FileUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
