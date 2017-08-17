@@ -32,10 +32,10 @@ export class TokenService{
             .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
     }
 
-    isTokenAdmin(token: Token, requestUrl: string): Observable<Status>{
+    isTokenAdmin(token: Token): Observable<Status>{
         let bodyString = JSON.stringify(token);
 
-        return this.http.post(this.tokenUrl + requestUrl, <String>bodyString)
+        return this.http.post(this.tokenUrl + "admintest", <String>bodyString)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
     }
