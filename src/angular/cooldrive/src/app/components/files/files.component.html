@@ -302,16 +302,47 @@
               <span class="input-group-addon createTxtModal">File name</span>
               <input name="filename" type="text" class="form-control" disabled aria-describedby="basic-addon1" [(ngModel)]="shareFileName">
             </div>
-            <div class="input-group">
-              <span class="input-group-addon createTxtModal">Share with:*</span>
-              <input name="email" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="shareWithEmail"
-                     placeholder="Email" required>
+
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Access</th>
+                  </tr>
+                </thead>
+
+                <tbody id="FileListDisplay">
+                  <tr *ngFor="let file of filteredFiles">
+                    <td>faramirex070@gmail.comfsdfsdfsdfsdfsdfsdfsdfs</td>
+                    <td>
+                      <span>
+                        <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> Download Only
+                        </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" > Full Access
+                          </label>
+                        </div>
+                        <button  type="button" class="btn btn-danger removeShare">
+                          <span id="removeShare" class="glyphicon glyphicon-remove removeShareIcon"></span> Remove
+                        </button>
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+
           </div>
+
 
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input id="shareButton" type="button" class="btn btn-primary" [disabled]=shareFileForm.invalid (click)="share()" value="Share">
+            <input id="modifyShareButton" type="button" class="btn btn-primary" [disabled]=shareFileForm.invalid (click)="share()" value="Share">
           </div>
         </form>
       </div>
