@@ -17,7 +17,8 @@ public class User {
     private String token;
     private Date registerDate;
     private int userHomeId;
-
+    private StorageInfo userStorage;
+    
     public User() {
 
     }
@@ -36,8 +37,23 @@ public class User {
         this.registerDate = registerDate;
         this.userHomeId = userHomeId;
     }
+    
+    public User(int id, String userName, String email, boolean validated, String firstName, String lastName,
+			boolean admin, String token, Date registerDate, int userHomeId) {
+		super();
+		this.id = id;
+		this.userName = userName;
+		this.email = email;
+		this.validated = validated;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.admin = admin;
+		this.token = token;
+		this.registerDate = registerDate;
+		this.userHomeId = userHomeId;
+	}
 
-    public User(String userName, String firstName, String lastName, String email, String pass) {
+	public User(String userName, String firstName, String lastName, String email, String pass) {
         this.userName = userName;
         this.pass = pass;
         this.email = email;
@@ -61,7 +77,15 @@ public class User {
         return pass;
     }
 
-    public String getEmail() {
+    public StorageInfo getUserStorage() {
+		return userStorage;
+	}
+
+	public void setUserStorage(StorageInfo userStorage) {
+		this.userStorage = userStorage;
+	}
+
+	public String getEmail() {
         return email;
     }
 

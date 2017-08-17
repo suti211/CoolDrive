@@ -17,7 +17,7 @@ public class CheckoutService extends ControllersFactory {
 	public Transaction checkoutTransaction(Token token){
 		Transaction requestedTransaction;
 
-		requestedTransaction = transactionsController.getTransaction(token.getId());
+		requestedTransaction = getTransactionsController().getTransaction(token.getId());
 		
 		System.out.println(requestedTransaction);
 		

@@ -1,0 +1,57 @@
+<h1>Transaction list:</h1>
+<hr>
+<div class="row">
+  <div class="col-md-10 col-sm-12 center">
+    <div id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="card" *ngFor="let transaction of transactions; let i = index">
+        <div class="card-header" role="tab" [attr.id]="i">
+          <h5 class="mb-0">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" [attr.href]="'#collapse' + i" aria-expanded="false" [attr.aria-controls]="'collapse' + i">
+              <span class="glyphicon glyphicon-user"></span> {{transaction.firstName}} {{transaction.lastName}} || <strong> Issued: </strong>{{transaction.boughtDate}}
+            </a>
+          </h5>
+        </div>
+
+        <div [attr.id]="'collapse' + i" class="collapse" role="tabpanel" [attr.aria-labelledby]="'heading' + i">
+          <div class="card-block">
+            <table>
+              <tr>
+                <td><strong>ID: </strong></td>
+                <td class="left">{{transaction.id}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>ZIP code: </strong></td>
+                <td class="left">{{transaction.zip}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>City: </strong></td>
+                <td class="left">{{transaction.city}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>Address: </strong></td>
+                <td class="left">{{transaction.address1}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>Billing address: </strong></td>
+                <td class="left">{{transaction.address2}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>Phone number: </strong></td>
+                <td class="left">{{transaction.phone}}</td>
+              </tr>
+
+              <tr>
+                <td><strong>Bought package: </strong></td>
+                <td class="left">{{transaction.bought}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>

@@ -26,9 +26,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public UserFile getUserFile(int id) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT * FROM Files WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM Files WHERE id = ?")) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -55,10 +53,9 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public int addNewUserFile(UserFile userFile) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(
-                    "INSERT INTO Files(path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId, label) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO Files" +
+                "(path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId, label) " +
+                "VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, userFile.getPath());
             ps.setDouble(2, userFile.getSize());
             ps.setString(3, userFile.getFileName());
@@ -83,10 +80,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public boolean modifyUserFile(UserFile userFile) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(
-                    "UPDATE Files SET filename = ?, maxSize = ?, parentId = ?, label = ? WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("UPDATE Files SET filename = ?, maxSize = ?, " +
+                "parentId = ?, label = ? WHERE id = ?")) {
             ps.setString(1, userFile.getFileName());
             ps.setDouble(2, userFile.getMaxSize());
             ps.setInt(3, userFile.getParentId());
@@ -105,10 +100,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public boolean changeFolderCurrSize(int id, double size) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(
-                    "UPDATE Files SET `size` = `size` + ? WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("UPDATE Files SET `size` = `size` + ? WHERE id = ?")) {
             ps.setDouble(1, size);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
@@ -125,9 +117,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
 
     public List<UserFile> getAllFilesFromFolder(int parentId) {
         List<UserFile> userFiles = new ArrayList<>();
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT * FROM Files WHERE parentid = ?");
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM Files WHERE parentid = ?")) {
             ps.setInt(1, parentId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -154,17 +144,24 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public boolean deleteUserFile(int id) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("DELETE FROM Files WHERE id = ?");
-            ps.setInt(1, id);
-            int success = ps.executeUpdate();
-            if (success > 0) {
-                LOG.info("Userfile is successfully deleted with this id: {}", id);
+        try (PreparedStatement fkSet = con.prepareStatement("SET foreign_key_checks = ?");
+             PreparedStatement deleteFiles = con.prepareStatement("DELETE FROM Files WHERE id = ?");
+             PreparedStatement deletePermissions = con.prepareStatement("DELETE FROM Permissions " +
+                     "WHERE fileId = ?")) {
+            deleteFiles.setInt(1, id);
+            deletePermissions.setInt(1, id);
+            fkSet.setInt(1, 0);
+            fkSet.executeUpdate();
+            int successFiles = deleteFiles.executeUpdate();
+            int successPermissions = deletePermissions.executeUpdate();
+            fkSet.setInt(1, 1);
+            fkSet.executeUpdate();
+            if ((successFiles > 0) && (successPermissions > 0)) {
+                LOG.info("UserFile is successfully deleted with this id: {}", id);
                 return true;
             }
         } catch (SQLException e) {
-            LOG.error("Delete userfile is failed with Exception", e);
+            LOG.error("Delete userFile is failed with Exception", e);
             return false;
         }
         LOG.debug("File not found with this id: {} in deleteUserFile method", id);
@@ -172,9 +169,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public int checkUserFile(String filename, String extension, int parentId) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT id FROM Files WHERE filename = ? AND extension = ? AND parentId = ?");
+        try (PreparedStatement ps = con.prepareStatement("SELECT id FROM Files " +
+                "WHERE filename = ? AND extension = ? AND parentId = ?")) {
             ps.setString(1, filename);
             ps.setString(2, extension);
             ps.setInt(3, parentId);
@@ -190,9 +186,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public boolean checkAvailableSpace(int id, double fileSize) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT `size`, maxSize FROM Files WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("SELECT `size`, maxSize FROM Files WHERE id = ?")) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -209,10 +203,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public boolean setFileSize(int id, double fileSize) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(
-                    "UPDATE Files SET `size` = ? WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("UPDATE Files SET `size` = ? WHERE id = ?")) {
             ps.setDouble(1, fileSize);
             ps.setInt(2, id);
             int success = ps.executeUpdate();
@@ -228,10 +219,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public boolean increaseFileSize(int homeId, double increment) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement(
-                    "UPDATE Files SET `maxSize`= `maxSize` + ? WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("UPDATE Files SET `maxSize`= `maxSize` + ? " +
+                "WHERE id = ?")) {
             ps.setDouble(1, increment);
             ps.setInt(2, homeId);
             int success = ps.executeUpdate();
