@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ControllersFactory;
 import util.UserFileManager;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -200,12 +199,59 @@ public class UserFileService extends ControllersFactory {
         }
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/addPublicLink")
+    public Status addPublicLink(Token token, @Context HttpServletRequest request) {
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController()) {
+            int fileId = token.getId();
+            int userId = userController.getUser("token", token.getToken()).getId();
+            if(userFileController.setPublicLink(fileId, userId)) {
+                return new Status(Operation.USERFILE, true, "Public link successfully generated");
+            } else {
+                return new Status(Operation.USERFILE, false, "Public link cannot be added to this file");
+            }
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/deletePublicLink")
+    public Status deletePublicLink(Token token, @Context HttpServletRequest request) {
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController()) {
+            int fileId = token.getId();
+            int userId = userController.getUser("token", token.getToken()).getId();
+            if(userFileController.deletePublicLink(fileId, userId)) {
+                return new Status(Operation.USERFILE, true, "Public link successfully removed");
+            } else {
+                return new Status(Operation.USERFILE, false, "Public link cannot be removed from this file");
+            }
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getPublicLink")
+    public String getPublicLink(Token token, @Context HttpServletRequest request) {
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController()) {
+            int fileId = token.getId();
+            int userId = userController.getUser("token", token.getToken()).getId();
+            return userFileController.getPublicLink(fileId, userId);
+        }
+    }
+
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/public")
     public Response downloadPublicFile(@Context HttpServletRequest request) {
-        try(UserFileController userFileController = getUserFileController()) {
+        try (UserFileController userFileController = getUserFileController()) {
             String publicLink = request.getParameter("link");
             LOG.info("downloadPublicFile method is called with this publicLink: {}, from: {}", publicLink, request.getRemoteAddr());
             int id = userFileController.getPublicUserFile(publicLink);
