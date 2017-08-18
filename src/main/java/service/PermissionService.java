@@ -7,6 +7,7 @@ import dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ControllersFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -118,7 +119,11 @@ public class PermissionService extends ControllersFactory {
              UserController userController = getUserController()) {
             int userId = userController.getUser("token", token.getToken()).getId();
             LOG.info("sharedWithMe method called with userId: {}", userId);
-            return permissionsController.sharedFiles("Permissions.userId", userId);
+            if (token.getId() != -1) {
+                return permissionsController.sharedFiles("Files.parentId", token.getId());
+            } else {
+                return permissionsController.sharedFiles("Permissions.userId", userId);
+            }
         }
     }
 
