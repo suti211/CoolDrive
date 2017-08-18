@@ -31,7 +31,7 @@ public interface UserFileDao {
 
     boolean setPublicLink(int fileId, int userId);
 
-    boolean deletePublicLink(String publicLink, int fileId, int userId);
+    boolean deletePublicLink(int fileId, int userId);
 
     String getPublicLink(int fileId, int userId);
 }

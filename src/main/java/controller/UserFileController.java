@@ -286,12 +286,11 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return false;
     }
 
-    public boolean deletePublicLink(String publicLink, int fileId, int userId) {
+    public boolean deletePublicLink(int fileId, int userId) {
         try(PreparedStatement ps = con.prepareStatement("UPDATE Files SET publicLink = NULL " +
-                "WHERE id = ? AND ownerId = ? AND publicLink = ?")) {
+                "WHERE id = ? AND ownerId = ?")) {
             ps.setInt(1, fileId);
             ps.setInt(2, userId);
-            ps.setString(3, publicLink);
             int success = ps.executeUpdate();
             if(success > 0) {
                 LOG.info("deletePublicLink successfully done with this id: {}, ownerId:{}", fileId, userId);
