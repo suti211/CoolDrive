@@ -137,6 +137,7 @@ CREATE TABLE `Users` (
   `token` varchar(45) DEFAULT NULL,
   `registerdate` date DEFAULT NULL,
   `userhomeid` int(11) DEFAULT NULL,
+  `loggedIn` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `Users_id_uindex` (`id`),
   UNIQUE KEY `Users_username_uindex` (`username`),

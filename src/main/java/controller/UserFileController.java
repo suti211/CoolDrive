@@ -156,7 +156,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
             int successPermissions = deletePermissions.executeUpdate();
             fkSet.setInt(1, 1);
             fkSet.executeUpdate();
-            if ((successFiles > 0) && (successPermissions > 0)) {
+            if ((successFiles > 0) && (successPermissions >= 0)) {
                 LOG.info("UserFile is successfully deleted with this id: {}", id);
                 return true;
             }
@@ -186,15 +186,28 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public boolean checkAvailableSpace(int id, double fileSize) {
-        try (PreparedStatement ps = con.prepareStatement("SELECT `size`, maxSize FROM Files WHERE id = ?")) {
+        try (PreparedStatement ps = con.prepareStatement("SELECT id, `size`, maxSize, isFolder FROM Files WHERE id = ? OR " +
+                "(parentId = ? AND isFolder = ?)")) {
             ps.setInt(1, id);
+            ps.setInt(2, id);
+            ps.setBoolean(3, true);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                if ((rs.getDouble("maxSize") - rs.getDouble("size")) > fileSize) {
-                    return true;
-                } else {
-                    return false;
+            double maxSize = 0;
+            double size= 0;
+            while (rs.next()) {
+                if(rs.getInt("id") == id) {
+                    maxSize = rs.getDouble("maxSize");
+                    size = rs.getDouble("size");
+                    continue;
                 }
+                if(rs.getBoolean("isFolder") && rs.getInt("id") != id) {
+                    size += rs.getDouble("maxSize");
+                }
+            }
+            if ((maxSize - size) > fileSize) {
+                return true;
+            } else {
+                return false;
             }
         } catch (SQLException e) {
             LOG.error("checkAvailableSpace is failed with Exception", e);

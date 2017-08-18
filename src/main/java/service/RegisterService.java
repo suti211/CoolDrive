@@ -37,7 +37,7 @@ public class RegisterService extends ControllersFactory {
 				int startQuantity = 50;
 				int parentId = 1;
 				int userId = userController.registerUser(input);
-				int userHomeId = userFileController.addNewUserFile(new UserFile(PathUtil.ROOT_PATH, 0, input.getUserName(), "dir", startQuantity, true, userId, parentId));
+				int userHomeId = userFileController.addNewUserFile(new UserFile(PathUtil.ROOT_PATH, 0, input.getUserName(), "dir", startQuantity, true, userId, parentId, "Homefolder"));
 				if (userController.setHomeId(userId, userHomeId)) {
 					userFileManager.saveFolder(input.getUserName());
 					userController.setToken(input.getUserName());
