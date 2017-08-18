@@ -22,4 +22,10 @@ export class HttpClient {
     this.createAuthorizationHeader(headers);
     return this.http.post(url, data, {headers: headers});
   }
+
+  postFile(url: string, data: object) {
+    let headers = new Headers();
+    this.createAuthorizationHeader(headers);
+    return this.http.post(url, data, {headers: headers})
+  }
 }

@@ -87,12 +87,11 @@ export class FileService {
     fd.append('id', token.id.toString());
     fd.append('input', file);
 
-
-    let headers = new Headers([{'Content-Type': 'multipart/form-data'}]);
-    let options = new RequestOptions({headers: headers});
+    // let headers = new Headers([{'Content-Type': 'multipart/form-data'}]);
+    // let options = new RequestOptions({headers: headers});
 
     console.log(fd);
-    return this.oHttp.post(this.filesUrl + 'upload', fd, options)
+    return this.http.postFile(this.filesUrl + 'upload', fd)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
   }
