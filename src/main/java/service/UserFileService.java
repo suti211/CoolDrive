@@ -180,7 +180,8 @@ public class UserFileService extends ControllersFactory {
             String token = request.getParameter("token");
             LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
             int userId = userController.getUser("token", token).getId();
-            if (permissionsController.checkAccess(id, userId)) {
+            if (permissionsController.checkAccess(id, userId) ||
+                    userFileController.getUserFile(id).getOwnerId() == userId) {
                 File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
                 String name = userFile.getName();
                 String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
