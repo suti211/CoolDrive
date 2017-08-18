@@ -237,12 +237,13 @@ public class UserFileService extends ControllersFactory {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getPublicLink")
-    public String getPublicLink(Token token, @Context HttpServletRequest request) {
+    public Status getPublicLink(Token token, @Context HttpServletRequest request) {
         try (UserController userController = getUserController();
              UserFileController userFileController = getUserFileController()) {
             int fileId = token.getId();
             int userId = userController.getUser("token", token.getToken()).getId();
-            return userFileController.getPublicLink(fileId, userId);
+            String publicLink = userFileController.getPublicLink(fileId, userId);
+            return new Status(Operation.USERFILE, true, publicLink);
         }
     }
 
