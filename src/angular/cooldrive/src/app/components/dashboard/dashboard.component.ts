@@ -29,12 +29,11 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.tokenOperation = this.tokenService.isTokenAdmin(this.userToken);
     this.tokenOperation.subscribe((status: Status) => {
-      if(status.success){
+      if(status.success && status.operation === "ADMINAUTH"){
         this.isUserAdmin = true;
       } else {
         this.isUserAdmin = false;
       }
-      console.log(this.isUserAdmin);
     });
   }
 
