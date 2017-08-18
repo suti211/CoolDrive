@@ -5,6 +5,7 @@ import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
+import util.EncryptionUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -245,6 +246,45 @@ public class UserFileController extends DatabaseController implements UserFileDa
             LOG.error("setFileSize is failed with Exception", e);
         }
         LOG.debug("File not found with this id: {} in setFileSize method", homeId);
+        return false;
+    }
+
+    public boolean setPublicLink(int fileId, int userId) {
+        try(PreparedStatement ps = con.prepareStatement("UPDATE Files SET publicLink = ? " +
+                "WHERE id = ? AND ownerId = ?")) {
+            UserFile uf = getUserFile(fileId);
+            String link = EncryptionUtil.generateSHA1(uf.getFileName() + uf.getExtension()
+                    + String.valueOf(uf.getParentId() + String.valueOf(uf.getId())));
+            ps.setString(1, link);
+            ps.setInt(2, fileId);
+            ps.setInt(3, userId);
+            int success = ps.executeUpdate();
+            if(success > 0) {
+                LOG.info("setPublicLink added successfully to this id: {}, ownerId:{}", fileId, userId);
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("setPublicLink is failed with Exception", e);
+        }
+        LOG.debug("File not found with this id: {} and ownerId: {} in setPublicLink", fileId, userId);
+        return false;
+    }
+
+    public boolean deletePublicLink(String publicLink, int fileId, int userId) {
+        try(PreparedStatement ps = con.prepareStatement("UPDATE Files SET publicLink = NULL " +
+                "WHERE id = ? AND ownerId = ? AND publicLink = ?")) {
+            ps.setInt(1, fileId);
+            ps.setInt(2, userId);
+            ps.setString(3, publicLink);
+            int success = ps.executeUpdate();
+            if(success > 0) {
+                LOG.info("deletePublicLink successfully done with this id: {}, ownerId:{}", fileId, userId);
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("deletePublicLink is failed with Exception", e);
+        }
+        LOG.debug("File not found with this id: {} and ownerId: {} in deletePublicLink", fileId, userId);
         return false;
     }
 }

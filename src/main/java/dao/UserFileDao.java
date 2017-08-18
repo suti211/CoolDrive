@@ -24,4 +24,10 @@ public interface UserFileDao {
     boolean checkAvailableSpace(int id, double fileSize);
 
     boolean setFileSize(int id, double fileSize);
+
+    boolean increaseFileSize(int homeId, double increment);
+
+    boolean setPublicLink(int fileId, int userId);
+
+    boolean deletePublicLink(String publicLink, int fileId, int userId);
 }
