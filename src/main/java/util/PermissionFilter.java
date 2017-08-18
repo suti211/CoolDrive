@@ -23,7 +23,7 @@ import dto.User;
 @PreMatching
 @Provider
 public class PermissionFilter extends ControllersFactory implements ContainerRequestFilter{
-    List<String>whiteList = Arrays.asList("/login","/register","/token", "/upload", "/download", "/share", "/verify");
+    List<String>whiteList = Arrays.asList("/login","/register","/verify");
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
