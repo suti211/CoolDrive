@@ -13,6 +13,26 @@
   left: auto;
   right: 0px;
 }
+.close{
+  display: none;
+}
+.modal-content{
+  width: 700px !important;
+}
+
+.removeShare{
+  height: 15px;
+  margin-left: 20px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 2px;
+  padding-right: 2px;
+  font-size: x-small;
+}
+
+.removeShareIcon{
+  margin-left: 0px;
+}
 
 .custom-controls-stacked{
   padding-left: 20px;
@@ -28,6 +48,10 @@
 
 .input-group-addon.createTxtModal{
   width: 110px;
+}
+
+.custom-file-input{
+  width: 500px;
 }
 
 .input-group-addon.createTxtModal.content{

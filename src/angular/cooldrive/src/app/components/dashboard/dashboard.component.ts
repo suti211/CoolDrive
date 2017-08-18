@@ -6,6 +6,7 @@ import { Status } from '../../model/status.model';
 import { Token } from '../../model/token.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import {FilesComponent} from '../files/files.component';
+import {TokenService} from "../../service/token.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -18,12 +19,22 @@ export class DashboardComponent implements OnInit {
   userName : string = sessionStorage.key(0);
   userToken: Token = new Token(sessionStorage.getItem(this.userName));
   logoutOperation: Observable<Status>;
+  tokenOperation: Observable<Status>;
+  isUserAdmin: boolean;
 
   filter: string;
 
-  constructor(private logoutService: LogoutService, private router: Router, private filesComponent: FilesComponent) {}
+  constructor(private logoutService: LogoutService, private router: Router, private filesComponent: FilesComponent, private tokenService: TokenService) {}
 
   ngOnInit() {
+    this.tokenOperation = this.tokenService.isTokenAdmin(this.userToken);
+    this.tokenOperation.subscribe((status: Status) => {
+      if(status.success && status.operation === "ADMINAUTH"){
+        this.isUserAdmin = true;
+      } else {
+        this.isUserAdmin = false;
+      }
+    });
   }
 
   sendSearchData(filt: string){

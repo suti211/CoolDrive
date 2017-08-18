@@ -46,4 +46,34 @@ export class ShareService {
       .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
+  getShareInfo(token: Token): Observable<Share[]> {
+    let bodyString = JSON.stringify(token);
+
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.Url + 'sharedWith', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+  }
+
+  changeAccess(share: Share): Observable<Status> {
+    let bodyString = JSON.stringify(share);
+
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.Url + 'changeAccess', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+  }
+
+  removeAccess(share: Share): Observable<Status> {
+    let bodyString = JSON.stringify(share);
+
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    return this.http.post(this.Url + 'remove', bodyString, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+  }
+
 }
