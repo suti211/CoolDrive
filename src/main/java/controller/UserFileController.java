@@ -53,6 +53,22 @@ public class UserFileController extends DatabaseController implements UserFileDa
         return null;
     }
 
+    public int getPublicUserFile(String publicLink) {
+        try (PreparedStatement ps = con.prepareStatement("SELECT id FROM Files WHERE publicLink = ?")) {
+            ps.setString(1, publicLink);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                int fileId = rs.getInt("id");
+                LOG.info("File found with this publicLink: {}, id: {}", publicLink, fileId);
+                return fileId;
+            }
+        } catch (SQLException e) {
+            LOG.error("getPublicLUserFile is failed with Exception", e);
+        }
+        LOG.debug("File not found with this publicLink: {} in getPublicUserFile method", publicLink);
+        return -1;
+    }
+
     public int addNewUserFile(UserFile userFile) {
         try (PreparedStatement ps = con.prepareStatement("INSERT INTO Files" +
                 "(path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId, label) " +
@@ -286,5 +302,21 @@ public class UserFileController extends DatabaseController implements UserFileDa
         }
         LOG.debug("File not found with this id: {} and ownerId: {} in deletePublicLink", fileId, userId);
         return false;
+    }
+
+    public String getPublicLink(int fileId, int userId) {
+        try(PreparedStatement ps = con.prepareStatement("SELECT publicLink FROM Files WHERE id = ? AND ownerId = ?")) {
+            ps.setInt(1, fileId);
+            ps.setInt(2, userId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                LOG.info("getPublicLink successfully done with this id: {}, ownerId:{}", fileId, userId);
+                return rs.getString("publicLink");
+            }
+        } catch (SQLException e) {
+            LOG.error("getPublicLink is failed with Exception", e);
+        }
+        LOG.debug("File not found with this id: {} and ownerId: {} in deletePublicLink", fileId, userId);
+        return null;
     }
 }
