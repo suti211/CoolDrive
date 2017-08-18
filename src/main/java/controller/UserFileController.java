@@ -5,8 +5,7 @@ import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
-import util.EncryptionUtil;
-
+import util.TokenGenerator;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -268,9 +267,8 @@ public class UserFileController extends DatabaseController implements UserFileDa
     public boolean setPublicLink(int fileId, int userId) {
         try(PreparedStatement ps = con.prepareStatement("UPDATE Files SET publicLink = ? " +
                 "WHERE id = ? AND ownerId = ?")) {
-            UserFile uf = getUserFile(fileId);
-            String link = EncryptionUtil.generateSHA1(uf.getFileName() + uf.getExtension()
-                    + String.valueOf(uf.getParentId() + String.valueOf(uf.getId())));
+            String token = TokenGenerator.createToken();
+            String link = token.substring(0, token.indexOf('-'));
             ps.setString(1, link);
             ps.setInt(2, fileId);
             ps.setInt(3, userId);
