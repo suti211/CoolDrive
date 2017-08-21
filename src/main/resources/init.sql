@@ -36,6 +36,7 @@ CREATE TABLE `Files` (
   `ownerId` int(11) DEFAULT NULL,
   `parentId` int(11) DEFAULT NULL,
   `label` varchar(45) DEFAULT NULL,
+  `publicLink` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Files_id_uindex` (`id`),
   UNIQUE KEY `Files_name_extension_parentid` (`filename`, `extension`, `parentId`),
