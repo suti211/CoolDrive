@@ -60,16 +60,16 @@ import { SharedWithMeComponent } from './components/shared-with-me/shared-with-m
       { path: "verify/:token", component: EmailValidation },
       { path: "login", component: LoginComponent },
       { path: "register", component: RegisterComponent },
-      { path: "dashboard", component: DashboardComponent, children:
+      { path: "dashboard", canActivate: [LoginGuard], component: DashboardComponent, children:
        [
-          { path: "files", component: FilesComponent},
-          { path: "storage",  component: ExtensionComponent},
-          { path: "checkout",  component: CheckoutComponent},
-          { path: "payment/:id",  component: PaymentComponent},
-          { path: "transaction",  component: TransactionStatus},
+          { path: "files", canActivate: [LoginGuard], component: FilesComponent},
+          { path: "storage", canActivate: [LoginGuard],  component: ExtensionComponent},
+          { path: "checkout", canActivate: [LoginGuard],  component: CheckoutComponent},
+          { path: "payment/:id", canActivate: [LoginGuard],  component: PaymentComponent},
+          { path: "transaction", canActivate: [LoginGuard],  component: TransactionStatus},
           { path: "users", component: UsersComponent },
           { path: "transactions", component: TransactionList },
-          { path: "unauthorized", component: UnauthorizedComponent },
+          { path: "unauthorized", canActivate: [LoginGuard], component: UnauthorizedComponent },
           { path: 'shared', canActivate: [LoginGuard], component: SharedWithMeComponent},
         ]
       },
