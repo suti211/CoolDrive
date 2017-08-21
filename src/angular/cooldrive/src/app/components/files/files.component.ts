@@ -9,6 +9,7 @@ import {Folder} from "../../model/folder";
 import {TextFile} from "../../model/text-file";
 import {ShareService} from "../../service/share.service";
 import {Share} from "../../model/shared";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-files',
@@ -53,6 +54,8 @@ export class FilesComponent implements OnInit {
   shareReadOnly: boolean;
   shareWithEmail: string;
   sharedWith: Share[];
+
+  publicLink: string;
 
 
   progressBarSytle: string = "progress-bar";
@@ -171,6 +174,7 @@ export class FilesComponent implements OnInit {
   }
 
   getShareInfo(file: File) {
+    this.getPublicLink(file.id);
     this.shareFileId = file.id;
     this.shareFileName = file.fileName;
     let close = document.getElementById("shareClose");
@@ -396,6 +400,42 @@ export class FilesComponent implements OnInit {
     });
   }
 
+  addPublicLink(id: number) {
+    let token = this.creatToken(id)
+    let addPublicLink: Observable<Status>;
+    addPublicLink = this.fileService.setPublicLink(token);
+    addPublicLink.subscribe((status: Status) => {
+      if (status.success) {
+        this.getPublicLink(id);
+      }
+    });
+    console.log(id);
+  }
+
+  deletePublicLink(id: number) {
+    let token = this.creatToken(id)
+    let addPublicLink: Observable<Status>;
+    addPublicLink = this.fileService.deletePublicLink(token);
+    addPublicLink.subscribe((status: Status) => {
+      if (status.success) {
+        this.publicLink = null;
+      }
+    });
+  }
+
+  getPublicLink(id: number) {
+    let token = this.creatToken(id)
+    let addPublicLink: Observable<Status>;
+    addPublicLink = this.fileService.getPublicLink(token);
+    addPublicLink.subscribe((status: Status) => {
+      if (status.message != null) {
+        this.publicLink = environment.urlPrefix + '/files/public?link=' + status.message;
+      } else {
+        this.publicLink = null;
+      }
+    });
+  }
+
   ngOnInit() {
     //  let tokenID = localStorage.getItem(localStorage.key(0));
     let newToken = this.creatToken(-1);
@@ -417,5 +457,4 @@ export class FilesComponent implements OnInit {
 
     this.listFiles(this.currentFolderId);
   }
-
 }
