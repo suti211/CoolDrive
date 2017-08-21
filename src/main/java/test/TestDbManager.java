@@ -50,7 +50,7 @@ public class TestDbManager {
             ps.setString(6, "test");
             ps.setString(7, "user");
             ps.setBoolean(8, false);
-            ps.setString(9, null);
+            ps.setString(9, "asd"+i);
             ps.executeUpdate();
             }
 
@@ -62,7 +62,7 @@ public class TestDbManager {
     public void fillFilesTableWithDumbData(int number,int userId){
         PreparedStatement ps = null;
         try {
-            ps = connection.prepareStatement("INSERT INTO files(id, path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId, label) VALUES (?,?, ?, NOW(), ?, ?, ?, ?, ?, NULL , ?)");
+            ps = connection.prepareStatement("INSERT INTO files(id, path, `size`, uploadDate, filename, extension, maxSize, isFolder, ownerId, parentId, label) VALUES (?,?, ?, NOW(), ?, ?, ?, ?, ?,NULL , ?)");
             ps.setInt(1,1);
             ps.setString(2, PathUtil.ROOT_PATH);
             ps.setDouble(3, 10);
@@ -70,7 +70,7 @@ public class TestDbManager {
             ps.setString(5, "dir");
             ps.setDouble(6, 1000);
             ps.setBoolean(7, true);
-            ps.setInt(8, 0);
+            ps.setInt(8, userId);
             ps.setString(9, null);
             ps.executeUpdate();
             for (int i = 2; i < number+2; i++) {

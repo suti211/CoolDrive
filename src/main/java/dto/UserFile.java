@@ -15,6 +15,22 @@ public class UserFile {
     private int ownerId;
     private int parentId;
     private String label;
+    private boolean readOnly;
+
+    public UserFile(int id, String path, double size, String uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label, boolean readOnly) {
+        this.id = id;
+        this.path = path;
+        this.size = size;
+        this.uploadDate = uploadDate;
+        this.fileName = fileName;
+        this.extension = extension;
+        this.maxSize = maxSize;
+        this.isFolder = isFolder;
+        this.ownerId = ownerId;
+        this.parentId = parentId;
+        this.label = label;
+        this.readOnly = readOnly;
+    }
 
     public UserFile(int id, String path, double size, String uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label) {
         this.id = id;
@@ -30,7 +46,7 @@ public class UserFile {
         this.label = label;
     }
 
-    public UserFile(String path, double size, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId) {
+    public UserFile(String path, double size, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label) {
         this.path = path;
         this.size = size;
         this.fileName = fileName;
@@ -39,6 +55,7 @@ public class UserFile {
         this.isFolder = isFolder;
         this.ownerId = ownerId;
         this.parentId = parentId;
+        this.label = label;
     }
 
     public UserFile(String path, double size, String fileName, String extension, boolean isFolder, int ownerId, int parentId) {
@@ -98,6 +115,10 @@ public class UserFile {
         return label;
     }
 
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -144,41 +165,7 @@ public class UserFile {
         this.ownerId = ownerId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UserFile userFile = (UserFile) o;
-
-        if (id != userFile.id) return false;
-        if (Double.compare(userFile.size, size) != 0) return false;
-        if (Double.compare(userFile.maxSize, maxSize) != 0) return false;
-        if (isFolder != userFile.isFolder) return false;
-        if (ownerId != userFile.ownerId) return false;
-        if (parentId != userFile.parentId) return false;
-        if (path != null ? !path.equals(userFile.path) : userFile.path != null) return false;
-        if (uploadDate != null ? !uploadDate.equals(userFile.uploadDate) : userFile.uploadDate != null) return false;
-        if (fileName != null ? !fileName.equals(userFile.fileName) : userFile.fileName != null) return false;
-        return extension != null ? extension.equals(userFile.extension) : userFile.extension == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = id;
-        result = 31 * result + (path != null ? path.hashCode() : 0);
-        temp = Double.doubleToLongBits(size);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (uploadDate != null ? uploadDate.hashCode() : 0);
-        result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
-        result = 31 * result + (extension != null ? extension.hashCode() : 0);
-        temp = Double.doubleToLongBits(maxSize);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (isFolder ? 1 : 0);
-        result = 31 * result + ownerId;
-        result = 31 * result + parentId;
-        return result;
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 }

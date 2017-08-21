@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, Route, ActivatedRoute } from '@angular/router';
 import { Transaction } from '../../model/transaction.model';
 import $ from 'jquery';
-import './checkout.js';
+
 
 declare var paypal: any;
 

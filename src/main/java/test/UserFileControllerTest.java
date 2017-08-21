@@ -85,7 +85,7 @@ public class UserFileControllerTest {
     @Test
     public void checkUserFile() throws Exception {
         UserFile userFile = userFileController.getUserFile(2);
-        int result = userFileController.checkUserFile(userFile);
+        int result = userFileController.checkUserFile(userFile.getFileName(),userFile.getExtension(),userFile.getParentId());
         assertEquals(userFile.getId(),result);
 
     }

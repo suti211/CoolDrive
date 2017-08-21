@@ -9,8 +9,19 @@ import controller.UserFileController;
  * Created by David Szilagyi on 2017. 08. 04..
  */
 public abstract class ControllersFactory {
-        protected UserFileController userFileController = new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
-        protected UserController userController = new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-        protected TransactionsController transactionsController = new TransactionsController(ConnectionUtil.DatabaseName.CoolDrive);
-        protected PermissionsController permissionsController = new PermissionsController(ConnectionUtil.DatabaseName.CoolDrive);
+        protected UserFileController getUserFileController() {
+                return new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
+        }
+
+        protected UserController getUserController() {
+                return new UserController(ConnectionUtil.DatabaseName.CoolDrive);
+        }
+
+        protected TransactionsController getTransactionsController() {
+                return new TransactionsController(ConnectionUtil.DatabaseName.CoolDrive);
+        }
+
+        protected PermissionsController getPermissionsController() {
+                return new PermissionsController(ConnectionUtil.DatabaseName.CoolDrive);
+        }
 }

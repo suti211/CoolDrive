@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
  * Created by mudzso on 2017.07.25..
  */
 public class UserFileManagerTest {
+    private UserFileManager userFileManager = new UserFileManager();
 
     @Test
     public void saveUserFile() throws Exception {
@@ -22,8 +23,8 @@ public class UserFileManagerTest {
 
     @Test
     public void saveFolder() throws Exception {
-        UserFileManager.setrootPath(Paths.get("/home/mudzso/server"));
-        UserFileManager.saveFolder("asd");
+        userFileManager.setrootPath(Paths.get("/home/mudzso/server"));
+        userFileManager.saveFolder("asd");
         assertEquals(true,Files.exists(Paths.get("/home/mudzso/server/asd")));
     }
 
@@ -32,7 +33,7 @@ public class UserFileManagerTest {
         String path = "/home/mudzso/server/asd/asd.txt";
         File file = new File(path);
         file.createNewFile();
-        UserFileManager.deleteFile(path);
+        userFileManager.deleteFile(path);
         assertEquals(false,Files.exists(Paths.get(path)));
     }
 

@@ -1,5 +1,6 @@
 package service;
 
+import controller.UserController;
 import dto.Operation;
 import dto.Status;
 import dto.User;
@@ -23,20 +24,22 @@ public class UserService extends ControllersFactory {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/verify")
     public Status verifyUser(Object userToken, @Context HttpServletRequest request) {
-        String token = String.valueOf(userToken);
-        User user = userController.getUser("token", token);
-        if(user != null) {
-            LOG.info("user found with this token: {}, email: {}", token, user.getEmail());
-            if (!user.isValidated()) {
+        try (UserController userController = getUserController()) {
+            String token = String.valueOf(userToken);
+            User user = userController.getUser("token", token);
+            if (user != null) {
+                LOG.info("user found with this token: {}, email: {}", token, user.getEmail());
+                if (!user.isValidated()) {
                     userController.deleteToken(user.getUserName());
                     userController.changeValidation(user.getId(), true);
                     return new Status(Operation.VERIFICATION, true, user.getEmail() + " is now validated!");
-            } else {
-                LOG.info("user is already validated with this email: {}", user.getEmail());
-                return new Status(Operation.VERIFICATION, false, user.getEmail() + " is already validated!");
+                } else {
+                    LOG.info("user is already validated with this email: {}", user.getEmail());
+                    return new Status(Operation.VERIFICATION, false, user.getEmail() + " is already validated!");
+                }
             }
+            LOG.error("user is null in verifyUser with this token: {}", token);
+            return new Status(Operation.VERIFICATION, false, "Invalid token!");
         }
-        LOG.error("user is null in verifyUser with this token: {}", token);
-        return new Status(Operation.VERIFICATION, false, "Invalid token!");
     }
 }

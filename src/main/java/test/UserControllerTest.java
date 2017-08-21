@@ -37,8 +37,8 @@ public class UserControllerTest {
     public void getUserAndRegisterUser() throws Exception {
         userController.registerUser(user);
         User result1 = userController.getUser(0);
-        User result2 = userController.getUser("asd");
-        User result3 = userController.getUserbyemail("jani@gmail.com");
+        User result2 = userController.getUser("token","asd");
+        User result3 = userController.getUser("email","jani@gmail.com");
         assertEquals(user.getPass(),result2.getPass());
         assertEquals(user.getToken(),result1.getToken());
         assertEquals(user.getFirstName(),result3.getFirstName());
