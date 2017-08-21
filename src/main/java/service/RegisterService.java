@@ -41,7 +41,7 @@ public class RegisterService extends ControllersFactory {
 				if (userController.setHomeId(userId, userHomeId)) {
 					userFileManager.saveFolder(input.getUserName());
 					userController.setToken(input.getUserName());
-					emailSenderUtil.sendEmail(input, userController.getUser("email", input.getEmail()).getToken());
+					emailSenderUtil.sendEmail(input, userController.getUser("email", input.getEmail()).getToken(), Operation.REGISTER);
 					return new Status(Operation.REGISTER, true, "User successfully registered!");
 				} else {
 					return new Status(Operation.REGISTER, false, "Failed to add user to DB!");
