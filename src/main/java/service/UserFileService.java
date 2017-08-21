@@ -208,7 +208,7 @@ public class UserFileService extends ControllersFactory {
              UserFileController userFileController = getUserFileController()) {
             int fileId = token.getId();
             int userId = userController.getUser("token", token.getToken()).getId();
-            if(userFileController.setPublicLink(fileId, userId)) {
+            if (userFileController.setPublicLink(fileId, userId)) {
                 return new Status(Operation.USERFILE, true, "Public link successfully generated");
             } else {
                 return new Status(Operation.USERFILE, false, "Public link cannot be added to this file");
@@ -225,7 +225,7 @@ public class UserFileService extends ControllersFactory {
              UserFileController userFileController = getUserFileController()) {
             int fileId = token.getId();
             int userId = userController.getUser("token", token.getToken()).getId();
-            if(userFileController.deletePublicLink(fileId, userId)) {
+            if (userFileController.deletePublicLink(fileId, userId)) {
                 return new Status(Operation.USERFILE, true, "Public link successfully removed");
             } else {
                 return new Status(Operation.USERFILE, false, "Public link cannot be removed from this file");
@@ -252,23 +252,26 @@ public class UserFileService extends ControllersFactory {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/public")
     public Response downloadPublicFile(@Context HttpServletRequest request) {
+        String publicLink = request.getParameter("link");
         try (UserFileController userFileController = getUserFileController()) {
-            String publicLink = request.getParameter("link");
             LOG.info("downloadPublicFile method is called with this publicLink: {}, from: {}", publicLink, request.getRemoteAddr());
             int id = userFileController.getPublicUserFile(publicLink);
-            File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
-            String name = userFile.getName();
-            String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
-            if (userFile != null) {
-                LOG.info("File is found and ready to send to user with this id: {}", id);
-                return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
-                        .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-                        .build();
-            } else {
-                LOG.error("File is not available or not found with this publicLink: {}", publicLink);
-                return null;
+            if (id != -1) {
+                File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
+                String name = userFile.getName();
+                String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
+                if (userFile != null) {
+                    LOG.info("File is found and ready to send to user with this id: {}", id);
+                    return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                            .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                            .build();
+                }
             }
         }
+        LOG.error("File is not available or not found with this publicLink: {}", publicLink);
+        return Response.noContent()
+                .header("No-Content", "This download link is not valid!")
+                .build();
     }
 
     @POST
