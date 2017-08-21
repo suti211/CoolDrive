@@ -302,6 +302,20 @@
               <input name="filename" type="text" class="form-control" disabled aria-describedby="basic-addon1" [(ngModel)]="shareFileName">
             </div>
 
+            <div id="publicLink">
+              <div *ngIf="publicLink != null" class="input-group">
+                <span class="input-group-addon createTxtModal">Public Link</span>
+                <input name="publicLink" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="publicLink">
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-danger" (click)="deletePublicLink(shareFileId)"><span class="glyphicon glyphicon-remove"></span> Remove</button>
+                </span>
+              </div>
+
+              <div *ngIf="publicLink == null" align="center">
+                <button type="button" class="btn btn-success" (click)="addPublicLink(shareFileId)"><span class="glyphicon glyphicon-link"></span> Create public link</button>
+              </div>
+            </div>
+
             <div class="table-responsive">
               <table class="table table-striped">
                 <thead>

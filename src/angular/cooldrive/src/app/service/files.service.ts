@@ -112,5 +112,29 @@ export class FileService {
       .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }
 
+  setPublicLink(token: Token): Observable<Status> {
+    let bodyString = JSON.stringify(token);
+
+    return this.http.post(this.filesUrl + 'addPublicLink', <String>bodyString)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+  }
+
+  deletePublicLink(token: Token): Observable<Status> {
+    let bodyString = JSON.stringify(token);
+
+    return this.http.post(this.filesUrl + 'deletePublicLink', <String>bodyString)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+  }
+
+  getPublicLink(token: Token): Observable<Status> {
+    let bodyString = JSON.stringify(token);
+
+    return this.http.post(this.filesUrl + 'getPublicLink', <String>bodyString)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+  }
+
 
 }
