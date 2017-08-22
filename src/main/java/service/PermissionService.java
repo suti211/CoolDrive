@@ -41,8 +41,8 @@ public class PermissionService extends ControllersFactory {
             User user = getUser(share.getEmail());
             int fileId = share.getToken().getId();
             String status;
-            if (userFileController.getUserFile(fileId).getOwnerId() != user.getId()) {
-                if (user != null) {
+            if (user != null) {
+                if (userFileController.getUserFile(fileId).getOwnerId() != user.getId()) {
                     if (permissionsController.addFileToUser(fileId, user.getId(), share.isReadOnly())) {
                         status = String.format("Successfully shared this file with %s", share.getEmail());
                         LOG.info("Share - Add share file method is success(email: {}, id: {})", share.getEmail(), share.getToken().getId());
@@ -51,13 +51,13 @@ public class PermissionService extends ControllersFactory {
                     LOG.error("Share - Add share file method is failed(email: {}, id: {})", share.getEmail(), share.getToken().getId());
                     status = String.format("This file is already shared with this user: %s", share.getEmail());
                     return new Status(Operation.SHARE, false, status);
-                }
-                LOG.debug("Share - Add share file method is failed because no user found(email: {}, id: {}", share.getEmail(), share.getToken().getId());
-                status = String.format("User not found with this email: %s", share.getEmail());
+                }LOG.debug("Share - Add share file method is failed because cannot share files with owner(email: {}, id: {}", share.getEmail(), share.getToken().getId());
+                status = String.format("You cannot share item with yourself!");
                 return new Status(Operation.SHARE, false, status);
+
             }
-            LOG.debug("Share - Add share file method is failed because cannot share files with owner(email: {}, id: {}", share.getEmail(), share.getToken().getId());
-            status = String.format("You cannot share item with yourself!");
+            LOG.debug("Share - Add share file method is failed because no user found(email: {}, id: {}", share.getEmail(), share.getToken().getId());
+            status = String.format("User not found with this email: %s", share.getEmail());
             return new Status(Operation.SHARE, false, status);
         }
     }
