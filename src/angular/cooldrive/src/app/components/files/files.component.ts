@@ -151,20 +151,28 @@ export class FilesComponent implements OnInit {
       this.setProgressBarStyle();
     });
 
+    this.getHomeFolderInfo();
+
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-      let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "", false);
-      if (id > 0) {
-        this.files.push(backButton);
-        this.filteredFiles.push(backButton);
-      }
-
       for (let file of newFiles) {
         this.files.push(file);
         this.filteredFiles.push(file);
       }
       console.log(this.files);
+    });
+  }
+
+  getHomeFolderInfo() {
+    let homeToken = this.creatToken(-1);
+
+    let getHomeStorageInfoOperation: Observable<StorageInfo>;
+    getHomeStorageInfoOperation = this.fileService.getStorageInfo(homeToken);
+    getHomeStorageInfoOperation.subscribe((info: StorageInfo) => {
+      this.homeFolderSize = info.usage;
+      this.homeFolderMaxSize = info.quantity;
+      console.log(info);
     });
   }
 
@@ -328,6 +336,7 @@ export class FilesComponent implements OnInit {
     deleteFileOperation = this.fileService.deleteFile(newToken);
     deleteFileOperation.subscribe((status: Status) => {
       if (status.success) {
+        this.getHomeFolderInfo();
         this.listFiles(this.currentFolderId);
         this.getStorageInfo();
         this.setInfoPanelDisplay(status.message, true);
@@ -366,6 +375,7 @@ export class FilesComponent implements OnInit {
         this.setUploadInfoPanelDisplay(status.message, true);
       }
       this.getStorageInfo()
+      this.getHomeFolderInfo();
       this.listFiles(this.currentFolderId);
     });
 
@@ -379,12 +389,6 @@ export class FilesComponent implements OnInit {
   listFiles(id: number) {
     this.files.length = 0;
     this.filteredFiles.length = 0;
-    let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "", false);
-    if (this.currentFolderId != -1) {
-      console.log("pluszba");
-      this.files.push(backButton);
-      this.filteredFiles.push(backButton);
-    }
 
     let newToken = this.creatToken(id);
 

@@ -24,6 +24,20 @@
     </thead>
 
     <tbody id="FileListDisplay">
+    <tr *ngIf="currentFolderId != -1">
+      <td>
+        <div style="cursor: pointer" (dblclick)="openFolder(-1, '...')"><span
+          class="glyphicon glyphicon-folder-close"></span> ...
+        </div>
+      </td>
+      <td></td>
+      <td>
+        <div>{{homeFolderSize}}/{{homeFolderMaxSize}} MB</div>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
     <tr *ngFor="let file of filteredFiles">
       <td>
         <div *ngIf="file.folder == false"><span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
