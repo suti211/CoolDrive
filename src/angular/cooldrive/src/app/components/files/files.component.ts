@@ -25,6 +25,7 @@ export class FilesComponent implements OnInit {
 
   infoPanelDisplayed: boolean;
   infoPanelText: string;
+  infoPanelStyle: string;
 
   uploadInfoPanelDisplayed: boolean;
   uploadInfoPanelText: string;
@@ -77,9 +78,14 @@ export class FilesComponent implements OnInit {
     return newToken;
   }
 
-  setInfoPanelDisplay(text: string, show: boolean) {
+  setInfoPanelDisplay(text: string, show: boolean, type: string) {
     this.infoPanelDisplayed = show;
     this.infoPanelText = text;
+    if(type == 'success') {
+      this.infoPanelStyle = 'alert alert-success';
+    } else {
+      this.infoPanelStyle = 'alert alert-danger';
+    }
     setTimeout(() => this.infoPanelDisplayed = false, 5000);
   }
 
@@ -237,7 +243,7 @@ export class FilesComponent implements OnInit {
     shareFileOperation = this.shareService.shareFile(shared);
     shareFileOperation.subscribe((status: Status) => {
       if (status.success) {
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
         close.click();
       }
 
@@ -255,7 +261,7 @@ export class FilesComponent implements OnInit {
       if (status.success) {
         this.newTxtTitle = null;
         this.newTxtContent = null;
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
         this.listFiles(this.currentFolderId);
         close.click();
       }
@@ -284,7 +290,7 @@ export class FilesComponent implements OnInit {
     createTXTOperation.subscribe((status: Status) => {
       if (status.success) {
         this.listFiles(this.currentFolderId);
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
         close.click();
       }
     });
@@ -303,7 +309,7 @@ export class FilesComponent implements OnInit {
         this.newFolderMaxSize = null;
         this.newFolderLabel = null;
         this.listFiles(this.currentFolderId);
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
         close.click();
       }
     });
@@ -319,12 +325,12 @@ export class FilesComponent implements OnInit {
   modifyFile() {
     const modifiedFile = this.selectedFile;
 
-    let deleteFileOperation: Observable<Status>;
-    deleteFileOperation = this.fileService.modifyFile(modifiedFile);
-    deleteFileOperation.subscribe((status: Status) => {
+    let modifyFileOperation: Observable<Status>;
+    modifyFileOperation = this.fileService.modifyFile(modifiedFile);
+    modifyFileOperation.subscribe((status: Status) => {
       if (status.success) {
         this.listFiles(this.currentFolderId);
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
       }
     });
   }
@@ -339,7 +345,9 @@ export class FilesComponent implements OnInit {
         this.getHomeFolderInfo();
         this.listFiles(this.currentFolderId);
         this.getStorageInfo();
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
+      } else {
+        this.setInfoPanelDisplay(status.message, true, 'danger');
       }
     });
   }
@@ -367,10 +375,10 @@ export class FilesComponent implements OnInit {
     uploadFileOperation = this.fileService.uploadFile(newToken, this.uploadedFilesList[0]);
     uploadFileOperation.subscribe((status: Status) => {
       if (status.success) {
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
         document.getElementById("uploadCloseButton").click();
         this.uploadedFilesList = null;
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
       } else {
         this.setUploadInfoPanelDisplay(status.message, true);
       }

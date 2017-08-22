@@ -6,7 +6,7 @@
   </div>
 </h1>
 
-<div *ngIf="infoPanelDisplayed" id="filesInfo" class="alert alert-success" role="alert">
+<div *ngIf="infoPanelDisplayed" id="filesInfo" ngClass={{infoPanelStyle}} role="alert">
   {{infoPanelText}}
 </div>
 
