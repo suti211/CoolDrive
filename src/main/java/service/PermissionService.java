@@ -44,7 +44,7 @@ public class PermissionService extends ControllersFactory {
             if (userFileController.getUserFile(fileId).getOwnerId() != user.getId()) {
                 if (user != null) {
                     if (permissionsController.addFileToUser(fileId, user.getId(), share.isReadOnly())) {
-                        status = String.format("Successfully added permission to %s", share.getEmail());
+                        status = String.format("Successfully shared this file with %s", share.getEmail());
                         LOG.info("Share - Add share file method is success(email: {}, id: {})", share.getEmail(), share.getToken().getId());
                         return new Status(Operation.SHARE, true, status);
                     }
@@ -73,7 +73,7 @@ public class PermissionService extends ControllersFactory {
             if (user != null) {
                 if (permissionsController.removeFileFromUser(share.getToken().getId(), user.getId())) {
                     LOG.info("Share - Remove file method is success(email: {}, id: {})", share.getEmail(), share.getToken().getId());
-                    status = String.format("Successfully removed permission from %s", share.getEmail());
+                    status = String.format("Successfully removed share from %s", share.getEmail());
                     return new Status(Operation.SHARE, true, status);
                 }
                 LOG.error("Share - Remove file method is failed(email: {}, id: {})", share.getEmail(), share.getToken().getId());
