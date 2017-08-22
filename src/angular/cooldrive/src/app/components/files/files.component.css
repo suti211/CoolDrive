@@ -66,5 +66,25 @@
 }
 
 #publicLink{
-  padding-top: 8px;
+  padding-top: 0.3px;
+}
+
+.shareButton{
+  width: 97px;
+}
+
+.form-check{
+  display: inline-block;
+}
+
+.selectAccess{
+  text-align: center;
+}
+
+.sharedWith{
+  text-align: center;
+}
+
+.modal-body{
+  padding-bottom: 3px;
 }

@@ -51,10 +51,14 @@ export class FilesComponent implements OnInit {
   editTxtContent: string;
 
   shareFileId: number;
+  shareFile: File;
   shareFileName: string;
   shareReadOnly: boolean;
   shareWithEmail: string;
   sharedWith: Share[];
+  sharePanelDisplayed: boolean;
+  sharePanelStyle: string;
+  sharePanelText: string;
 
   publicLink: string;
 
@@ -183,8 +187,10 @@ export class FilesComponent implements OnInit {
   }
 
   setShare(file: File) {
+    this.shareFile = file;
     this.shareFileId = file.id;
     this.shareFileName = file.fileName;
+    this.getShareInfo(file);
   }
 
   getShareInfo(file: File) {
@@ -229,6 +235,7 @@ export class FilesComponent implements OnInit {
           }
         }
         this.sharedWith.splice(index, 1);
+        this.setSharePanelDisplay(status);
         console.log(status);
       }
     });
@@ -242,12 +249,20 @@ export class FilesComponent implements OnInit {
     let shareFileOperation: Observable<Status>;
     shareFileOperation = this.shareService.shareFile(shared);
     shareFileOperation.subscribe((status: Status) => {
-      if (status.success) {
-        this.setInfoPanelDisplay(status.message, true, 'success');
-        close.click();
-      }
-
+      this.setSharePanelDisplay(status);
     });
+  }
+
+  setSharePanelDisplay(status: Status) {
+    this.sharePanelDisplayed = true;
+    this.sharePanelText = status.message;
+    if (status.success) {
+      this.sharePanelStyle = 'alert alert-success';
+      this.getShareInfo(this.shareFile);
+    } else {
+      this.sharePanelStyle = 'alert alert-danger';
+    }
+    setTimeout(() => this.sharePanelDisplayed = false, 5000);
   }
 
   createTxtFile() {
