@@ -21,7 +21,7 @@ public class PermissionsController extends DatabaseController implements Permiss
     private final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public PermissionsController(ConnectionUtil.DatabaseName database) {
+    public PermissionsController(String database) {
         super(database);
     }
 

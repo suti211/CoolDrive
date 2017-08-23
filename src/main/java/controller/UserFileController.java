@@ -21,7 +21,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
     private final Logger LOG = LoggerFactory.getLogger(UserFileController.class);
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public UserFileController(ConnectionUtil.DatabaseName database) {
+    public UserFileController(String database) {
         super(database);
     }
 

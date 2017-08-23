@@ -14,14 +14,14 @@ public abstract class ControllersFactory {
         }
 
         protected UserController getUserController() {
-                return new UserController(ConnectionUtil.DatabaseName.CoolDrive);
+                return new UserController(PropertiesHandler.DATABASENAME);
         }
 
         protected TransactionsController getTransactionsController() {
-                return new TransactionsController(ConnectionUtil.DatabaseName.CoolDrive);
+                return new TransactionsController(PropertiesHandler.DATABASENAME);
         }
 
         protected PermissionsController getPermissionsController() {
-                return new PermissionsController(ConnectionUtil.DatabaseName.CoolDrive);
+                return new PermissionsController(PropertiesHandler.DATABASENAME);
         }
 }

@@ -13,7 +13,7 @@ public class DatabaseController implements AutoCloseable {
     private final Logger LOG = LoggerFactory.getLogger(DatabaseController.class);
     protected Connection con = null;
 
-    public DatabaseController(ConnectionUtil.DatabaseName database) {
+    public DatabaseController(String database) {
         this.con = ConnectionUtil.getConnection(database);
         LOG.info("Connected to {}",database);
     }

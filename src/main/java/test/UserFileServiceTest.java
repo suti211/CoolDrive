@@ -4,14 +4,19 @@ import dto.Status;
 import dto.StorageInfo;
 import dto.Token;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
+import org.glassfish.jersey.test.DeploymentContext;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.ServletDeploymentContext;
+import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
+import org.glassfish.jersey.test.spi.TestContainerException;
+import org.glassfish.jersey.test.spi.TestContainerFactory;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import service.UserFileService;
 import util.ConnectionUtil;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
@@ -39,6 +44,18 @@ public class UserFileServiceTest extends JerseyTest{
     protected javax.ws.rs.core.Application configure(){
         return new ResourceConfig(UserFileService.class);
     }
+
+    @Override
+    protected TestContainerFactory getTestContainerFactory() throws TestContainerException {
+        return new GrizzlyWebTestContainerFactory();
+    }
+
+    @Override
+    protected DeploymentContext configureDeployment() {
+        return ServletDeploymentContext.forServlet(new ServletContainer(
+                new ResourceConfig(UserFileService.class))).build();
+    }
+  
     @Test
     public void getAllFilesFromFolder() throws Exception {
 

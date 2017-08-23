@@ -86,7 +86,8 @@ public class UserControllerTest {
     @Test
     public void setToken() throws Exception {
         userController.setToken("jani");
-        assertNotEquals("asd",userController.getUser(0).getToken());
+        assertEquals("asd",userController.getUser(0).getToken());
+
     }
 
     @Test
