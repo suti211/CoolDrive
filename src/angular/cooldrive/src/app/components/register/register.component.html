@@ -1,0 +1,42 @@
+<div class="jumbotron vertical-center">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card mx-4">
+          <div class="card-block p-4">
+            <h1>Register</h1>
+            <p class="text-muted">Create your account</p>
+            <div id="alert"></div>
+            <div class="input-group mb-3">
+              <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+              <input id="username" type="text" class="form-control" (click)="resetFieldBackgroundColor('username')" [(ngModel)]="username" placeholder="Username">
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+              <input id="firstName" name="firstName" type="text" class="form-control" [(ngModel)]="firstname" placeholder="First Name">
+              <input id="lastName" name="firstName" type="text" class="form-control" [(ngModel)]="lastname" placeholder="Last Name">
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+              <input id="email" name="email" type="email" class="form-control" (click)="resetFieldBackgroundColor('email')" [(ngModel)]="email" placeholder="Email">
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+              <input id="pwd" type="password" class="form-control" (click)="resetFieldBackgroundColor('pwd')" [(ngModel)]="password" placeholder="Password">
+            </div>
+
+            <div class="input-group mb-4">
+              <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+              <input id="repeatedPwdField" type="password" class="form-control" (click)="resetFieldBackgroundColor('repeatedPwdField')" placeholder="Repeat password" [(ngModel)]="repeat">
+            </div>
+
+            <button type="button" class="btn btn-block btn-success" (click)="finalize()" >Create Account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

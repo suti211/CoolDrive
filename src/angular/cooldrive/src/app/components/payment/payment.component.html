@@ -1,0 +1,46 @@
+<div>
+    <h3>Payment:</h3>
+</div>
+<h4>Choose a payment option from below:</h4>
+
+<hr>
+<div class="row" *ngIf="showWarningPanel">
+    <div class="col-sm-8 col-md-6">
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-8 col-md-6">
+        <h3>Credit card:</h3>
+        <div class="input-group">
+            <span class="input-group-addon fixed-size">Card owner name: </span>
+            <input type="text" class="form-control" id="ownerField" placeholder="Owner Name" [(ngModel)]="cardOwner">
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-addon fixed-size">Card number: </span>
+            <input type="text" class="form-control" id="numberField" placeholder="Card number" [(ngModel)]="cardNumber">
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-addon fixed-size">Expiration date: </span>
+            <input type="text" class="form-control" id="expDateField" placeholder="date(mm/yy), eg: 08/19" [(ngModel)]="expiration">
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-addon fixed-size">CVT code: </span>
+            <input type="text" class="form-control" id="cvtField" placeholder="3 number on the back of your card." [(ngModel)]="cvt">
+        </div>
+        <br>
+        <div class="btn-group text-center" role="group">
+                <button  type="button" (click)="payWithCard(formValid())" class="btn btn-primary orderbutton">Pay with Card</button>
+        </div>
+    </div> 
+    
+    <div class="col-sm-8 col-md-6">
+        <h3>Paypal:</h3>
+        <div id="paypal-button-container"></div>
+        <h5>(click on the paypal button to init paypal payment!)</h5>
+    </div>
+
+</div>
