@@ -15,7 +15,8 @@ public class PropertiesHandler {
             "DATABASEPASSWORD",
             "DATABASEUSER",
             "DATABASENAME",
-            "DATABASEPORT"
+            "DATABASEPORT",
+            "ROOTPATH"
     ));
 
     private static Properties properties;
@@ -39,7 +40,6 @@ public class PropertiesHandler {
     public static  String DATABASEUSER;
     public static  String DATABASENAME;
     public static  String DATABASEPORT;
-    public static InputStream in;
         static {
             DATABASEPORT = properties.getProperty("DATABASEPORT");
             DATABASEHOST = properties.getProperty("DATABASEHOST");
@@ -47,16 +47,14 @@ public class PropertiesHandler {
             DATABASEUSER = properties.getProperty("DATABASEUSER");
             DATABASENAME = properties.getProperty("DATABASENAME");
 
+
         }
 
 
         public static class Paths{
             public static  String ROOTPATH;
-            public static  String TEMPPATH;
-            public static InputStream in = null;
             static {
                 ROOTPATH = properties.getProperty("ROOTPATH");
-                TEMPPATH = properties.getProperty("TEMPPATH");
             }
 
 
