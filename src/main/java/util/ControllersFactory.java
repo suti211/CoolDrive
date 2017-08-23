@@ -10,7 +10,7 @@ import controller.UserFileController;
  */
 public abstract class ControllersFactory {
         protected UserFileController getUserFileController() {
-                return new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
+                return new UserFileController(PropertiesHandler.DATABASENAME);
         }
 
         protected UserController getUserController() {
