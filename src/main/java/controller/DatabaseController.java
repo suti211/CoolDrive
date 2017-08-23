@@ -8,7 +8,7 @@ import java.sql.Connection;
 /**
  * Created by David Szilagyi on 2017. 07. 11..
  */
-public class DatabaseController {
+public class DatabaseController implements AutoCloseable {
   
     private final Logger LOG = LoggerFactory.getLogger(DatabaseController.class);
     protected Connection con = null;
@@ -20,5 +20,12 @@ public class DatabaseController {
 
     public Connection getCon() {
         return con;
+    }
+
+    @Override
+    public void close() {
+        try {
+            con.close();
+        } catch (Exception e) {}
     }
 }

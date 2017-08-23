@@ -1,5 +1,8 @@
 package service;
 
+import controller.PermissionsController;
+import controller.UserController;
+import controller.UserFileController;
 import dto.*;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
@@ -29,7 +32,9 @@ public class UserFileService extends ControllersFactory {
     @Path("/getFiles")
     public List<UserFile> getAllFilesFromFolder(Token token, @Context HttpServletRequest request) {
         LOG.info("getAllFilesFromFolder method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
-        return userFileController.getAllFilesFromFolder(getFileId(token, "getAllFilesFromFolder"));
+        try (UserFileController userFileController = getUserFileController()) {
+            return userFileController.getAllFilesFromFolder(getFileId(token, "getAllFilesFromFolder"));
+        }
     }
 
     @POST
@@ -38,20 +43,25 @@ public class UserFileService extends ControllersFactory {
     @Path("/deleteFile")
     public Status deleteUserFile(Token token, @Context HttpServletRequest request) throws IOException {
         LOG.info("deleteUserFile method is called with token:{}, id: {}", token.getToken(), token.getId());
-        int fileId = getFileId(token, "deleteUserFile");
-        UserFile userFile = userFileController.getUserFile(fileId);
-        if(userFileController.deleteUserFile(fileId)) {
-            userFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
-            double fileSize = -userFile.getSize();
-            int parentId = userFile.getParentId();
-            userFileController.changeFolderCurrSize(parentId, fileSize);
-            int folderParentId = userFileController.getUserFile(parentId).getParentId();
-            if (folderParentId != 1) {
-                userFileController.changeFolderCurrSize(folderParentId, fileSize);
+        try (UserFileController userFileController = getUserFileController()) {
+            int fileId = getFileId(token, "deleteUserFile");
+            UserFile userFile = userFileController.getUserFile(fileId);
+            if ((userFile.isFolder() && userFile.getSize() == 0) || (!userFile.isFolder())) {
+                if (userFileController.deleteUserFile(fileId)) {
+                    userFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
+                    double fileSize = -userFile.getSize();
+                    int parentId = userFile.getParentId();
+                    userFileController.changeFolderCurrSize(parentId, fileSize);
+                    int folderParentId = userFileController.getUserFile(parentId).getParentId();
+                    if (folderParentId != 1) {
+                        userFileController.changeFolderCurrSize(folderParentId, fileSize);
+                    }
+                    return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
+                }
+                return new Status(Operation.USERFILE, false, "There was an error during deleting this folder/file!");
             }
-            return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
-        }
             return new Status(Operation.USERFILE, false, "This folder is not empty!");
+        }
     }
 
     @POST
@@ -60,8 +70,10 @@ public class UserFileService extends ControllersFactory {
     @Path("/getStorageInfo")
     public StorageInfo getStorageInfo(Token token, @Context HttpServletRequest request) {
         LOG.info("getStorageInfo method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
-        UserFile uf = userFileController.getUserFile(getFileId(token, "getStorageInfo"));
-        return new StorageInfo(uf.getSize(), uf.getMaxSize());
+        try (UserFileController userFileController = getUserFileController()) {
+            UserFile uf = userFileController.getUserFile(getFileId(token, "getStorageInfo"));
+            return new StorageInfo(uf.getSize(), uf.getMaxSize());
+        }
     }
 
     @POST
@@ -69,25 +81,27 @@ public class UserFileService extends ControllersFactory {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/upload")
     public Status uploadFile(MultipartFormDataInput input, @Context HttpServletRequest request) throws IOException {
-        String userToken = input.getParts().get(0).getBodyAsString();
-        int id = Integer.valueOf(input.getParts().get(1).getBodyAsString());
-        Token token = new Token(userToken, id);
-        LOG.info("uploadFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
-        double size = (request.getContentLength() / 1024);
-        size /= 1024;
-        int folderId = getFileId(token, "uploadFile");
-        if (userFileController.checkAvailableSpace(folderId, size)) {
-            userFileManager.saveUserFile(input, token.getToken(), folderId, false);
-            userFileController.changeFolderCurrSize(folderId, size);
-            int parentId = userFileController.getUserFile(folderId).getParentId();
-            if (parentId != 1) {
-                userFileController.changeFolderCurrSize(parentId, size);
+        try (UserFileController userFileController = getUserFileController()) {
+            String userToken = input.getParts().get(0).getBodyAsString();
+            int id = Integer.valueOf(input.getParts().get(1).getBodyAsString());
+            Token token = new Token(userToken, id);
+            LOG.info("uploadFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
+            double size = (request.getContentLength() / 1024);
+            size /= 1024;
+            int folderId = getFileId(token, "uploadFile");
+            if (userFileController.checkAvailableSpace(folderId, size)) {
+                userFileManager.saveUserFile(input, token.getToken(), folderId, false);
+                userFileController.changeFolderCurrSize(folderId, size);
+                int parentId = userFileController.getUserFile(folderId).getParentId();
+                if (parentId != 1) {
+                    userFileController.changeFolderCurrSize(parentId, size);
+                }
+                LOG.info("uploadFile method is succeeded with id: {}", id);
+                return new Status(Operation.USERFILE, true, "File upload was successful!");
+            } else {
+                LOG.info("uploadFile method is failed with id: {}", id);
+                return new Status(Operation.USERFILE, false, "Not enough space for this file in this folder!");
             }
-            LOG.info("uploadFile method is succeeded with id: {}", id);
-            return new Status(Operation.USERFILE, true, "File upload was successful!");
-        } else {
-            LOG.info("uploadFile method is failed with id: {}", id);
-            return new Status(Operation.USERFILE, false, "Not enough space for this file in this folder!");
         }
     }
 
@@ -98,7 +112,7 @@ public class UserFileService extends ControllersFactory {
     public Status uploadTXTFile(TXT txt, @Context HttpServletRequest request) throws IOException {
         LOG.info("uploadTXTFile method is called with token:{}, id: {}, from: {}", txt.getToken().getToken(), txt.getToken().getId(), request.getRemoteAddr());
         int parentId = getFileId(txt.getToken(), "uploadTXTFile");
-        if(userFileManager.createTXTFile(txt, parentId)) {
+        if (userFileManager.createTXTFile(txt, parentId)) {
             return new Status(Operation.TXT, true, "TXT file successfully created!");
         }
         return new Status(Operation.TXT, false, "Cannot create TXT file!");
@@ -110,10 +124,12 @@ public class UserFileService extends ControllersFactory {
     @Path("/getTXT")
     public TXT getTXTFile(Token token, @Context HttpServletRequest request) throws IOException {
         LOG.info("getTXTFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
-        int fileId = getFileId(token, "getTXTFile");
-        UserFile userFile = userFileController.getUserFile(fileId);
-        String path = userFile.getPath() + "\\" + fileId + ".txt";
-        return userFileManager.readFromTXT(userFile.getFileName(), path);
+        try (UserFileController userFileController = getUserFileController()) {
+            int fileId = getFileId(token, "getTXTFile");
+            UserFile userFile = userFileController.getUserFile(fileId);
+            String path = userFile.getPath() + "\\" + fileId + ".txt";
+            return userFileManager.readFromTXT(userFile.getFileName(), path);
+        }
     }
 
     @POST
@@ -122,29 +138,33 @@ public class UserFileService extends ControllersFactory {
     @Path("/modify")
     public Status modifyFile(UserFile userFile, @Context HttpServletRequest request) {
         LOG.info("modifyFile method is called with id: {}, from: {}", userFile.getId(), request.getRemoteAddr());
-        if(userFile.isFolder() && !userFileController.checkAvailableSpace(userFile.getParentId(), userFile.getMaxSize())) {
-            LOG.info("modifyFile method is failed with id: {} because of not enough space", userFile.getId());
-            return new Status(Operation.USERFILE, false, "Not enough space on the parent folder!");
-        } else if(userFile.isFolder() && userFile.getMaxSize() < userFile.getSize()) {
-            LOG.info("modifyFile method is failed with id: {} because of wrong maxSize", userFile.getId());
-            return new Status(Operation.USERFILE, false, "Max size cannot be lower than current size!");
+        try (UserFileController userFileController = getUserFileController()) {
+            if (userFile.isFolder() && !userFileController.checkAvailableSpace(userFile.getParentId(), userFile.getMaxSize())) {
+                LOG.info("modifyFile method is failed with id: {} because of not enough space", userFile.getId());
+                return new Status(Operation.USERFILE, false, "Not enough space on the parent folder!");
+            } else if (userFile.isFolder() && userFile.getMaxSize() < userFile.getSize()) {
+                LOG.info("modifyFile method is failed with id: {} because of wrong maxSize", userFile.getId());
+                return new Status(Operation.USERFILE, false, "Max size cannot be lower than current size!");
+            }
+            if (userFileController.modifyUserFile(userFile)) {
+                LOG.info("modifyFile method is succeeded with id: {}", userFile.getId());
+                return new Status(Operation.USERFILE, true, "Modification was successful!");
+            }
+            LOG.debug("modifyFile method is failed with id: {}", userFile.getId());
+            return new Status(Operation.USERFILE, false, "There was an error on modification!");
         }
-        if (userFileController.modifyUserFile(userFile)) {
-            LOG.info("modifyFile method is succeeded with id: {}", userFile.getId());
-            return new Status(Operation.USERFILE, true, "Modification was successful!");
-        }
-        LOG.debug("modifyFile method is failed with id: {}", userFile.getId());
-        return new Status(Operation.USERFILE, false, "There was an error on modification!");
     }
 
     private int getFileId(Token token, String methodName) {
-        String userToken = token.getToken();
-        int fileId = token.getId();
-        LOG.info("getFileId method is called with token:{}, id: {}, from: {}", userToken, fileId, methodName);
-        if (fileId <= 0) {
-            fileId = userController.getUser("token", userToken).getUserHomeId();
+        try (UserController userController = getUserController()) {
+            String userToken = token.getToken();
+            int fileId = token.getId();
+            LOG.info("getFileId method is called with token:{}, id: {}, from: {}", userToken, fileId, methodName);
+            if (fileId <= 0) {
+                fileId = userController.getUser("token", userToken).getUserHomeId();
+            }
+            return fileId;
         }
-        return fileId;
     }
 
     @GET
@@ -152,20 +172,106 @@ public class UserFileService extends ControllersFactory {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/download")
     public Response downloadFile(@Context HttpServletRequest request) {
-        int id = Integer.valueOf(request.getParameter("id"));
-        LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
-        File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
-        String name = userFile.getName();
-        String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
-        if (userFile != null) {
-            LOG.info("File is found and ready to send to user with this id: {}", id);
-            return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
-                    .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController();
+             PermissionsController permissionsController = getPermissionsController()) {
+            int id = Integer.valueOf(request.getParameter("id"));
+            String token = request.getParameter("token");
+            LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
+            int userId = userController.getUser("token", token).getId();
+            if (permissionsController.checkAccess(id, userId) ||
+                    userFileController.getUserFile(id).getOwnerId() == userId) {
+                File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
+                String name = userFile.getName();
+                String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
+                if (userFile != null) {
+                    LOG.info("File is found and ready to send to user with this id: {}", id);
+                    return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                            .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                            .build();
+                } else {
+                    LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
+                    return null;
+                }
+            }
+            return Response.noContent().header("Access Denied", "You don't have access to download this file")
                     .build();
-        } else {
-            LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
-            return null;
         }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/addPublicLink")
+    public Status addPublicLink(Token token, @Context HttpServletRequest request) {
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController()) {
+            int fileId = token.getId();
+            int userId = userController.getUser("token", token.getToken()).getId();
+            if (userFileController.setPublicLink(fileId, userId)) {
+                return new Status(Operation.USERFILE, true, "Public link successfully generated");
+            } else {
+                return new Status(Operation.USERFILE, false, "Public link cannot be added to this file");
+            }
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/deletePublicLink")
+    public Status deletePublicLink(Token token, @Context HttpServletRequest request) {
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController()) {
+            int fileId = token.getId();
+            int userId = userController.getUser("token", token.getToken()).getId();
+            if (userFileController.deletePublicLink(fileId, userId)) {
+                return new Status(Operation.USERFILE, true, "Public link successfully removed");
+            } else {
+                return new Status(Operation.USERFILE, false, "Public link cannot be removed from this file");
+            }
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getPublicLink")
+    public Status getPublicLink(Token token, @Context HttpServletRequest request) {
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController()) {
+            int fileId = token.getId();
+            int userId = userController.getUser("token", token.getToken()).getId();
+            String publicLink = userFileController.getPublicLink(fileId, userId);
+            return new Status(Operation.USERFILE, true, publicLink);
+        }
+    }
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Path("/public")
+    public Response downloadPublicFile(@Context HttpServletRequest request) {
+        String publicLink = request.getParameter("link");
+        try (UserFileController userFileController = getUserFileController()) {
+            LOG.info("downloadPublicFile method is called with this publicLink: {}, from: {}", publicLink, request.getRemoteAddr());
+            int id = userFileController.getPublicUserFile(publicLink);
+            if (id != -1) {
+                File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
+                String name = userFile.getName();
+                String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
+                if (userFile != null) {
+                    LOG.info("File is found and ready to send to user with this id: {}", id);
+                    return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                            .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                            .build();
+                }
+            }
+        }
+        LOG.error("File is not available or not found with this publicLink: {}", publicLink);
+        return Response.noContent()
+                .header("No-Content", "This download link is not valid!")
+                .build();
     }
 
     @POST
@@ -174,23 +280,26 @@ public class UserFileService extends ControllersFactory {
     @Path("/createFolder")
     public Status createFolder(Folder folder, @Context HttpServletRequest request) {
         LOG.info("createFolder method is called with id: {}, from: {}", request.getRemoteAddr());
-        Token token = new Token(folder.getToken(), -1);
-        int parentId = getFileId(token, "createFolder");
-        User user = userController.getUser("token", token.getToken());
-        UserFile userFile = userFileController.getUserFile(parentId);
-        String path = userFile.getPath() + "\\" + userFile.getFileName();
-        if (userFileController.checkAvailableSpace(parentId, folder.getMaxSize())) {
-            int id = userFileController.addNewUserFile(new UserFile(path, 0, folder.getName(), "dir", folder.getMaxSize(), true, user.getId(), parentId));
-            if (id > 0) {
-                LOG.info("Folder added to this path: {} with this id: {}", path, id);
-                return new Status(Operation.CREATEFOLDER, true, "Folder successfully created!");
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController()) {
+            Token token = new Token(folder.getToken(), -1);
+            int parentId = getFileId(token, "createFolder");
+            User user = userController.getUser("token", token.getToken());
+            UserFile userFile = userFileController.getUserFile(parentId);
+            String path = userFile.getPath() + "\\" + userFile.getFileName();
+            if (userFileController.checkAvailableSpace(parentId, folder.getMaxSize())) {
+                int id = userFileController.addNewUserFile(new UserFile(path, 0, folder.getName(), "dir", folder.getMaxSize(), true, user.getId(), parentId, folder.getLabel()));
+                if (id > 0) {
+                    LOG.info("Folder added to this path: {} with this id: {}", path, id);
+                    return new Status(Operation.CREATEFOLDER, true, "Folder successfully created!");
+                } else {
+                    LOG.info("Folder failed to this path: {} with this id: {}", path, id);
+                    return new Status(Operation.CREATEFOLDER, false, "Folder creation is failed!");
+                }
             } else {
-                LOG.info("Folder failed to this path: {} with this id: {}", path, id);
-                return new Status(Operation.CREATEFOLDER, false, "Folder creation is failed!");
+                LOG.info("User({}) not enough space in this path: {}", user.getUserName(), path);
+                return new Status(Operation.CREATEFOLDER, false, "Not enough space for this folder!");
             }
-        } else {
-            LOG.info("User({}) not enough space in this path: {}", user.getUserName(), path);
-            return new Status(Operation.CREATEFOLDER, false, "Not enough space for this folder!");
         }
     }
 }

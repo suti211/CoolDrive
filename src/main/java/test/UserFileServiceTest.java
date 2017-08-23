@@ -17,7 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import service.UserFileService;
 import util.ConnectionUtil;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
@@ -45,6 +44,7 @@ public class UserFileServiceTest extends JerseyTest{
     protected javax.ws.rs.core.Application configure(){
         return new ResourceConfig(UserFileService.class);
     }
+
     @Override
     protected TestContainerFactory getTestContainerFactory() throws TestContainerException {
         return new GrizzlyWebTestContainerFactory();
@@ -55,6 +55,7 @@ public class UserFileServiceTest extends JerseyTest{
         return ServletDeploymentContext.forServlet(new ServletContainer(
                 new ResourceConfig(UserFileService.class))).build();
     }
+  
     @Test
     public void getAllFilesFromFolder() throws Exception {
 

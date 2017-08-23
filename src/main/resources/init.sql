@@ -36,6 +36,7 @@ CREATE TABLE `Files` (
   `ownerId` int(11) DEFAULT NULL,
   `parentId` int(11) DEFAULT NULL,
   `label` varchar(45) DEFAULT NULL,
+  `publicLink` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Files_id_uindex` (`id`),
   UNIQUE KEY `Files_name_extension_parentid` (`filename`, `extension`, `parentId`),
@@ -66,8 +67,10 @@ DROP TABLE IF EXISTS `Permissions`;
 CREATE TABLE `Permissions` (
   `fileId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
+  `readOnly` tinyint(1) DEFAULT NULL,
   KEY `Permissions_Files_id_fk` (`fileId`),
   KEY `Permissions_Users_id_fk` (`userId`),
+  UNIQUE KEY `FileId_userId` (`fileId`, `userId`),
   CONSTRAINT `Permissions_Files_id_fk` FOREIGN KEY (`fileId`) REFERENCES `Files` (`id`),
   CONSTRAINT `Permissions_Users_id_fk` FOREIGN KEY (`userId`) REFERENCES `Users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
@@ -135,6 +138,7 @@ CREATE TABLE `Users` (
   `token` varchar(45) DEFAULT NULL,
   `registerdate` date DEFAULT NULL,
   `userhomeid` int(11) DEFAULT NULL,
+  `loggedIn` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `Users_id_uindex` (`id`),
   UNIQUE KEY `Users_username_uindex` (`username`),

@@ -15,6 +15,22 @@ public class UserFile {
     private int ownerId;
     private int parentId;
     private String label;
+    private boolean readOnly;
+
+    public UserFile(int id, String path, double size, String uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label, boolean readOnly) {
+        this.id = id;
+        this.path = path;
+        this.size = size;
+        this.uploadDate = uploadDate;
+        this.fileName = fileName;
+        this.extension = extension;
+        this.maxSize = maxSize;
+        this.isFolder = isFolder;
+        this.ownerId = ownerId;
+        this.parentId = parentId;
+        this.label = label;
+        this.readOnly = readOnly;
+    }
 
     public UserFile(int id, String path, double size, String uploadDate, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label) {
         this.id = id;
@@ -30,7 +46,7 @@ public class UserFile {
         this.label = label;
     }
 
-    public UserFile(String path, double size, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId) {
+    public UserFile(String path, double size, String fileName, String extension, double maxSize, boolean isFolder, int ownerId, int parentId, String label) {
         this.path = path;
         this.size = size;
         this.fileName = fileName;
@@ -39,6 +55,7 @@ public class UserFile {
         this.isFolder = isFolder;
         this.ownerId = ownerId;
         this.parentId = parentId;
+        this.label = label;
     }
 
     public UserFile(String path, double size, String fileName, String extension, boolean isFolder, int ownerId, int parentId) {
@@ -98,6 +115,10 @@ public class UserFile {
         return label;
     }
 
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -142,5 +163,9 @@ public class UserFile {
 
     public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 }

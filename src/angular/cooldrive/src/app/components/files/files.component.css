@@ -13,6 +13,30 @@
   left: auto;
   right: 0px;
 }
+.close{
+  display: none;
+}
+.modal-content{
+  width: 700px !important;
+}
+
+.removeShare{
+  height: 15px;
+  margin-left: 20px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 2px;
+  padding-right: 2px;
+  font-size: x-small;
+}
+
+.removeShareIcon{
+  margin-left: 0px;
+}
+
+.custom-controls-stacked{
+  padding-left: 20px;
+}
 
 .input-group-addon.modifyModal{
   width: 85px;
@@ -26,6 +50,10 @@
   width: 110px;
 }
 
+.custom-file-input{
+  width: 500px;
+}
+
 .input-group-addon.createTxtModal.content{
   border-right-color: rgb(204, 204, 204);
   border-right-style: solid;
@@ -35,4 +63,32 @@
 
 .modal-content{
   margin-top: 190px;
+}
+
+#publicLink{
+  padding-top: 0.3px;
+}
+
+.shareButton{
+  width: 97px;
+}
+
+.form-check{
+  display: inline-block;
+}
+
+.selectAccess{
+  text-align: center;
+}
+
+.sharedWith{
+  text-align: center;
+}
+
+.modal-body{
+  padding-bottom: 3px;
+}
+
+.icon-align{
+  padding-right: 5px;
 }

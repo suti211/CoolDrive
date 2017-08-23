@@ -62,6 +62,11 @@ public class UserControllerTest {
         assertEquals("changed",result.getFirstName());
     }
 
+    /*@Test
+    public void setHomeId() throws Exception {
+        userController.setHomeId(0,10);
+        assertEquals(10,userController.getUser(0).getUserHomeId());
+    } */
 
     @Test
     public void changeValidation() throws Exception {
@@ -82,6 +87,7 @@ public class UserControllerTest {
     public void setToken() throws Exception {
         userController.setToken("jani");
         assertEquals("asd",userController.getUser(0).getToken());
+
     }
 
     @Test

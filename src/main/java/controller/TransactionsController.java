@@ -27,9 +27,7 @@ public class TransactionsController extends DatabaseController implements Transa
     }
 
     public Transaction getTransaction(int transactionId) {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT * FROM Transactions WHERE id = ?");
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM Transactions WHERE id = ?")) {
             ps.setInt(1, transactionId);
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
@@ -54,9 +52,7 @@ public class TransactionsController extends DatabaseController implements Transa
 
     public List<Transaction> getAllTransaction(int userId) {
         List<Transaction> transactionList = new ArrayList<>();
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT * FROM Transactions WHERE userId = ?");
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM Transactions WHERE userId = ?")) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -81,9 +77,7 @@ public class TransactionsController extends DatabaseController implements Transa
 
     public List<Transaction> getAllTransaction() {
         List<Transaction> transactionList = new ArrayList<>();
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("SELECT * FROM Transactions");
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM Transactions")) {
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 transactionList.add(new Transaction(rs.getInt("id"),
@@ -106,10 +100,9 @@ public class TransactionsController extends DatabaseController implements Transa
     }
 
     public int addTransaction(Transaction transaction) {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = con.prepareStatement("INSERT INTO Transactions(userId, firstname, lastname, zip, city, address1, address2, phone, bought, boughtDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO Transactions" +
+                "(userId, firstname, lastname, zip, city, address1, address2, phone, bought, boughtDate) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, transaction.getUserId());
             ps.setString(2, transaction.getFirstName());
             ps.setString(3, transaction.getLastName());
@@ -123,7 +116,7 @@ public class TransactionsController extends DatabaseController implements Transa
             int success = ps.executeUpdate();
             if (success > 0){
                 LOG.info("Add transaction to transactions is succeeded(userId: {}, bought {}, date: {})",transaction.getUserId(), transaction.getBought(), transaction.getBoughtDate());
-                rs = ps.getGeneratedKeys();
+                ResultSet rs = ps.getGeneratedKeys();
                 rs.next();
                 return rs.getInt(1);
             }
