@@ -55,8 +55,8 @@ export class FileService {
       .catch((error: any) => Observable.throw('Server Error'));
   }
 
-  downloadFile(fileId: number, token: Token) {
-    this.http.get(this.filesUrl + 'download?id=' + fileId + "&token=" + token.token).toPromise()
+  downloadFile(fileId: number) {
+    this.http.get(this.filesUrl + 'download?id=' + fileId).toPromise()
       .then(function(response) {
         window.location.href = response.url;
       })

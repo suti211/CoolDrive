@@ -333,8 +333,7 @@ export class FilesComponent implements OnInit {
   // File action methods
 
   download(fileId: number) {
-    let token = this.creatToken(-1);
-    this.fileService.downloadFile(fileId, token);
+    this.fileService.downloadFile(fileId);
   }
 
   modifyFile() {
