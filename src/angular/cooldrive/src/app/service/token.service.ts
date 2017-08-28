@@ -19,7 +19,7 @@ export class TokenService{
         let bodyString = JSON.stringify(body);
         console.log("body JSON: " + bodyString);
 
-        return this.http.post(this.tokenUrl + requestUrl, <String> bodyString)
+        return this.http.post(this.tokenUrl + "token/tokentest", <String> bodyString)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
     }
@@ -27,15 +27,15 @@ export class TokenService{
     validateToken(token: Token, requestUrl: string): Observable<Status>{
         let bodyString = JSON.stringify(token);
 
-        return this.http.post(this.tokenUrl + requestUrl, <String>bodyString)
+        return this.http.post(this.tokenUrl + "token/tokentest", <String>bodyString)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
     }
 
-    isTokenAdmin(token: Token, requestUrl: string): Observable<Status>{
+    isTokenAdmin(token: Token): Observable<Status>{
         let bodyString = JSON.stringify(token);
 
-        return this.http.post(this.tokenUrl + requestUrl, <String>bodyString)
+        return this.http.post(this.tokenUrl + "token/admintest", <String>bodyString)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
     }

@@ -37,11 +37,11 @@ public class RegisterService extends ControllersFactory {
 				int startQuantity = 50;
 				int parentId = 1;
 				int userId = userController.registerUser(input);
-				int userHomeId = userFileController.addNewUserFile(new UserFile(PathUtil.ROOT_PATH, 0, input.getUserName(), "dir", startQuantity, true, userId, parentId));
+				int userHomeId = userFileController.addNewUserFile(new UserFile(PathUtil.ROOT_PATH, 0, input.getUserName(), "dir", startQuantity, true, userId, parentId, "Homefolder"));
 				if (userController.setHomeId(userId, userHomeId)) {
 					userFileManager.saveFolder(input.getUserName());
 					userController.setToken(input.getUserName());
-					emailSenderUtil.sendEmail(input, userController.getUser("email", input.getEmail()).getToken());
+					emailSenderUtil.sendEmail(input, userController.getUser("email", input.getEmail()).getToken(), Operation.REGISTER);
 					return new Status(Operation.REGISTER, true, "User successfully registered!");
 				} else {
 					return new Status(Operation.REGISTER, false, "Failed to add user to DB!");

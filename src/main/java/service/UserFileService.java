@@ -46,16 +46,19 @@ public class UserFileService extends ControllersFactory {
         try (UserFileController userFileController = getUserFileController()) {
             int fileId = getFileId(token, "deleteUserFile");
             UserFile userFile = userFileController.getUserFile(fileId);
-            if (userFileController.deleteUserFile(fileId)) {
-                userFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
-                double fileSize = -userFile.getSize();
-                int parentId = userFile.getParentId();
-                userFileController.changeFolderCurrSize(parentId, fileSize);
-                int folderParentId = userFileController.getUserFile(parentId).getParentId();
-                if (folderParentId != 1) {
-                    userFileController.changeFolderCurrSize(folderParentId, fileSize);
+            if ((userFile.isFolder() && userFile.getSize() == 0) || (!userFile.isFolder())) {
+                if (userFileController.deleteUserFile(fileId)) {
+                    userFileManager.deleteFile(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension());
+                    double fileSize = -userFile.getSize();
+                    int parentId = userFile.getParentId();
+                    userFileController.changeFolderCurrSize(parentId, fileSize);
+                    int folderParentId = userFileController.getUserFile(parentId).getParentId();
+                    if (folderParentId != 1) {
+                        userFileController.changeFolderCurrSize(folderParentId, fileSize);
+                    }
+                    return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
                 }
-                return new Status(Operation.USERFILE, true, "Folder/File successfully deleted!");
+                return new Status(Operation.USERFILE, false, "There was an error during deleting this folder/file!");
             }
             return new Status(Operation.USERFILE, false, "This folder is not empty!");
         }
@@ -176,7 +179,8 @@ public class UserFileService extends ControllersFactory {
             String token = request.getParameter("token");
             LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
             int userId = userController.getUser("token", token).getId();
-            if (permissionsController.checkAccess(id, userId)) {
+            if (permissionsController.checkAccess(id, userId) ||
+                    userFileController.getUserFile(id).getOwnerId() == userId) {
                 File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
                 String name = userFile.getName();
                 String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
@@ -198,6 +202,81 @@ public class UserFileService extends ControllersFactory {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/addPublicLink")
+    public Status addPublicLink(Token token, @Context HttpServletRequest request) {
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController()) {
+            int fileId = token.getId();
+            int userId = userController.getUser("token", token.getToken()).getId();
+            if (userFileController.setPublicLink(fileId, userId)) {
+                return new Status(Operation.USERFILE, true, "Public link successfully generated");
+            } else {
+                return new Status(Operation.USERFILE, false, "Public link cannot be added to this file");
+            }
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/deletePublicLink")
+    public Status deletePublicLink(Token token, @Context HttpServletRequest request) {
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController()) {
+            int fileId = token.getId();
+            int userId = userController.getUser("token", token.getToken()).getId();
+            if (userFileController.deletePublicLink(fileId, userId)) {
+                return new Status(Operation.USERFILE, true, "Public link successfully removed");
+            } else {
+                return new Status(Operation.USERFILE, false, "Public link cannot be removed from this file");
+            }
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getPublicLink")
+    public Status getPublicLink(Token token, @Context HttpServletRequest request) {
+        try (UserController userController = getUserController();
+             UserFileController userFileController = getUserFileController()) {
+            int fileId = token.getId();
+            int userId = userController.getUser("token", token.getToken()).getId();
+            String publicLink = userFileController.getPublicLink(fileId, userId);
+            return new Status(Operation.USERFILE, true, publicLink);
+        }
+    }
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Path("/public")
+    public Response downloadPublicFile(@Context HttpServletRequest request) {
+        String publicLink = request.getParameter("link");
+        try (UserFileController userFileController = getUserFileController()) {
+            LOG.info("downloadPublicFile method is called with this publicLink: {}, from: {}", publicLink, request.getRemoteAddr());
+            int id = userFileController.getPublicUserFile(publicLink);
+            if (id != -1) {
+                File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
+                String name = userFile.getName();
+                String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
+                if (userFile != null) {
+                    LOG.info("File is found and ready to send to user with this id: {}", id);
+                    return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                            .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                            .build();
+                }
+            }
+        }
+        LOG.error("File is not available or not found with this publicLink: {}", publicLink);
+        return Response.noContent()
+                .header("No-Content", "This download link is not valid!")
+                .build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/createFolder")
     public Status createFolder(Folder folder, @Context HttpServletRequest request) {
         LOG.info("createFolder method is called with id: {}, from: {}", request.getRemoteAddr());
@@ -209,7 +288,7 @@ public class UserFileService extends ControllersFactory {
             UserFile userFile = userFileController.getUserFile(parentId);
             String path = userFile.getPath() + "\\" + userFile.getFileName();
             if (userFileController.checkAvailableSpace(parentId, folder.getMaxSize())) {
-                int id = userFileController.addNewUserFile(new UserFile(path, 0, folder.getName(), "dir", folder.getMaxSize(), true, user.getId(), parentId));
+                int id = userFileController.addNewUserFile(new UserFile(path, 0, folder.getName(), "dir", folder.getMaxSize(), true, user.getId(), parentId, folder.getLabel()));
                 if (id > 0) {
                     LOG.info("Folder added to this path: {} with this id: {}", path, id);
                     return new Status(Operation.CREATEFOLDER, true, "Folder successfully created!");

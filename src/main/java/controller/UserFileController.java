@@ -5,7 +5,7 @@ import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ConnectionUtil;
-
+import util.TokenGenerator;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,6 +50,22 @@ public class UserFileController extends DatabaseController implements UserFileDa
         }
         LOG.debug("File not found with this id: {} in getUserFile method", id);
         return null;
+    }
+
+    public int getPublicUserFile(String publicLink) {
+        try (PreparedStatement ps = con.prepareStatement("SELECT id FROM Files WHERE publicLink = ?")) {
+            ps.setString(1, publicLink);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                int fileId = rs.getInt("id");
+                LOG.info("File found with this publicLink: {}, id: {}", publicLink, fileId);
+                return fileId;
+            }
+        } catch (SQLException e) {
+            LOG.error("getPublicLUserFile is failed with Exception", e);
+        }
+        LOG.debug("File not found with this publicLink: {} in getPublicUserFile method", publicLink);
+        return -1;
     }
 
     public int addNewUserFile(UserFile userFile) {
@@ -156,7 +172,7 @@ public class UserFileController extends DatabaseController implements UserFileDa
             int successPermissions = deletePermissions.executeUpdate();
             fkSet.setInt(1, 1);
             fkSet.executeUpdate();
-            if ((successFiles > 0) && (successPermissions > 0)) {
+            if ((successFiles > 0) && (successPermissions >= 0)) {
                 LOG.info("UserFile is successfully deleted with this id: {}", id);
                 return true;
             }
@@ -186,15 +202,28 @@ public class UserFileController extends DatabaseController implements UserFileDa
     }
 
     public boolean checkAvailableSpace(int id, double fileSize) {
-        try (PreparedStatement ps = con.prepareStatement("SELECT `size`, maxSize FROM Files WHERE id = ?")) {
+        try (PreparedStatement ps = con.prepareStatement("SELECT id, `size`, maxSize, isFolder FROM Files WHERE id = ? OR " +
+                "(parentId = ? AND isFolder = ?)")) {
             ps.setInt(1, id);
+            ps.setInt(2, id);
+            ps.setBoolean(3, true);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                if ((rs.getDouble("maxSize") - rs.getDouble("size")) > fileSize) {
-                    return true;
-                } else {
-                    return false;
+            double maxSize = 0;
+            double size= 0;
+            while (rs.next()) {
+                if(rs.getInt("id") == id) {
+                    maxSize = rs.getDouble("maxSize");
+                    size = rs.getDouble("size");
+                    continue;
                 }
+                if(rs.getBoolean("isFolder") && rs.getInt("id") != id) {
+                    size += rs.getDouble("maxSize");
+                }
+            }
+            if ((maxSize - size) > fileSize) {
+                return true;
+            } else {
+                return false;
             }
         } catch (SQLException e) {
             LOG.error("checkAvailableSpace is failed with Exception", e);
@@ -233,5 +262,58 @@ public class UserFileController extends DatabaseController implements UserFileDa
         }
         LOG.debug("File not found with this id: {} in setFileSize method", homeId);
         return false;
+    }
+
+    public boolean setPublicLink(int fileId, int userId) {
+        try(PreparedStatement ps = con.prepareStatement("UPDATE Files SET publicLink = ? " +
+                "WHERE id = ? AND ownerId = ?")) {
+            String token = TokenGenerator.createToken();
+            String link = token.substring(0, token.indexOf('-'));
+            ps.setString(1, link);
+            ps.setInt(2, fileId);
+            ps.setInt(3, userId);
+            int success = ps.executeUpdate();
+            if(success > 0) {
+                LOG.info("setPublicLink added successfully to this id: {}, ownerId:{}", fileId, userId);
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("setPublicLink is failed with Exception", e);
+        }
+        LOG.debug("File not found with this id: {} and ownerId: {} in setPublicLink", fileId, userId);
+        return false;
+    }
+
+    public boolean deletePublicLink(int fileId, int userId) {
+        try(PreparedStatement ps = con.prepareStatement("UPDATE Files SET publicLink = NULL " +
+                "WHERE id = ? AND ownerId = ?")) {
+            ps.setInt(1, fileId);
+            ps.setInt(2, userId);
+            int success = ps.executeUpdate();
+            if(success > 0) {
+                LOG.info("deletePublicLink successfully done with this id: {}, ownerId:{}", fileId, userId);
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("deletePublicLink is failed with Exception", e);
+        }
+        LOG.debug("File not found with this id: {} and ownerId: {} in deletePublicLink", fileId, userId);
+        return false;
+    }
+
+    public String getPublicLink(int fileId, int userId) {
+        try(PreparedStatement ps = con.prepareStatement("SELECT publicLink FROM Files WHERE id = ? AND ownerId = ?")) {
+            ps.setInt(1, fileId);
+            ps.setInt(2, userId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                LOG.info("getPublicLink successfully done with this id: {}, ownerId:{}", fileId, userId);
+                return rs.getString("publicLink");
+            }
+        } catch (SQLException e) {
+            LOG.error("getPublicLink is failed with Exception", e);
+        }
+        LOG.debug("File not found with this id: {} and ownerId: {} in deletePublicLink", fileId, userId);
+        return null;
     }
 }

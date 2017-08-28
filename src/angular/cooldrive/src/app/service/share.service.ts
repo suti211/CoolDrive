@@ -8,6 +8,7 @@ import 'rxjs/add/operator/catch'
 import {Token} from "../model/token.model";
 import {Status} from "../model/status.model";
 import {Share} from "../model/shared";
+import {HttpClient} from "./http.client";
 
 @Injectable()
 export class ShareService {
@@ -15,7 +16,7 @@ export class ShareService {
   files: File[] = [];
   filteredFiles: File[] = [];
 
-  constructor(private http: Http) { }
+  constructor(private http: HttpClient) { }
 
   getFilesArray(): File[] {
     return this.files;
@@ -29,9 +30,7 @@ export class ShareService {
     let bodyString = JSON.stringify(shared);
     console.log(bodyString);
 
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    return this.http.post(this.Url + 'add', bodyString, options)
+    return this.http.post(this.Url + 'add', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
   }
@@ -39,9 +38,31 @@ export class ShareService {
   getFiles(token: Token): Observable<File[]> {
     let bodyString = JSON.stringify(token);
 
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
-    return this.http.post(this.Url + 'sharedWithMe', bodyString, options)
+    return this.http.post(this.Url + 'sharedWithMe', <String>bodyString)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+  }
+
+  getShareInfo(token: Token): Observable<Share[]> {
+    let bodyString = JSON.stringify(token);
+
+    return this.http.post(this.Url + 'sharedWith', <String>bodyString)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+  }
+
+  changeAccess(share: Share): Observable<Status> {
+    let bodyString = JSON.stringify(share);
+
+    return this.http.post(this.Url + 'changeAccess', <String>bodyString)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
+  }
+
+  removeAccess(share: Share): Observable<Status> {
+    let bodyString = JSON.stringify(share);
+
+    return this.http.post(this.Url + 'remove', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server Error'));
   }

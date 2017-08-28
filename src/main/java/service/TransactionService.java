@@ -14,6 +14,7 @@ import dto.Status;
 import dto.Transaction;
 import dto.User;
 import util.ControllersFactory;
+import util.EmailSenderUtil;
 
 @Path("/transaction")
 public class TransactionService extends ControllersFactory {
@@ -44,6 +45,8 @@ public class TransactionService extends ControllersFactory {
 
 			if (transactionID != -1) {
 				userFileController.increaseFileSize(user.getUserHomeId(), Double.parseDouble(newTransaction.getBought()));
+				EmailSenderUtil sender = new EmailSenderUtil();
+				sender.sendEmail(user, newTransaction, Operation.NEWTRANSACTION);
 				return new Status(Operation.NEWTRANSACTION, true, "Transaction added succesfully!");
 			} else {
 				return new Status(Operation.NEWTRANSACTION, false, "Transaction wasn't added to database.");
