@@ -272,7 +272,7 @@ export class FilesComponent implements OnInit {
   createTxtFile() {
     let close = document.getElementById("createTxtClose");
     let token = this.creatToken(this.currentFolderId);
-    let txt = new TextFile(this.newTxtTitle, this.newTxtContent, token);
+    let txt = new TextFile(this.newTxtTitle, this.newTxtContent, false, token);
 
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
@@ -303,7 +303,7 @@ export class FilesComponent implements OnInit {
   editTxtFile() {
     let close = document.getElementById("editTxtClose");
     let token = this.creatToken(this.currentFolderId);
-    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, token);
+    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, true, token);
 
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);

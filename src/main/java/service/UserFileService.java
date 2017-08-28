@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ControllersFactory;
 import util.UserFileManager;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -113,7 +114,11 @@ public class UserFileService extends ControllersFactory {
         LOG.info("uploadTXTFile method is called with token:{}, id: {}, from: {}", txt.getToken().getToken(), txt.getToken().getId(), request.getRemoteAddr());
         int parentId = getFileId(txt.getToken(), "uploadTXTFile");
         if (userFileManager.createTXTFile(txt, parentId)) {
-            return new Status(Operation.TXT, true, "TXT file successfully created!");
+            if (txt.isModify()) {
+                return new Status(Operation.TXT, true, "TXT file successfully modified!");
+            } else {
+                return new Status(Operation.TXT, true, "TXT file successfully created!");
+            }
         }
         return new Status(Operation.TXT, false, "Cannot create TXT file!");
     }

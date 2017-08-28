@@ -93,7 +93,7 @@ export class SharedWithMeComponent implements OnInit {
 
   editTxtFile(){
     let token = this.creatToken(this.editTxtFileID);
-    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, token);
+    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, true, token);
 
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
