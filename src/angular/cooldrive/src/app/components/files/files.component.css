@@ -92,3 +92,9 @@
 .icon-align{
   padding-right: 5px;
 }
+
+.no-files-found{
+  padding-bottom: 0;
+  text-transform: capitalize;
+  font-size: 17px;
+}

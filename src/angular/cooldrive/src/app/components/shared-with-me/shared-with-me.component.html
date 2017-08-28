@@ -43,10 +43,11 @@
         </div>
       </td>
     </tr>
-
     </tbody>
-
   </table>
+  <div *ngIf="filteredFiles == 0"class="alert alert-info" role="alert">
+    <div class="no-files-found">No Files Found!</div>
+  </div>
 
   <!-- EDIT TEXT FILE MODAL -->
   <div class="modal fade" id="editTxtModal" tabindex="-1" role="dialog" aria-hidden="true">

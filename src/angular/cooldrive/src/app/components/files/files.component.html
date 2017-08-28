@@ -9,7 +9,6 @@
 <div *ngIf="infoPanelDisplayed" id="filesInfo" ngClass={{infoPanelStyle}} role="alert">
   {{infoPanelText}}
 </div>
-
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
@@ -75,6 +74,9 @@
     </tbody>
 
   </table>
+  <div *ngIf="filteredFiles == 0"class="alert alert-info" role="alert">
+    <div class="no-files-found">No Files Found!</div>
+  </div>
 
 
   <!-- FLOATING BUTTON -->
