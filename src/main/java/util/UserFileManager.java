@@ -1,6 +1,5 @@
 package util;
 
-import controller.PermissionsController;
 import controller.UserController;
 import controller.UserFileController;
 import dto.TXT;
@@ -10,7 +9,6 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
@@ -28,7 +26,6 @@ public class UserFileManager extends ControllersFactory {
     private final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
     private String folderName;
     private Path rootPath = Paths.get(PathUtil.ROOT_PATH);
-    private Path tempPath = Paths.get(PathUtil.TEMP_PATH);
 
     public void saveUserFile(MultipartFormDataInput input, String token, int parentId, boolean isFolder) {
         try (UserController userController = getUserController();
@@ -117,7 +114,6 @@ public class UserFileManager extends ControllersFactory {
             bw.newLine();
         }
         bw.close();
-        setFileSize(file, fileName);
     }
 
     private void setFileSize(File file, String filename) {
@@ -125,6 +121,9 @@ public class UserFileManager extends ControllersFactory {
             int fileId = Integer.valueOf(filename.substring(0, filename.lastIndexOf(".")));
             double size = ((double) file.length()) / 1024;
             size /= 1024;
+            if(size <= 0) {
+                size = 0.01;
+            }
             userFileController.setFileSize(fileId, size);
         }
     }
@@ -151,6 +150,7 @@ public class UserFileManager extends ControllersFactory {
                 int fileId = userFileController.checkUserFile(txt.getName(), ".txt", parentId);
                 if (fileId <= 0) {
                     fileId = createUserFile(fileName, user, parentId, false);
+                    userFileController.changeFolderCurrSize(parentId, 0.01);
                 } else {
                     int parentFolder = userFileController.getUserFile(fileId).getParentId();
                     UserFile userHome = userFileController.getUserFile(parentFolder);
