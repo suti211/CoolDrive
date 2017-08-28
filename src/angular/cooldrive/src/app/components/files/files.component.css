@@ -95,6 +95,10 @@
 
 .no-files-found{
   padding-bottom: 0;
-  text-transform: capitalize;
   font-size: 17px;
+}
+
+#back-no-files{
+  cursor: pointer;
+  font-weight: bold;
 }
