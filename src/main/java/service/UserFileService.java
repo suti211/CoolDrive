@@ -89,6 +89,7 @@ public class UserFileService extends ControllersFactory {
             LOG.info("uploadFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
             double size = (request.getContentLength() / 1024);
             size /= 1024;
+            size = size <= 0.01 ? 0.01: size;
             int folderId = getFileId(token, "uploadFile");
             if (userFileController.checkAvailableSpace(folderId, size)) {
                 userFileManager.saveUserFile(input, token.getToken(), folderId, false);

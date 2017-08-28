@@ -97,10 +97,10 @@ public class UserFileManager extends ControllersFactory {
             fileOutputStream.flush();
         }
         fileOutputStream.close();
-        setFileSize(file, filename);
+        setFileSize(file, filename, -1);
     }
 
-    private void writeTXTFile(TXT txt, String fileName) throws IOException {
+    private void writeTXTFile(TXT txt, String fileName, int parentId) throws IOException {
         LOG.info("writeTXTFile method called with fileName: {}", fileName);
         Path path = Paths.get(rootPath.toString(), folderName, fileName);
         File file = path.toFile();
@@ -114,18 +114,19 @@ public class UserFileManager extends ControllersFactory {
             bw.newLine();
         }
         bw.close();
-        setFileSize(file, fileName);
+        setFileSize(file, fileName, parentId);
     }
 
-    private void setFileSize(File file, String filename) {
+    private void setFileSize(File file, String filename, int parentId) {
         try (UserFileController userFileController = getUserFileController()) {
             int fileId = Integer.valueOf(filename.substring(0, filename.lastIndexOf(".")));
             double size = ((double) file.length()) / 1024;
             size /= 1024;
-            if(size <= 0) {
-                size = 0.01;
-            }
+            size = size <= 0.01 ? 0.01: size;
             userFileController.setFileSize(fileId, size);
+            if(parentId != -1) {
+                userFileController.changeFolderCurrSize(parentId, size);
+            }
         }
     }
 
@@ -151,7 +152,6 @@ public class UserFileManager extends ControllersFactory {
                 int fileId = userFileController.checkUserFile(txt.getName(), ".txt", parentId);
                 if (fileId <= 0) {
                     fileId = createUserFile(fileName, user, parentId, false);
-                    userFileController.changeFolderCurrSize(parentId, 0.01);
                 } else {
                     int parentFolder = userFileController.getUserFile(fileId).getParentId();
                     UserFile userHome = userFileController.getUserFile(parentFolder);
@@ -161,7 +161,7 @@ public class UserFileManager extends ControllersFactory {
                         folderName = userFileController.getUserFile(userHome.getParentId()).getFileName();
                     }
                 }
-                writeTXTFile(txt, fileId + ".txt");
+                writeTXTFile(txt, fileId + ".txt", parentId);
                 return true;
             } catch (IOException e) {
                 LOG.error("createTXTFile failed with exception", e);
