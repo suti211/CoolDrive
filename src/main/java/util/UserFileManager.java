@@ -114,6 +114,7 @@ public class UserFileManager extends ControllersFactory {
             bw.newLine();
         }
         bw.close();
+        setFileSize(file, fileName);
     }
 
     private void setFileSize(File file, String filename) {
