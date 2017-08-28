@@ -172,31 +172,33 @@ public class UserFileService extends ControllersFactory {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/download")
     public Response downloadFile(@Context HttpServletRequest request) {
-        try (UserController userController = getUserController();
-             UserFileController userFileController = getUserFileController();
-             PermissionsController permissionsController = getPermissionsController()) {
-            int id = Integer.valueOf(request.getParameter("id"));
-            String token = request.getParameter("token");
-            LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
-            int userId = userController.getUser("token", token).getId();
-            if (permissionsController.checkAccess(id, userId) ||
-                    userFileController.getUserFile(id).getOwnerId() == userId) {
-                File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
-                String name = userFile.getName();
-                String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
-                if (userFile != null) {
-                    LOG.info("File is found and ready to send to user with this id: {}", id);
-                    return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
-                            .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-                            .build();
-                } else {
-                    LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
-                    return null;
+        String token = request.getHeader("Authorization").split(" ")[1];
+        if (token != null) {
+            try (UserController userController = getUserController();
+                 UserFileController userFileController = getUserFileController();
+                 PermissionsController permissionsController = getPermissionsController()) {
+                int id = Integer.valueOf(request.getParameter("id"));
+                LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
+                int userId = userController.getUser("token", token).getId();
+                if (permissionsController.checkAccess(id, userId) ||
+                        userFileController.getUserFile(id).getOwnerId() == userId) {
+                    File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
+                    String name = userFile.getName();
+                    String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
+                    if (userFile != null) {
+                        LOG.info("File is found and ready to send to user with this id: {}", id);
+                        return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                                .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                                .build();
+                    } else {
+                        LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
+                        return null;
+                    }
                 }
             }
-            return Response.noContent().header("Access Denied", "You don't have access to download this file")
-                    .build();
         }
+        return Response.noContent().header("Access Denied", "You don't have access to download this file")
+                .build();
     }
 
     @POST
