@@ -282,6 +282,7 @@ export class FilesComponent implements OnInit {
         this.newTxtContent = null;
         this.setInfoPanelDisplay(status.message, true, 'success');
         this.listFiles(this.currentFolderId);
+        this.getStorageInfo();
         close.click();
       }
     });
