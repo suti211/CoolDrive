@@ -9,6 +9,7 @@ import {Folder} from "../../model/folder";
 import {TextFile} from "../../model/text-file";
 import {ShareService} from "../../service/share.service";
 import {Share} from "../../model/shared";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-files',
@@ -24,6 +25,7 @@ export class FilesComponent implements OnInit {
 
   infoPanelDisplayed: boolean;
   infoPanelText: string;
+  infoPanelStyle: string;
 
   uploadInfoPanelDisplayed: boolean;
   uploadInfoPanelText: string;
@@ -49,10 +51,16 @@ export class FilesComponent implements OnInit {
   editTxtContent: string;
 
   shareFileId: number;
+  shareFile: File;
   shareFileName: string;
   shareReadOnly: boolean;
   shareWithEmail: string;
   sharedWith: Share[];
+  sharePanelDisplayed: boolean;
+  sharePanelStyle: string;
+  sharePanelText: string;
+
+  publicLink: string;
 
 
   progressBarSytle: string = "progress-bar";
@@ -74,9 +82,14 @@ export class FilesComponent implements OnInit {
     return newToken;
   }
 
-  setInfoPanelDisplay(text: string, show: boolean) {
+  setInfoPanelDisplay(text: string, show: boolean, type: string) {
     this.infoPanelDisplayed = show;
     this.infoPanelText = text;
+    if(type == 'success') {
+      this.infoPanelStyle = 'alert alert-success';
+    } else {
+      this.infoPanelStyle = 'alert alert-danger';
+    }
     setTimeout(() => this.infoPanelDisplayed = false, 5000);
   }
 
@@ -148,15 +161,11 @@ export class FilesComponent implements OnInit {
       this.setProgressBarStyle();
     });
 
+    this.getHomeFolderInfo();
+
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-      let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "", false);
-      if (id > 0) {
-        this.files.push(backButton);
-        this.filteredFiles.push(backButton);
-      }
-
       for (let file of newFiles) {
         this.files.push(file);
         this.filteredFiles.push(file);
@@ -165,12 +174,27 @@ export class FilesComponent implements OnInit {
     });
   }
 
+  getHomeFolderInfo() {
+    let homeToken = this.creatToken(-1);
+
+    let getHomeStorageInfoOperation: Observable<StorageInfo>;
+    getHomeStorageInfoOperation = this.fileService.getStorageInfo(homeToken);
+    getHomeStorageInfoOperation.subscribe((info: StorageInfo) => {
+      this.homeFolderSize = info.usage;
+      this.homeFolderMaxSize = info.quantity;
+      console.log(info);
+    });
+  }
+
   setShare(file: File) {
+    this.shareFile = file;
     this.shareFileId = file.id;
     this.shareFileName = file.fileName;
+    this.getShareInfo(file);
   }
 
   getShareInfo(file: File) {
+    this.getPublicLink(file.id);
     this.shareFileId = file.id;
     this.shareFileName = file.fileName;
     let close = document.getElementById("shareClose");
@@ -211,6 +235,7 @@ export class FilesComponent implements OnInit {
           }
         }
         this.sharedWith.splice(index, 1);
+        this.setSharePanelDisplay(status);
         console.log(status);
       }
     });
@@ -224,12 +249,20 @@ export class FilesComponent implements OnInit {
     let shareFileOperation: Observable<Status>;
     shareFileOperation = this.shareService.shareFile(shared);
     shareFileOperation.subscribe((status: Status) => {
-      if (status.success) {
-        this.setInfoPanelDisplay(status.message, true);
-        close.click();
-      }
-
+      this.setSharePanelDisplay(status);
     });
+  }
+
+  setSharePanelDisplay(status: Status) {
+    this.sharePanelDisplayed = true;
+    this.sharePanelText = status.message;
+    if (status.success) {
+      this.sharePanelStyle = 'alert alert-success';
+      this.getShareInfo(this.shareFile);
+    } else {
+      this.sharePanelStyle = 'alert alert-danger';
+    }
+    setTimeout(() => this.sharePanelDisplayed = false, 5000);
   }
 
   createTxtFile() {
@@ -243,7 +276,7 @@ export class FilesComponent implements OnInit {
       if (status.success) {
         this.newTxtTitle = null;
         this.newTxtContent = null;
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
         this.listFiles(this.currentFolderId);
         close.click();
       }
@@ -272,7 +305,7 @@ export class FilesComponent implements OnInit {
     createTXTOperation.subscribe((status: Status) => {
       if (status.success) {
         this.listFiles(this.currentFolderId);
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
         close.click();
       }
     });
@@ -291,7 +324,7 @@ export class FilesComponent implements OnInit {
         this.newFolderMaxSize = null;
         this.newFolderLabel = null;
         this.listFiles(this.currentFolderId);
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
         close.click();
       }
     });
@@ -307,12 +340,12 @@ export class FilesComponent implements OnInit {
   modifyFile() {
     const modifiedFile = this.selectedFile;
 
-    let deleteFileOperation: Observable<Status>;
-    deleteFileOperation = this.fileService.modifyFile(modifiedFile);
-    deleteFileOperation.subscribe((status: Status) => {
+    let modifyFileOperation: Observable<Status>;
+    modifyFileOperation = this.fileService.modifyFile(modifiedFile);
+    modifyFileOperation.subscribe((status: Status) => {
       if (status.success) {
         this.listFiles(this.currentFolderId);
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
       }
     });
   }
@@ -324,9 +357,12 @@ export class FilesComponent implements OnInit {
     deleteFileOperation = this.fileService.deleteFile(newToken);
     deleteFileOperation.subscribe((status: Status) => {
       if (status.success) {
+        this.getHomeFolderInfo();
         this.listFiles(this.currentFolderId);
         this.getStorageInfo();
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
+      } else {
+        this.setInfoPanelDisplay(status.message, true, 'danger');
       }
     });
   }
@@ -354,14 +390,15 @@ export class FilesComponent implements OnInit {
     uploadFileOperation = this.fileService.uploadFile(newToken, this.uploadedFilesList[0]);
     uploadFileOperation.subscribe((status: Status) => {
       if (status.success) {
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
         document.getElementById("uploadCloseButton").click();
         this.uploadedFilesList = null;
-        this.setInfoPanelDisplay(status.message, true);
+        this.setInfoPanelDisplay(status.message, true, 'success');
       } else {
         this.setUploadInfoPanelDisplay(status.message, true);
       }
       this.getStorageInfo()
+      this.getHomeFolderInfo();
       this.listFiles(this.currentFolderId);
     });
 
@@ -375,12 +412,6 @@ export class FilesComponent implements OnInit {
   listFiles(id: number) {
     this.files.length = 0;
     this.filteredFiles.length = 0;
-    let backButton = new File(-1, "", this.homeFolderSize, "", "...", "", this.homeFolderMaxSize, true, 0, 0, "", false);
-    if (this.currentFolderId != -1) {
-      console.log("pluszba");
-      this.files.push(backButton);
-      this.filteredFiles.push(backButton);
-    }
 
     let newToken = this.creatToken(id);
 
@@ -393,6 +424,42 @@ export class FilesComponent implements OnInit {
         this.filteredFiles.push(file);
       }
       console.log(this.files);
+    });
+  }
+
+  addPublicLink(id: number) {
+    let token = this.creatToken(id)
+    let addPublicLink: Observable<Status>;
+    addPublicLink = this.fileService.setPublicLink(token);
+    addPublicLink.subscribe((status: Status) => {
+      if (status.success) {
+        this.getPublicLink(id);
+      }
+    });
+    console.log(id);
+  }
+
+  deletePublicLink(id: number) {
+    let token = this.creatToken(id)
+    let addPublicLink: Observable<Status>;
+    addPublicLink = this.fileService.deletePublicLink(token);
+    addPublicLink.subscribe((status: Status) => {
+      if (status.success) {
+        this.publicLink = null;
+      }
+    });
+  }
+
+  getPublicLink(id: number) {
+    let token = this.creatToken(id)
+    let addPublicLink: Observable<Status>;
+    addPublicLink = this.fileService.getPublicLink(token);
+    addPublicLink.subscribe((status: Status) => {
+      if (status.message != null) {
+        this.publicLink = environment.urlPrefix + '/files/public?link=' + status.message;
+      } else {
+        this.publicLink = null;
+      }
     });
   }
 
@@ -417,5 +484,4 @@ export class FilesComponent implements OnInit {
 
     this.listFiles(this.currentFolderId);
   }
-
 }

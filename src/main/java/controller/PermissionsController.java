@@ -27,10 +27,11 @@ public class PermissionsController extends DatabaseController implements Permiss
 
     public boolean addFileToUser(int fileId, int userId, boolean readOnly) {
         try (PreparedStatement ps = con.prepareStatement("INSERT INTO Permissions(fileId, userId, readOnly) " +
-                "VALUES (?, ?, ?)")) {
-            ps.setInt(1, fileId);
-            ps.setInt(2, userId);
-            ps.setBoolean(3, readOnly);
+                "SELECT id, ?, ? FROM Files WHERE parentId = ? OR id = ?")) {
+            ps.setInt(1, userId);
+            ps.setBoolean(2, readOnly);
+            ps.setInt(3, fileId);
+            ps.setInt(4, fileId);
             int success = ps.executeUpdate();
             if (success > 0) {
                 LOG.info("Add file to user is succeeded(fileId: {}, userId: {})", fileId, userId);
@@ -46,9 +47,10 @@ public class PermissionsController extends DatabaseController implements Permiss
 
     public boolean removeFileFromUser(int fileId, int userId) {
         try (PreparedStatement ps = con.prepareStatement("DELETE FROM Permissions " +
-                "WHERE fileId = ? AND userId = ?")) {
+                "WHERE fileId IN (SELECT id FROM Files WHERE parentId = ? OR id = ?) AND userId = ?")) {
             ps.setInt(1, fileId);
-            ps.setInt(2, userId);
+            ps.setInt(2, fileId);
+            ps.setInt(3, userId);
             int success = ps.executeUpdate();
             if (success > 0) {
                 LOG.info("Remove file from user is succeeded(fileId: {}, userId: {})", fileId, userId);
@@ -63,10 +65,11 @@ public class PermissionsController extends DatabaseController implements Permiss
 
     public boolean changeAccess(int fileId, int userId, boolean readOnly) {
         try (PreparedStatement ps = con.prepareStatement("UPDATE Permissions SET readOnly = ? " +
-                "WHERE fileId = ? AND userId = ?")) {
+                "WHERE fileId IN (SELECT id from Files WHERE parentId = ? OR id = ?) AND userId = ?")) {
             ps.setBoolean(1, readOnly);
             ps.setInt(2, fileId);
-            ps.setInt(3, userId);
+            ps.setInt(3, fileId);
+            ps.setInt(4, userId);
             int success = ps.executeUpdate();
             if (success > 0) {
                 LOG.info("Access changed(fileId: {}, userId: {})", fileId, userId);
@@ -80,8 +83,16 @@ public class PermissionsController extends DatabaseController implements Permiss
 
     public List<UserFile> sharedFiles(String columnName, int value) {
         List<UserFile> userFiles = new ArrayList<>();
-        String sql = String.format("SELECT Files.*, Permissions.readOnly FROM Files " +
-                "JOIN Permissions ON(Files.id = Permissions.fileId) WHERE %s = ?", columnName);
+        String sql;
+        if(columnName.equalsIgnoreCase("Files.parentId")) {
+            sql = String.format("SELECT Files.*, Permissions.readOnly FROM Files JOIN Permissions ON" +
+                    "(Files.id = Permissions.fileId) WHERE %s = ?", columnName);
+        } else {
+            sql = String.format("SELECT * FROM " +
+                    "(SELECT Files.*, Permissions.readOnly FROM Files JOIN Permissions ON" +
+                    "(Files.id = Permissions.fileId) WHERE %s = ?) AS all_files " +
+                    "WHERE parentId NOT IN (SELECT Permissions.fileId FROM Permissions);", columnName);
+        }
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, value);
             ResultSet rs = ps.executeQuery();

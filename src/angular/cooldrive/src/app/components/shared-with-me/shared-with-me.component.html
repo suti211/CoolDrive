@@ -29,7 +29,7 @@
       <td>{{file.uploadDate}}</td>
       <td>{{file.label}}</td>
       <td>
-        <div *ngIf="file.id > 0" class="dropdown">
+        <div *ngIf="file.id > 0 && file.folder==false" class="dropdown">
           <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false">
             More

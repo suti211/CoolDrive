@@ -6,7 +6,7 @@
   </div>
 </h1>
 
-<div *ngIf="infoPanelDisplayed" id="filesInfo" class="alert alert-success" role="alert">
+<div *ngIf="infoPanelDisplayed" id="filesInfo" ngClass={{infoPanelStyle}} role="alert">
   {{infoPanelText}}
 </div>
 
@@ -24,6 +24,20 @@
     </thead>
 
     <tbody id="FileListDisplay">
+    <tr *ngIf="currentFolderId != -1">
+      <td>
+        <div style="cursor: pointer" (dblclick)="openFolder(-1, '...')"><span
+          class="glyphicon glyphicon-folder-close"></span> ...
+        </div>
+      </td>
+      <td></td>
+      <td>
+        <div>{{homeFolderSize}}/{{homeFolderMaxSize}} MB</div>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
     <tr *ngFor="let file of filteredFiles">
       <td>
         <div *ngIf="file.folder == false"><span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
@@ -50,9 +64,7 @@
             <div *ngIf="file.extension == '.txt'" class="dropdown-divider"></div>
             <a class="dropdown-item" (click)="download(file.id)">Download</a>
             <a class="dropdown-item" (click)="setShare(file)" data-toggle="modal"
-               data-target="#shareFileModal">Share file</a>
-            <a class="dropdown-item" (click)="getShareInfo(file)" data-toggle="modal"
-               data-target="#sharedWithModal">Shared with</a>
+               data-target="#shareFileModal">Share</a>
             <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
             <a class="dropdown-item" (click)="deleteFile(file.id)" style="color: red; cursor: pointer">Delete</a>
           </div>
@@ -95,22 +107,27 @@
             </div>
             <div class="input-group">
               <span class="input-group-addon modifyModal" id="modifyName">FileName</span>
-              <input name="text" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.fileName" required>
+              <input name="text" type="text" class="form-control" aria-describedby="basic-addon1"
+                     [(ngModel)]="selectedFile.fileName" required>
             </div>
             <div class="input-group">
               <span class="input-group-addon modifyModal" id="modifyLabel">Label</span>
-              <input name="label" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.label">
+              <input name="label" type="text" class="form-control" aria-describedby="basic-addon1"
+                     [(ngModel)]="selectedFile.label">
             </div>
             <div class="input-group" *ngIf="selectedFile.folder">
               <span class="input-group-addon modifyModal" id="modifyMaxSize">Max size</span>
-              <input name="maxSize" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="selectedFile.maxSize" required>
+              <input name="maxSize" type="text" class="form-control" aria-describedby="basic-addon1"
+                     [(ngModel)]="selectedFile.maxSize" required>
             </div>
           </div>
           <div class="modal-footer">
-            <button id="fileModifyCloseButton" type="button" class="btn btn-secondary" data-dismiss="modal" (click)="listFiles(currentFolderId)">
+            <button id="fileModifyCloseButton" type="button" class="btn btn-secondary" data-dismiss="modal"
+                    (click)="listFiles(currentFolderId)">
               Close
             </button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" [disabled]="fileModifyForm.invalid" (click)="modifyFile()">Save changes
+            <button type="button" class="btn btn-primary" data-dismiss="modal" [disabled]="fileModifyForm.invalid"
+                    (click)="modifyFile()">Save changes
             </button>
           </div>
         </form>
@@ -124,7 +141,8 @@
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title" id="uploadModalButton">Upload</h4>
-          <button id="uploadClose" type="button" class="close" data-target="#uploadModal" data-dismiss="#uploadModal" aria-label="Close">
+          <button id="uploadClose" type="button" class="close" data-target="#uploadModal" data-dismiss="#uploadModal"
+                  aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -134,7 +152,8 @@
               {{uploadInfoPanelText}}
             </div>
             <label class="custom-file">
-              <input name="files" class="custom-file-input" id="uploadedFiles" type="file" formenctype="multipart/form-data"
+              <input name="files" class="custom-file-input" id="uploadedFiles" type="file"
+                     formenctype="multipart/form-data"
                      (change)="listUploadedFiles()" required>
               <span class="custom-file-control"></span>
             </label>
@@ -145,7 +164,8 @@
           </div>
           <div class="modal-footer">
             <button id="uploadCloseButton" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input type="button" class="btn btn-primary" [disabled]='!uploadedFilesList?.length > 0' (click)="uploadFile()" value="Upload">
+            <input type="button" class="btn btn-primary" [disabled]='!uploadedFilesList?.length > 0'
+                   (click)="uploadFile()" value="Upload">
           </div>
         </form>
       </div>
@@ -166,20 +186,24 @@
             </div>
             <div class="input-group">
               <span class="input-group-addon createFolderModal">Folder name*</span>
-              <input name="name" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderName" required>
+              <input name="name" type="text" class="form-control" aria-describedby="basic-addon1"
+                     [(ngModel)]="newFolderName" required>
             </div>
             <div class="input-group">
               <span class="input-group-addon createFolderModal">Label</span>
-              <input name="label" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderLabel">
+              <input name="label" type="text" class="form-control" aria-describedby="basic-addon1"
+                     [(ngModel)]="newFolderLabel">
             </div>
             <div class="input-group">
               <span class="input-group-addon createFolderModal">Max size*</span>
-              <input name="maxSize" type="number" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newFolderMaxSize" required>
+              <input name="maxSize" type="number" class="form-control" aria-describedby="basic-addon1"
+                     [(ngModel)]="newFolderMaxSize" required>
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input id="createFolderButton" type="button" class="btn btn-primary" [disabled]=createFolderForm.invalid (click)="createFolder()" value="Create">
+            <input id="createFolderButton" type="button" class="btn btn-primary" [disabled]=createFolderForm.invalid
+                   (click)="createFolder()" value="Create">
           </div>
         </form>
       </div>
@@ -200,17 +224,20 @@
             </div>
             <div class="input-group">
               <span class="input-group-addon createTxtModal">Title*</span>
-              <input name="title" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="newTxtTitle" required>
+              <input name="title" type="text" class="form-control" aria-describedby="basic-addon1"
+                     [(ngModel)]="newTxtTitle" required>
             </div>
             <div class="form-group">
               <br>
               <span class="input-group-addon createTxtModal content">Content*</span>
-              <textarea name="content" class="form-control" id="Textarea" rows="3" [(ngModel)]="newTxtContent" required></textarea>
+              <textarea name="content" class="form-control" id="Textarea" rows="3" [(ngModel)]="newTxtContent"
+                        required></textarea>
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input id="createTxtButton" type="button" class="btn btn-primary" [disabled]="createTxtForm.invalid" (click)="createTxtFile()" value="Create">
+            <input id="createTxtButton" type="button" class="btn btn-primary" [disabled]="createTxtForm.invalid"
+                   (click)="createTxtFile()" value="Create">
           </div>
         </form>
       </div>
@@ -245,104 +272,104 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Share file</h4>
+          <h4 class="modal-title">Share</h4>
           <button id="shareClose" type="button" class="close" data-dismiss="modal"></button>
         </div>
         <form #shareFileForm="ngForm">
           <div class="modal-body">
-            <div *ngIf="false" id="shareFileInfo" class="alert alert-success" role="alert">
+            <div *ngIf="sharePanelDisplayed" id="shareInfo" ngClass={{sharePanelStyle}} role="alert">
+              {{sharePanelText}}
             </div>
             <div class="input-group">
               <span class="input-group-addon createTxtModal">File name</span>
-              <input name="filename" type="text" class="form-control" disabled aria-describedby="basic-addon1" [(ngModel)]="shareFileName">
+              <input name="filename" type="text" class="form-control" disabled aria-describedby="basic-addon1"
+                     [(ngModel)]="shareFileName">
             </div>
             <div class="input-group">
               <span class="input-group-addon createTxtModal">Share with:*</span>
-              <input name="email" type="text" class="form-control" aria-describedby="basic-addon1" [(ngModel)]="shareWithEmail"
+              <input name="email" type="text" class="form-control" aria-describedby="basic-addon1"
+                     [(ngModel)]="shareWithEmail"
                      placeholder="Email" required>
+              <span class="input-group-btn">
+                <button id="shareButton" type="button" class="btn btn-primary shareButton"
+                        [disabled]="shareFileForm.invalid" (click)="share()"><span
+                  class="glyphicon glyphicon-send icon-align"></span> Share</button>
+              </span>
+            </div>
+            <div class="selectAccess">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
+                         [(ngModel)]="shareReadOnly" value="true" required>
+                  Download only
+                </label>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
+                         [(ngModel)]="shareReadOnly" value="false" required>
+                  Full Access
+                </label>
+              </div>
+            </div>
+            <div id="publicLink">
+              <div *ngIf="publicLink != null" class="input-group">
+                <span class="input-group-addon createTxtModal">Public Link</span>
+                <input name="publicLink" type="text" class="form-control" aria-describedby="basic-addon1"
+                       [(ngModel)]="publicLink">
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-danger" (click)="deletePublicLink(shareFileId)"><span
+                    class="glyphicon glyphicon-remove"></span> Remove</button>
+                </span>
+              </div>
+
+              <div *ngIf="publicLink == null" align="center">
+                <button type="button" class="btn btn-success" (click)="addPublicLink(shareFileId)"><span
+                  class="glyphicon glyphicon-link"></span> Create public link
+                </button>
+              </div>
             </div>
           </div>
+          <div *ngIf="sharedWith != 0" class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>Email</th>
+                <th>Access</th>
+              </tr>
+              </thead>
 
-          <div class="form-check">
-            <label class="form-check-label">
-              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" [(ngModel)]="shareReadOnly" value="true" required>
-              Download only
-            </label>
+              <tbody id="FileListDisplay">
+              <tr *ngFor="let share of sharedWith">
+                <td>{{share.email}}</td>
+                <td>
+                      <span>
+                        <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="radio" [name]="share.email" id="inlineRadio1"
+                                 value="option1" [checked]="share.readOnly" (click)="changeAccess(true, share.email)"> Download Only
+                        </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <label class="form-check-label">
+                            <input class="form-check-input" type="radio" [name]="share.email" id="inlineRadio2"
+                                   value="option2" [checked]="!share.readOnly"
+                                   (click)="changeAccess(false, share.email)"> Full Access
+                          </label>
+                        </div>
+                        <button type="button" class="btn btn-danger removeShare"
+                                (click)="removeAccess(share.email)"><span class="glyphicon glyphicon-remove"></span> Remove</button>
+                      </span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" [(ngModel)]="shareReadOnly" value="false" required>
-              Full Access
-            </label>
-          </div>
-
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input id="shareButton" type="button" class="btn btn-primary" [disabled]="shareFileForm.invalid" (click)="share()" value="Share">
           </div>
         </form>
       </div>
     </div>
   </div>
-
-
-  <!-- SHARED with FILE MODAL -->
-  <div class="modal fade" id="sharedWithModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Shared with</h4>
-          <button id="sharedWithClose" type="button" class="close" data-dismiss="modal"></button>
-        </div>
-          <div class="modal-body">
-            <div *ngIf="false" id="sharedWithInfo" class="alert alert-success" role="alert">
-            </div>
-            <div class="input-group">
-              <span class="input-group-addon createTxtModal">File name</span>
-              <input name="filename" type="text" class="form-control" disabled aria-describedby="basic-addon1" [(ngModel)]="shareFileName">
-            </div>
-
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Email</th>
-                    <th>Access</th>
-                  </tr>
-                </thead>
-
-                <tbody id="FileListDisplay">
-                  <tr *ngFor="let share of sharedWith">
-                    <td>{{share.email}}</td>
-                    <td>
-                      <span>
-                        <div class="form-check form-check-inline">
-                        <label class="form-check-label">
-                          <input class="form-check-input" type="radio" [name]="share.email" id="inlineRadio1" value="option1" [checked]="share.readOnly" (click)="changeAccess(true, share.email)"> Download Only
-                        </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="radio" [name]="share.email" id="inlineRadio2" value="option2" [checked]="!share.readOnly" (click)="changeAccess(false, share.email)"> Full Access
-                          </label>
-                        </div>
-                        <button type="button" class="btn btn-danger removeShare" (click)="removeAccess(share.email)"><span class="glyphicon glyphicon-remove"></span> Remove</button>
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-          </div>
-
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
-
-      </div>
-    </div>
-  </div>
-
 </div>
