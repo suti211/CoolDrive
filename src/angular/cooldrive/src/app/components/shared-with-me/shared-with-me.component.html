@@ -58,11 +58,14 @@
     </tr>
     </tbody>
   </table>
-  <div *ngIf="filteredFiles == 0 && currentFolderId != -1" class="alert alert-info" role="alert">
-    <div class="no-files-found">No Files Found! Click
-      <a id="back-no-files" (click)="openFolder(-1, '...');">HERE</a>
-      to return to the main folder
+  <a id="back-no-files" (click)="openFolder(-1, '...');">
+    <div *ngIf="filteredFiles == 0 && currentFolderId != -1" class="alert alert-info" role="alert">
+      <div class="no-files-found">No files found! Click <b>HERE</b> to return to the main folder
+      </div>
     </div>
+  </a>
+  <div *ngIf="filteredFiles == 0 && currentFolderId == -1" class="alert alert-info" role="alert">
+    <div class="no-files-found">No files found!</div>
   </div>
 
   <!-- EDIT TEXT FILE MODAL -->

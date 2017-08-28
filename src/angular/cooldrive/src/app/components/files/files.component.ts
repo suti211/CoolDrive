@@ -100,13 +100,17 @@ export class FilesComponent implements OnInit {
   }
 
   setProgressBarStyle() {
-    if (this.percentage.valueOf() <= 60) {
-      this.progressBarSytle = "progress-bar";
+    if (this.percentage.valueOf() <= 3.99) {
+      this.progressBarSytle = "progress-bar text-progress-bar-color";
     } else {
-      if (this.percentage.valueOf() <= 85) {
-        this.progressBarSytle = "progress-bar bg-warning";
+      if (this.percentage.valueOf() <= 60) {
+        this.progressBarSytle = "progress-bar";
       } else {
-        this.progressBarSytle = "progress-bar bg-danger";
+        if (this.percentage.valueOf() <= 85) {
+          this.progressBarSytle = "progress-bar bg-warning";
+        } else {
+          this.progressBarSytle = "progress-bar bg-danger";
+        }
       }
     }
   }
