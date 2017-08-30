@@ -15,6 +15,7 @@ h1 {
 }
 
 .dropdown-toggle{
+  display: inline;
   left: -10px;
   width: 90px;
 }
