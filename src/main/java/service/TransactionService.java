@@ -1,11 +1,11 @@
 package service;
 
-import java.sql.Date;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import controller.TransactionsController;
 import controller.UserController;
 import controller.UserFileController;
@@ -32,12 +32,8 @@ public class TransactionService extends ControllersFactory {
 				return new Status(Operation.NEWTRANSACTION, false, "Token mismatch, no such user!");
 			}
 
-			//date misery...
-			java.util.Calendar cal = java.util.Calendar.getInstance();
-			java.util.Date utilDate = cal.getTime();
-			java.sql.Date sqlDate = new Date(utilDate.getTime());
 
-			Transaction newTransaction = new Transaction(user.getId(), transaction.getFirstName(), transaction.getLastName(), transaction.getZip(), transaction.getCity(), transaction.getAddress1(), transaction.getAddress2(), transaction.getPhone(), transaction.getBought(), sqlDate.toString());
+			Transaction newTransaction = new Transaction(user.getId(), transaction.getFirstName(), transaction.getLastName(), transaction.getZip(), transaction.getCity(), transaction.getAddress1(), transaction.getAddress2(), transaction.getPhone(), transaction.getBought());
 
 			int transactionID = transactionsController.addTransaction(newTransaction);
 

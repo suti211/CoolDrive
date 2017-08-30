@@ -35,7 +35,7 @@ public class Transaction {
         this.boughtDate = boughtDate;
     }
 
-    public Transaction(int userId, String firstName, String lastName, String zip, String city, String address1, String address2, String phone, String bought, String boughtDate) {
+    public Transaction(int userId, String firstName, String lastName, String zip, String city, String address1, String address2, String phone, String bought) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -45,7 +45,6 @@ public class Transaction {
         this.address2 = address2;
         this.phone = phone;
         this.bought = bought;
-        this.boughtDate = boughtDate;
     }
     
     public Transaction(String userName, String firstName, String lastName, String zip, String city, String address1, String bought) {

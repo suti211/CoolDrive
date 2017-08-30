@@ -102,7 +102,7 @@ public class TransactionsController extends DatabaseController implements Transa
     public int addTransaction(Transaction transaction) {
         try (PreparedStatement ps = con.prepareStatement("INSERT INTO Transactions" +
                 "(userId, firstname, lastname, zip, city, address1, address2, phone, bought, boughtDate) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())", Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, transaction.getUserId());
             ps.setString(2, transaction.getFirstName());
             ps.setString(3, transaction.getLastName());
@@ -112,7 +112,6 @@ public class TransactionsController extends DatabaseController implements Transa
             ps.setString(7, transaction.getAddress2());
             ps.setString(8, transaction.getPhone());
             ps.setString(9, transaction.getBought());
-            ps.setString(10, transaction.getBoughtDate());
             int success = ps.executeUpdate();
             if (success > 0){
                 LOG.info("Add transaction to transactions is succeeded(userId: {}, bought {}, date: {})",transaction.getUserId(), transaction.getBought(), transaction.getBoughtDate());
