@@ -103,6 +103,7 @@ export class SharedWithMeComponent implements OnInit {
         document.getElementById('closeButton').click();
       }else{
         console.log(status);
+        window.alert("Text modify failed!");
       }
     });
   }
