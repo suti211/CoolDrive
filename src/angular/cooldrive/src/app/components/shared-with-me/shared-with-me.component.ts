@@ -99,7 +99,11 @@ export class SharedWithMeComponent implements OnInit {
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
       console.log(status.message);
-      document.getElementById('closeButton').click();
+      if(status.success){
+        document.getElementById('closeButton').click();
+      }else{
+        console.log(status);
+      }
     });
   }
 
