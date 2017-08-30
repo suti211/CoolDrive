@@ -7,6 +7,8 @@ import { Token } from '../../model/token.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import {FilesComponent} from '../files/files.component';
 import {TokenService} from "../../service/token.service";
+import {FilterService} from "../../service/filter.service";
+import {FilterListener} from "../maintenance/filterlistener";
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +16,7 @@ import {TokenService} from "../../service/token.service";
   styleUrls: ['./dashboard.component.css'],
   providers: [FilesComponent]
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, FilterListener{
 
   userName : string = sessionStorage.key(0);
   userToken: Token = new Token(sessionStorage.getItem(this.userName));
@@ -24,7 +26,13 @@ export class DashboardComponent implements OnInit {
 
   filter: string;
 
-  constructor(private logoutService: LogoutService, private router: Router, private filesComponent: FilesComponent, private tokenService: TokenService) {}
+  constructor(private logoutService: LogoutService, private router: Router, private filesComponent: FilesComponent, private tokenService: TokenService, private filterService: FilterService) {
+    this.filterService.listener = this;
+  }
+
+  onFiltered(filter: string){
+    //stub
+  }
 
   ngOnInit() {
     this.tokenOperation = this.tokenService.isTokenAdmin(this.userToken);
@@ -38,7 +46,11 @@ export class DashboardComponent implements OnInit {
   }
 
   sendSearchData(filt: string){
-    this.filesComponent.filterFiles(filt);
+    if(location.pathname === "/dashboard/files"){
+      this.filesComponent.filterFiles(filt);
+    } else {
+      this.filterService.filtered(filt);
+    }
   }
 
 
