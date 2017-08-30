@@ -14,11 +14,16 @@ import {HttpClient} from "./http.client";
 
 @Injectable()
 export class FileService {
+  currentFolderId: number;
   files: File[] = [];
   filteredFiles: File[] = [];
   filesUrl = environment.urlPrefix + '/files/';
 
   constructor(private http: HttpClient, private oHttp: Http) {
+  }
+
+  getCurrentFolderId(): number{
+    return this.currentFolderId;
   }
 
   getFilesArray(): File[] {
