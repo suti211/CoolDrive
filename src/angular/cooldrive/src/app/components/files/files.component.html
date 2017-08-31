@@ -9,7 +9,6 @@
 <div *ngIf="infoPanelDisplayed" id="filesInfo" ngClass={{infoPanelStyle}} role="alert">
   {{infoPanelText}}
 </div>
-
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
@@ -24,7 +23,7 @@
     </thead>
 
     <tbody id="FileListDisplay">
-    <tr *ngIf="currentFolderId != -1">
+    <tr *ngIf="filteredFiles != 0 && currentFolderId != -1">
       <td>
         <div style="cursor: pointer" (dblclick)="openFolder(-1, '...')"><span
           class="glyphicon glyphicon-folder-close"></span> ...
@@ -62,7 +61,7 @@
             <a class="dropdown-item" *ngIf="file.extension == '.txt'" (click)="fetchEditTxtData(file.id)"
                data-toggle="modal" data-target="#editTxtModal">Open TextFile</a>
             <div *ngIf="file.extension == '.txt'" class="dropdown-divider"></div>
-            <a class="dropdown-item" (click)="download(file.id)">Download</a>
+            <a *ngIf="file.folder == false" class="dropdown-item" (click)="download(file.id)">Download</a>
             <a class="dropdown-item" (click)="setShare(file)" data-toggle="modal"
                data-target="#shareFileModal">Share</a>
             <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>
@@ -75,6 +74,15 @@
     </tbody>
 
   </table>
+  <a id="back-no-files" (click)="openFolder(-1, '...');">
+    <div *ngIf="filteredFiles == 0 && currentFolderId != -1" class="alert alert-info" role="alert">
+      <div class="no-files-found">No files found! Click <b>HERE</b> to return to the main folder
+      </div>
+    </div>
+  </a>
+  <div *ngIf="filteredFiles == 0 && currentFolderId == -1" class="alert alert-info" role="alert">
+    <div class="no-files-found">No files found!</div>
+  </div>
 
 
   <!-- FLOATING BUTTON -->

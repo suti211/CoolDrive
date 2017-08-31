@@ -100,13 +100,17 @@ export class FilesComponent implements OnInit {
   }
 
   setProgressBarStyle() {
-    if (this.percentage.valueOf() <= 60) {
-      this.progressBarSytle = "progress-bar";
+    if (this.percentage.valueOf() <= 3.99) {
+      this.progressBarSytle = "progress-bar text-progress-bar-color";
     } else {
-      if (this.percentage.valueOf() <= 85) {
-        this.progressBarSytle = "progress-bar bg-warning";
+      if (this.percentage.valueOf() <= 60) {
+        this.progressBarSytle = "progress-bar";
       } else {
-        this.progressBarSytle = "progress-bar bg-danger";
+        if (this.percentage.valueOf() <= 85) {
+          this.progressBarSytle = "progress-bar bg-warning";
+        } else {
+          this.progressBarSytle = "progress-bar bg-danger";
+        }
       }
     }
   }
@@ -268,7 +272,7 @@ export class FilesComponent implements OnInit {
   createTxtFile() {
     let close = document.getElementById("createTxtClose");
     let token = this.creatToken(this.currentFolderId);
-    let txt = new TextFile(this.newTxtTitle, this.newTxtContent, token);
+    let txt = new TextFile(this.newTxtTitle, this.newTxtContent, false, token);
 
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
@@ -278,6 +282,7 @@ export class FilesComponent implements OnInit {
         this.newTxtContent = null;
         this.setInfoPanelDisplay(status.message, true, 'success');
         this.listFiles(this.currentFolderId);
+        this.getStorageInfo();
         close.click();
       }
     });
@@ -298,7 +303,7 @@ export class FilesComponent implements OnInit {
   editTxtFile() {
     let close = document.getElementById("editTxtClose");
     let token = this.creatToken(this.currentFolderId);
-    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, token);
+    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, true, token);
 
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
@@ -333,8 +338,7 @@ export class FilesComponent implements OnInit {
   // File action methods
 
   download(fileId: number) {
-    let token = this.creatToken(-1);
-    this.fileService.downloadFile(fileId, token);
+    this.fileService.downloadFile(fileId);
   }
 
   modifyFile() {

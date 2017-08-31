@@ -6,11 +6,13 @@ package dto;
 public class TXT {
     private String name;
     private String content;
+    private boolean modify;
     private Token token;
 
-    public TXT(String name, String content, Token token) {
+    public TXT(String name, String content, boolean modify, Token token) {
         this.name = name;
         this.content = content;
+        this.modify = modify;
         this.token = token;
     }
 
@@ -36,6 +38,14 @@ public class TXT {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public boolean isModify() {
+        return modify;
+    }
+
+    public void setModify(boolean modify) {
+        this.modify = modify;
     }
 
     public Token getToken() {

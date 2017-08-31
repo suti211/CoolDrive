@@ -1,6 +1,5 @@
 package util;
 
-import controller.PermissionsController;
 import controller.UserController;
 import controller.UserFileController;
 import dto.TXT;
@@ -10,7 +9,6 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
@@ -28,7 +26,6 @@ public class UserFileManager extends ControllersFactory {
     private final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
     private String folderName;
     private Path rootPath = Paths.get(PathUtil.ROOT_PATH);
-    private Path tempPath = Paths.get(PathUtil.TEMP_PATH);
 
     public void saveUserFile(MultipartFormDataInput input, String token, int parentId, boolean isFolder) {
         try (UserController userController = getUserController();
@@ -100,10 +97,10 @@ public class UserFileManager extends ControllersFactory {
             fileOutputStream.flush();
         }
         fileOutputStream.close();
-        setFileSize(file, filename);
+        setFileSize(file, filename, -1);
     }
 
-    private void writeTXTFile(TXT txt, String fileName) throws IOException {
+    private void writeTXTFile(TXT txt, String fileName, int parentId) throws IOException {
         LOG.info("writeTXTFile method called with fileName: {}", fileName);
         Path path = Paths.get(rootPath.toString(), folderName, fileName);
         File file = path.toFile();
@@ -117,15 +114,19 @@ public class UserFileManager extends ControllersFactory {
             bw.newLine();
         }
         bw.close();
-        setFileSize(file, fileName);
+        setFileSize(file, fileName, parentId);
     }
 
-    private void setFileSize(File file, String filename) {
+    private void setFileSize(File file, String filename, int parentId) {
         try (UserFileController userFileController = getUserFileController()) {
             int fileId = Integer.valueOf(filename.substring(0, filename.lastIndexOf(".")));
             double size = ((double) file.length()) / 1024;
             size /= 1024;
+            size = size <= 0.01 ? 0.01: size;
             userFileController.setFileSize(fileId, size);
+            if(parentId != -1) {
+                userFileController.changeFolderCurrSize(parentId, size);
+            }
         }
     }
 
@@ -160,7 +161,7 @@ public class UserFileManager extends ControllersFactory {
                         folderName = userFileController.getUserFile(userHome.getParentId()).getFileName();
                     }
                 }
-                writeTXTFile(txt, fileId + ".txt");
+                writeTXTFile(txt, fileId + ".txt", parentId);
                 return true;
             } catch (IOException e) {
                 LOG.error("createTXTFile failed with exception", e);

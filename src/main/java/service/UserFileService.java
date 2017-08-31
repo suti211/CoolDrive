@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ControllersFactory;
 import util.UserFileManager;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -88,6 +89,7 @@ public class UserFileService extends ControllersFactory {
             LOG.info("uploadFile method is called with token:{}, id: {}, from: {}", token.getToken(), token.getId(), request.getRemoteAddr());
             double size = (request.getContentLength() / 1024);
             size /= 1024;
+            size = size <= 0.01 ? 0.01: size;
             int folderId = getFileId(token, "uploadFile");
             if (userFileController.checkAvailableSpace(folderId, size)) {
                 userFileManager.saveUserFile(input, token.getToken(), folderId, false);
@@ -113,7 +115,11 @@ public class UserFileService extends ControllersFactory {
         LOG.info("uploadTXTFile method is called with token:{}, id: {}, from: {}", txt.getToken().getToken(), txt.getToken().getId(), request.getRemoteAddr());
         int parentId = getFileId(txt.getToken(), "uploadTXTFile");
         if (userFileManager.createTXTFile(txt, parentId)) {
-            return new Status(Operation.TXT, true, "TXT file successfully created!");
+            if (txt.isModify()) {
+                return new Status(Operation.TXT, true, "TXT file successfully modified!");
+            } else {
+                return new Status(Operation.TXT, true, "TXT file successfully created!");
+            }
         }
         return new Status(Operation.TXT, false, "Cannot create TXT file!");
     }
@@ -172,31 +178,33 @@ public class UserFileService extends ControllersFactory {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/download")
     public Response downloadFile(@Context HttpServletRequest request) {
-        try (UserController userController = getUserController();
-             UserFileController userFileController = getUserFileController();
-             PermissionsController permissionsController = getPermissionsController()) {
-            int id = Integer.valueOf(request.getParameter("id"));
-            String token = request.getParameter("token");
-            LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
-            int userId = userController.getUser("token", token).getId();
-            if (permissionsController.checkAccess(id, userId) ||
-                    userFileController.getUserFile(id).getOwnerId() == userId) {
-                File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
-                String name = userFile.getName();
-                String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
-                if (userFile != null) {
-                    LOG.info("File is found and ready to send to user with this id: {}", id);
-                    return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
-                            .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-                            .build();
-                } else {
-                    LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
-                    return null;
+        String token = request.getHeader("Authorization").split(" ")[1];
+        if (token != null) {
+            try (UserController userController = getUserController();
+                 UserFileController userFileController = getUserFileController();
+                 PermissionsController permissionsController = getPermissionsController()) {
+                int id = Integer.valueOf(request.getParameter("id"));
+                LOG.info("downloadFile method is called with id: {}, from: {}", id, request.getRemoteAddr());
+                int userId = userController.getUser("token", token).getId();
+                if (permissionsController.checkAccess(id, userId) ||
+                        userFileController.getUserFile(id).getOwnerId() == userId) {
+                    File userFile = userFileManager.downloadUserFiles(Integer.valueOf(id));
+                    String name = userFile.getName();
+                    String fileName = userFileController.getUserFile(id).getFileName() + name.substring(name.lastIndexOf("."));
+                    if (userFile != null) {
+                        LOG.info("File is found and ready to send to user with this id: {}", id);
+                        return Response.ok(userFile, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                                .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                                .build();
+                    } else {
+                        LOG.error("File is not available or not found with this id: {}", request.getParameter("id"));
+                        return null;
+                    }
                 }
             }
-            return Response.noContent().header("Access Denied", "You don't have access to download this file")
-                    .build();
         }
+        return Response.noContent().header("Access Denied", "You don't have access to download this file")
+                .build();
     }
 
     @POST
