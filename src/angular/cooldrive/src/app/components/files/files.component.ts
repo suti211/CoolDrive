@@ -66,6 +66,10 @@ export class FilesComponent implements OnInit {
   progressBarSytle: string = "progress-bar";
 
   constructor(private fileService: FileService, private shareService: ShareService) {
+    this.currentFolderId = -1;
+    this.currentFolderName = "Your files";
+    this.fileService.currentFolderId = this.currentFolderId;
+
     this.files = fileService.getFilesArray();
     this.filteredFiles = fileService.getFilteredFilesArray();
     this.infoPanelDisplayed = false;
@@ -143,6 +147,7 @@ export class FilesComponent implements OnInit {
 
   openFolder(id: number, name: string) {
     this.currentFolderId = id;
+    this.fileService.currentFolderId = this.currentFolderId;
 
     if (name === "...") {
       this.currentFolderName = "Your files";
@@ -470,9 +475,6 @@ export class FilesComponent implements OnInit {
   ngOnInit() {
     //  let tokenID = localStorage.getItem(localStorage.key(0));
     let newToken = this.creatToken(-1);
-
-    this.currentFolderId = -1;
-    this.currentFolderName = "Your files";
 
     let getStorageInfoOperation: Observable<StorageInfo>;
     getStorageInfoOperation = this.fileService.getStorageInfo(newToken);

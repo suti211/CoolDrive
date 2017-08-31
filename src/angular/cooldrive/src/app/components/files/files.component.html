@@ -84,23 +84,6 @@
     <div class="no-files-found">No files found!</div>
   </div>
 
-
-  <!-- FLOATING BUTTON -->
-  <div id="floatingButton" class="btn-group dropup">
-    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
-      New
-    </button>
-    <div id="floatingButtonDropdown" class="dropdown-menu">
-      <a class="dropdown-item" data-toggle="modal" data-target="#uploadModal">Upload</a>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" data-toggle="modal" data-target="#createTxtModal">Create text file</a>
-      <a *ngIf="currentFolderId === -1" class="dropdown-item" href="" data-toggle="modal"
-         data-target="#createFolderModal">Create Folder</a>
-    </div>
-  </div>
-
-
   <!-- FileModify -->
   <div class="modal fade" id="fileModifyModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">

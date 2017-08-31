@@ -7,6 +7,7 @@ import { Token } from '../../model/token.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import {FilesComponent} from '../files/files.component';
 import {TokenService} from "../../service/token.service";
+import {FileService} from "../../service/files.service";
 import {FilterService} from "../../service/filter.service";
 import {FilterListener} from "../maintenance/filterlistener";
 
@@ -26,7 +27,7 @@ export class DashboardComponent implements OnInit, FilterListener{
 
   filter: string;
 
-  constructor(private logoutService: LogoutService, private router: Router, private filesComponent: FilesComponent, private tokenService: TokenService, private filterService: FilterService) {
+  constructor(private logoutService: LogoutService, private router: Router, private filesComponent: FilesComponent, private fileService: FileService, private tokenService: TokenService, private filterService: FilterService) {
     this.filterService.listener = this;
   }
 
@@ -53,6 +54,13 @@ export class DashboardComponent implements OnInit, FilterListener{
     }
   }
 
+  matchUrlPath(url: String): boolean{
+    return location.pathname == url;
+  }
+
+  isItHomeFolder(): boolean{
+    return this.fileService.getCurrentFolderId() == -1;
+  }
 
   logout(){
     this.logoutOperation = this.logoutService.sendLogoutRequest(this.userToken);
