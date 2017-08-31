@@ -14,6 +14,18 @@
     </thead>
 
     <tbody id="FileListDisplay">
+    <tr *ngIf="filteredFiles != 0 && currentFolderId != -1">
+      <td>
+        <div style="cursor: pointer" (dblclick)="openFolder(-1, '...')"><span
+          class="glyphicon glyphicon-folder-close"></span> ...
+        </div>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
     <tr *ngFor="let file of filteredFiles">
       <td>
         <div *ngIf="file.folder == false"><span class="glyphicon glyphicon-file"></span> {{file.fileName}}</div>
@@ -35,7 +47,8 @@
             More
           </button>
           <div id="floatingButtonDropdown" class="dropdown-menu">
-            <a class="dropdown-item" *ngIf="file.extension == '.txt' && file.readOnly==false" (click)="fetchEditTxtData(file.id, file.parentId)"
+            <a class="dropdown-item" *ngIf="file.extension == '.txt' && file.readOnly==false"
+               (click)="fetchEditTxtData(file.id, file.parentId)"
                data-toggle="modal" data-target="#editTxtModal">Open TextFile</a>
             <div *ngIf="file.extension == '.txt' && file.readOnly==false" class="dropdown-divider"></div>
             <a class="dropdown-item" (click)="download(file.id)">Download</a>
@@ -43,10 +56,17 @@
         </div>
       </td>
     </tr>
-
     </tbody>
-
   </table>
+  <a id="back-no-files" (click)="openFolder(-1, '...');">
+    <div *ngIf="filteredFiles == 0 && currentFolderId != -1" class="alert alert-info" role="alert">
+      <div class="no-files-found">No files found! Click <b>HERE</b> to return to the main folder
+      </div>
+    </div>
+  </a>
+  <div *ngIf="filteredFiles == 0 && currentFolderId == -1" class="alert alert-info" role="alert">
+    <div class="no-files-found">Currently nothing shared with you ¯\_(ツ)_/¯</div>
+  </div>
 
   <!-- EDIT TEXT FILE MODAL -->
   <div class="modal fade" id="editTxtModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -63,7 +83,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button id="closeButton" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <input id="editTxtButton" type="button" class="btn btn-primary" (click)="editTxtFile()" value="Save">
         </div>
       </div>

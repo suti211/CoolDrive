@@ -92,3 +92,16 @@
 .icon-align{
   padding-right: 5px;
 }
+
+.no-files-found{
+  padding-bottom: 0;
+  font-size: 17px;
+}
+
+#back-no-files{
+  cursor: pointer;
+}
+
+.text-progress-bar-color {
+  color: black;
+}

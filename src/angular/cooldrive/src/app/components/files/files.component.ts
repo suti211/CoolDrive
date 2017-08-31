@@ -10,13 +10,15 @@ import {TextFile} from "../../model/text-file";
 import {ShareService} from "../../service/share.service";
 import {Share} from "../../model/shared";
 import {environment} from "../../../environments/environment";
+import {FilterListener} from "../maintenance/filterlistener";
+import {FilterService} from "../../service/filter.service";
 
 @Component({
   selector: 'app-files',
   templateUrl: './files.component.html',
   styleUrls: ['./files.component.css']
 })
-export class FilesComponent implements OnInit {
+export class FilesComponent implements OnInit, FilterListener{
 
   currentFolderId: number;
   currentFolderName: string = "";
@@ -65,10 +67,12 @@ export class FilesComponent implements OnInit {
 
   progressBarSytle: string = "progress-bar";
 
-  constructor(private fileService: FileService, private shareService: ShareService) {
+  constructor(private fileService: FileService, private shareService: ShareService, private filterService: FilterService) {
     this.currentFolderId = -1;
     this.currentFolderName = "Your files";
     this.fileService.currentFolderId = this.currentFolderId;
+
+    this.filterService.listener = this;
 
     this.files = fileService.getFilesArray();
     this.filteredFiles = fileService.getFilteredFilesArray();
@@ -104,20 +108,25 @@ export class FilesComponent implements OnInit {
   }
 
   setProgressBarStyle() {
-    if (this.percentage.valueOf() <= 60) {
-      this.progressBarSytle = "progress-bar";
+    if (this.percentage.valueOf() <= 3.99) {
+      this.progressBarSytle = "progress-bar text-progress-bar-color";
     } else {
-      if (this.percentage.valueOf() <= 85) {
-        this.progressBarSytle = "progress-bar bg-warning";
+      if (this.percentage.valueOf() <= 60) {
+        this.progressBarSytle = "progress-bar";
       } else {
-        this.progressBarSytle = "progress-bar bg-danger";
+        if (this.percentage.valueOf() <= 85) {
+          this.progressBarSytle = "progress-bar bg-warning";
+        } else {
+          this.progressBarSytle = "progress-bar bg-danger";
+        }
       }
     }
   }
 
   // Files list methods
 
-  filterFiles(filt: string) {
+
+  onFiltered(filt: string): void {
     let filter = filt.toLowerCase();
     this.filteredFiles.length = 0;
 
@@ -139,6 +148,29 @@ export class FilesComponent implements OnInit {
       }
     }
   }
+
+/*  filterFiles(filt: string) {
+    let filter = filt.toLowerCase();
+    this.filteredFiles.length = 0;
+
+    if (filt.length === 0) {
+      for (let file of this.files) {
+        this.filteredFiles.push(file);
+      }
+    } else {
+      for (let file of this.files) {
+        if (file.label === null) {
+          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1) {
+            this.filteredFiles.push(file);
+          }
+        } else {
+          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
+            this.filteredFiles.push(file);
+          }
+        }
+      }
+    }
+  }*/
 
 
   openFolder(id: number, name: string) {
@@ -175,7 +207,7 @@ export class FilesComponent implements OnInit {
         this.files.push(file);
         this.filteredFiles.push(file);
       }
-      console.log(this.files);
+      //console.log(this.files);
     });
   }
 
@@ -187,7 +219,7 @@ export class FilesComponent implements OnInit {
     getHomeStorageInfoOperation.subscribe((info: StorageInfo) => {
       this.homeFolderSize = info.usage;
       this.homeFolderMaxSize = info.quantity;
-      console.log(info);
+      //console.log(info);
     });
   }
 
@@ -209,7 +241,7 @@ export class FilesComponent implements OnInit {
     sharedWith = this.shareService.getShareInfo(token);
     sharedWith.subscribe((share: Share[]) => {
       this.sharedWith = share;
-      console.log(this.sharedWith);
+      //console.log(this.sharedWith);
     });
   }
 
@@ -220,12 +252,12 @@ export class FilesComponent implements OnInit {
     let sharedWith: Observable<Status>;
     sharedWith = this.shareService.changeAccess(share);
     sharedWith.subscribe((status: Status) => {
-      console.log(status);
+      //console.log(status);
     });
   }
 
   removeAccess(email: string) {
-    console.log("remove");
+    //console.log("remove");
     let token = this.creatToken(this.shareFileId);
     let share = new Share(email, false, token)
 
@@ -241,7 +273,7 @@ export class FilesComponent implements OnInit {
         }
         this.sharedWith.splice(index, 1);
         this.setSharePanelDisplay(status);
-        console.log(status);
+        //console.log(status);
       }
     });
   }
@@ -273,7 +305,7 @@ export class FilesComponent implements OnInit {
   createTxtFile() {
     let close = document.getElementById("createTxtClose");
     let token = this.creatToken(this.currentFolderId);
-    let txt = new TextFile(this.newTxtTitle, this.newTxtContent, token);
+    let txt = new TextFile(this.newTxtTitle, this.newTxtContent, false, token);
 
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
@@ -283,6 +315,7 @@ export class FilesComponent implements OnInit {
         this.newTxtContent = null;
         this.setInfoPanelDisplay(status.message, true, 'success');
         this.listFiles(this.currentFolderId);
+        this.getStorageInfo();
         close.click();
       }
     });
@@ -294,7 +327,7 @@ export class FilesComponent implements OnInit {
     let fetchTXTOperation: Observable<TextFile>;
     fetchTXTOperation = this.fileService.getTxtFileData(token);
     fetchTXTOperation.subscribe((txt: TextFile) => {
-      console.log(txt);
+      //console.log(txt);
       this.editTxtTitle = txt.name;
       this.editTxtContent = txt.content;
     });
@@ -303,7 +336,7 @@ export class FilesComponent implements OnInit {
   editTxtFile() {
     let close = document.getElementById("editTxtClose");
     let token = this.creatToken(this.currentFolderId);
-    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, token);
+    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, true, token);
 
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
@@ -338,8 +371,7 @@ export class FilesComponent implements OnInit {
   // File action methods
 
   download(fileId: number) {
-    let token = this.creatToken(-1);
-    this.fileService.downloadFile(fileId, token);
+    this.fileService.downloadFile(fileId);
   }
 
   modifyFile() {
@@ -411,7 +443,7 @@ export class FilesComponent implements OnInit {
 
   listUploadedFiles() {
     this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
-    console.log(this.uploadedFilesList);
+    //console.log(this.uploadedFilesList);
   }
 
   listFiles(id: number) {
@@ -428,7 +460,7 @@ export class FilesComponent implements OnInit {
         this.files.push(file);
         this.filteredFiles.push(file);
       }
-      console.log(this.files);
+      //console.log(this.files);
     });
   }
 
@@ -441,7 +473,7 @@ export class FilesComponent implements OnInit {
         this.getPublicLink(id);
       }
     });
-    console.log(id);
+    //console.log(id);
   }
 
   deletePublicLink(id: number) {

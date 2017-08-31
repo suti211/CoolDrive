@@ -33,3 +33,12 @@
 .modal-content{
   margin-top: 190px;
 }
+
+.no-files-found{
+  padding-bottom: 0;
+  font-size: 17px;
+}
+
+#back-no-files{
+  cursor: pointer;
+}

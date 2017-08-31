@@ -17,7 +17,6 @@ export class LoginService {
   sendLoginData(body: Object): Observable<Status> {
 
     let bodyString = JSON.stringify(body);
-    console.log("body JSON: " + bodyString);
 
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});

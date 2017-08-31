@@ -3,7 +3,7 @@
 <div class="row">
   <div class="col-md-10 col-sm-12 center">
     <div id="accordion" role="tablist" aria-multiselectable="true">
-      <div class="card" *ngFor="let transaction of transactions; let i = index">
+      <div class="card" *ngFor="let transaction of filteredTransactions; let i = index">
         <div class="card-header" role="tab" [attr.id]="i">
           <h5 class="mb-0">
             <a class="collapsed" data-toggle="collapse" data-parent="#accordion" [attr.href]="'#collapse' + i" aria-expanded="false" [attr.aria-controls]="'collapse' + i">
@@ -53,5 +53,10 @@
           </div>
         </div>
     </div>
+  </div>
+</div>
+<div class="col-md-10 col-sm-12 center" *ngIf="!isResult" >
+  <div class="alert alert-info info" role="alert">
+    <h3 style="margin: auto">No match found!</h3>
   </div>
 </div>

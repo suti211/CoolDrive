@@ -30,6 +30,7 @@ import { UsersComponent } from './components/users/users.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { ShareService } from "./service/share.service";
 import { SharedWithMeComponent } from './components/shared-with-me/shared-with-me.component';
+import {FilterService} from "./service/filter.service";
 
 
 
@@ -77,7 +78,7 @@ import { SharedWithMeComponent } from './components/shared-with-me/shared-with-m
     ])
   ],
 
-  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService, HttpClient, ShareService],
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService, HttpClient, ShareService,  FilterService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -36,7 +36,7 @@ export class FileService {
 
   getTxtFileData(token: Token): Observable<TextFile>{
     let bodyString = JSON.stringify(token);
-    console.log(bodyString)
+    ////console.log(bodyString)
     return this.http.post(this.filesUrl + 'getTXT', <String>bodyString)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));
@@ -44,7 +44,7 @@ export class FileService {
 
   uploadTextFile(txt: TextFile): Observable<Status>{
     let bodyString = JSON.stringify(txt);
-    console.log(bodyString);
+    //console.log(bodyString);
 
     return this.http.post(this.filesUrl + 'uploadTXT', <String>bodyString)
       .map((res: Response) => res.json())
@@ -52,7 +52,7 @@ export class FileService {
   }
 
   createFolder(folder: Folder): Observable<Status>{
-    console.log(folder);
+    //console.log(folder);
     let bodyString = JSON.stringify(folder);
 
     return this.http.post(this.filesUrl + 'createFolder', <String>bodyString)
@@ -60,18 +60,18 @@ export class FileService {
       .catch((error: any) => Observable.throw('Server Error'));
   }
 
-  downloadFile(fileId: number, token: Token) {
-    this.http.get(this.filesUrl + 'download?id=' + fileId + "&token=" + token.token).toPromise()
+  downloadFile(fileId: number) {
+    this.http.get(this.filesUrl + 'download?id=' + fileId).toPromise()
       .then(function(response) {
         window.location.href = response.url;
       })
   }
 
   modifyFile(file: File): Observable<Status>{
-    console.log(file);
+    //console.log(file);
     let bodyString = JSON.stringify(file);
 
-    console.log(bodyString);
+    //console.log(bodyString);
 
     return this.http.post(this.filesUrl + 'modify', <String>bodyString)
       .map((res: Response) => res.json())
@@ -95,7 +95,7 @@ export class FileService {
     // let headers = new Headers([{'Content-Type': 'multipart/form-data'}]);
     // let options = new RequestOptions({headers: headers});
 
-    console.log(fd);
+    //console.log(fd);
     return this.http.postFile(this.filesUrl + 'upload', fd)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw('Server Error'));

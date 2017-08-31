@@ -6,13 +6,15 @@ import {ShareService} from "../../service/share.service";
 import {FileService} from "../../service/files.service";
 import {Status} from "../../model/status.model";
 import {TextFile} from "../../model/text-file";
+import {FilterListener} from "../maintenance/filterlistener";
+import {FilterService} from "../../service/filter.service";
 
 @Component({
   selector: 'app-shared-with-me',
   templateUrl: './shared-with-me.component.html',
   styleUrls: ['./shared-with-me.component.css']
 })
-export class SharedWithMeComponent implements OnInit {
+export class SharedWithMeComponent implements OnInit, FilterListener {
 
   files: File[];
   filteredFiles: File[] = [];
@@ -25,16 +27,38 @@ export class SharedWithMeComponent implements OnInit {
   editTxtContent: string;
 
 
-  constructor(private fileService: FileService, private shareService: ShareService) {
+  constructor(private fileService: FileService, private shareService: ShareService, private filterService: FilterService) {
     this.files = shareService.getFilesArray();
     this.filteredFiles = shareService.getFilteredFilesArray();
+    this.filterService.listener = this;
   }
 
+  onFiltered(filt: string): void {
+    let filter = filt.toLowerCase();
+    this.filteredFiles.length = 0;
 
+    if (filt.length === 0) {
+      for (let file of this.files) {
+        this.filteredFiles.push(file);
+      }
+    } else {
+      for (let file of this.files) {
+        if (file.label === null) {
+          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1) {
+            this.filteredFiles.push(file);
+          }
+        } else {
+          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
+            this.filteredFiles.push(file);
+          }
+        }
+      }
+    }
+  }
 
   download(fileId: number) {
     let token = this.creatToken(-1);
-    this.fileService.downloadFile(fileId, token);
+    this.fileService.downloadFile(fileId);
   }
 
   listFiles(id: number){
@@ -70,12 +94,6 @@ export class SharedWithMeComponent implements OnInit {
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.shareService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-      let backButton = new File(-1, '', 0, '', "...", '', 0, true, 0, 0, '', true);
-      if (id > 0) {
-        this.files.push(backButton);
-        this.filteredFiles.push(backButton);
-      }
-
       for (let file of newFiles) {
         this.files.push(file);
         this.filteredFiles.push(file);
@@ -99,12 +117,18 @@ export class SharedWithMeComponent implements OnInit {
 
   editTxtFile(){
     let token = this.creatToken(this.editTxtFileID);
-    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, token);
+    let txt = new TextFile(this.editTxtTitle, this.editTxtContent, true, token);
 
     let createTXTOperation: Observable<Status>;
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
       console.log(status.message);
+      if(status.success){
+        document.getElementById('closeButton').click();
+      }else{
+        console.log(status);
+        window.alert("Text modify failed!");
+      }
     });
   }
 

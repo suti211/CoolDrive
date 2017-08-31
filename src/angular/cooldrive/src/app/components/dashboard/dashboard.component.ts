@@ -8,6 +8,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import {FilesComponent} from '../files/files.component';
 import {TokenService} from "../../service/token.service";
 import {FileService} from "../../service/files.service";
+import {FilterService} from "../../service/filter.service";
+import {FilterListener} from "../maintenance/filterlistener";
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +17,7 @@ import {FileService} from "../../service/files.service";
   styleUrls: ['./dashboard.component.css'],
   providers: [FilesComponent]
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, FilterListener{
 
   userName : string = sessionStorage.key(0);
   userToken: Token = new Token(sessionStorage.getItem(this.userName));
@@ -25,7 +27,13 @@ export class DashboardComponent implements OnInit {
 
   filter: string;
 
-  constructor(private logoutService: LogoutService, private router: Router, private filesComponent: FilesComponent, private fileService: FileService, private tokenService: TokenService) {}
+  constructor(private logoutService: LogoutService, private router: Router, private filesComponent: FilesComponent, private fileService: FileService, private tokenService: TokenService, private filterService: FilterService) {
+    this.filterService.listener = this;
+  }
+
+  onFiltered(filter: string){
+    //stub
+  }
 
   ngOnInit() {
     this.tokenOperation = this.tokenService.isTokenAdmin(this.userToken);
@@ -39,7 +47,7 @@ export class DashboardComponent implements OnInit {
   }
 
   sendSearchData(filt: string){
-    this.filesComponent.filterFiles(filt);
+    this.filterService.filtered(filt);
   }
 
   matchUrlPath(url: String): boolean{
