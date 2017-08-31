@@ -70,6 +70,10 @@ export class DashboardComponent implements OnInit, FilterListener{
     sessionStorage.clear();
   }
 
+  goToFilesPage(){
+    this.router.navigate(['dashboard/files']);
+  }
+
   storage(){
     this.router.navigate(['storage']);
   }
