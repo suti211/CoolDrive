@@ -31,6 +31,7 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
 import { ShareService } from "./service/share.service";
 import { SharedWithMeComponent } from './components/shared-with-me/shared-with-me.component';
 import {FilterService} from "./service/filter.service";
+import {LoggedInGuard} from "./guard/logged-in.guard";
 
 
 
@@ -59,8 +60,8 @@ import {FilterService} from "./service/filter.service";
     HttpModule,
     RouterModule.forRoot([
       { path: "verify/:token", component: EmailValidation },
-      { path: "login", component: LoginComponent },
-      { path: "register", component: RegisterComponent },
+      { path: "login", canActivate:[LoggedInGuard], component: LoginComponent },
+      { path: "register", canActivate:[LoggedInGuard], component: RegisterComponent },
       { path: "dashboard", canActivate: [LoginGuard], component: DashboardComponent, children:
        [
           { path: "files", canActivate: [LoginGuard], component: FilesComponent},
@@ -74,11 +75,11 @@ import {FilterService} from "./service/filter.service";
           { path: 'shared', canActivate: [LoginGuard], component: SharedWithMeComponent},
         ]
       },
-      {path: "**", component: LandingPageComponent}
+      {path: "**", canActivate:[LoggedInGuard], component: LandingPageComponent}
     ])
   ],
 
-  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService, HttpClient, ShareService,  FilterService],
+  providers: [LoginService, RegisterService, LoginGuard, FileService, TokenService, LogoutService, TransactionService, CheckoutService, EmailValidationService, HttpClient, ShareService,  FilterService, LoggedInGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
