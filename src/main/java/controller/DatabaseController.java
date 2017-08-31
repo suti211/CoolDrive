@@ -12,6 +12,7 @@ public class DatabaseController implements AutoCloseable {
   
     private final Logger LOG = LoggerFactory.getLogger(DatabaseController.class);
     protected Connection con = null;
+    protected String DatabaseName;
 
     public DatabaseController(ConnectionUtil.DatabaseName database) {
         this.con = ConnectionUtil.getConnection(database);
@@ -26,6 +27,8 @@ public class DatabaseController implements AutoCloseable {
     public void close() {
         try {
             con.close();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            LOG.error("Connection cannot be closed",e);
+        }
     }
 }

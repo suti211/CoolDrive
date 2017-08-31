@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import util.*;
 
 @Path("/register")
-public class RegisterService extends ControllersFactory {
+public class RegisterService extends SimpleControllersFactory {
 	private final Logger LOG = LoggerFactory.getLogger(RegisterService.class);
 	private final UserFileManager userFileManager = new UserFileManager();
 	private final EmailSenderUtil emailSenderUtil = new EmailSenderUtil();

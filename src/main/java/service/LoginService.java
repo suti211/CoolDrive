@@ -14,10 +14,10 @@ import dto.Status;
 import dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ControllersFactory;
+import util.SimpleControllersFactory;
 
 @Path("/login")
-public class LoginService extends ControllersFactory {
+public class LoginService extends SimpleControllersFactory {
     private final Logger LOG = LoggerFactory.getLogger(LoginService.class);
 
     @POST

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.annotation.Priority;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
@@ -22,7 +21,7 @@ import dto.User;
 
 @PreMatching
 @Provider
-public class PermissionFilter extends ControllersFactory implements ContainerRequestFilter{
+public class PermissionFilter extends SimpleControllersFactory implements ContainerRequestFilter{
     List<String>whiteList = Arrays.asList("/login","/register","/verify","/public");
 
     @Override

@@ -7,7 +7,7 @@ import dto.*;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ControllersFactory;
+import util.SimpleControllersFactory;
 import util.UserFileManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -22,7 +22,7 @@ import java.util.List;
  * Created by David Szilagyi und Dani on 2017. 07. 18..
  */
 @Path("/files")
-public class UserFileService extends ControllersFactory {
+public class UserFileService extends SimpleControllersFactory {
     private final Logger LOG = LoggerFactory.getLogger(UserFileService.class);
     private final UserFileManager userFileManager = new UserFileManager();
 

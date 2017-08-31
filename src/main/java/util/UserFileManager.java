@@ -1,6 +1,5 @@
 package util;
 
-import controller.PermissionsController;
 import controller.UserController;
 import controller.UserFileController;
 import dto.TXT;
@@ -24,7 +23,7 @@ import java.util.Map;
 /**
  * Created by David Szilagyi on 2017. 07. 18..
  */
-public class UserFileManager extends ControllersFactory {
+public class UserFileManager extends SimpleControllersFactory {
     private final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
     private String folderName;
     private Path rootPath = Paths.get(PathUtil.ROOT_PATH);

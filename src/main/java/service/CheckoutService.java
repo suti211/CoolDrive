@@ -7,10 +7,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import dto.Token;
 import dto.Transaction;
-import util.ControllersFactory;
+import util.SimpleControllersFactory;
 
 @Path("/checkout")
-public class CheckoutService extends ControllersFactory {
+public class CheckoutService extends SimpleControllersFactory {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

@@ -27,7 +27,7 @@ public class EmailSenderUtil {
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.host", " ");
 		props.put("mail.smtp.port", "587");
 
 		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
@@ -65,7 +65,7 @@ public class EmailSenderUtil {
 							+ "<hr>Billing address: %s<br>"
 							+ "<hr>Phone number: %s<br>"
 							+ "<hr>Package: %s MB<br>"
-							+ "<br><br><br><i>Codecool CoolDrive ©</i>",
+							+ "<br><br><br><i>Codecool CoolDrive ï¿½</i>",
 					user.getFirstName() + " " + user.getLastName(), user.getUserName(), transaction.getId(), transaction.getZip(), transaction.getCity(), transaction.getAddress1(), transaction.getAddress2(), transaction.getPhone(), transaction.getBought());
 			LOG.info("Transaction verification email process initializing!");
 		}

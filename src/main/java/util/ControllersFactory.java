@@ -4,24 +4,18 @@ import controller.PermissionsController;
 import controller.TransactionsController;
 import controller.UserController;
 import controller.UserFileController;
+import dao.PermissionsDao;
+import dao.TransactionsDao;
+import dao.UserDao;
+import dao.UserFileDao;
 
-/**
- * Created by David Szilagyi on 2017. 08. 04..
- */
-public abstract class ControllersFactory {
-        protected UserFileController getUserFileController() {
-                return new UserFileController(ConnectionUtil.DatabaseName.CoolDrive);
-        }
+public interface ControllersFactory {
 
-        protected UserController getUserController() {
-                return new UserController(ConnectionUtil.DatabaseName.CoolDrive);
-        }
+    UserFileDao getUserFileController();
 
-        protected TransactionsController getTransactionsController() {
-                return new TransactionsController(ConnectionUtil.DatabaseName.CoolDrive);
-        }
+    UserDao getUserController();
 
-        protected PermissionsController getPermissionsController() {
-                return new PermissionsController(ConnectionUtil.DatabaseName.CoolDrive);
-        }
+    TransactionsDao getTransactionsController();
+
+    PermissionsDao getPermissionsController();
 }

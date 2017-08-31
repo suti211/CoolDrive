@@ -6,7 +6,8 @@ import dto.Status;
 import dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ControllersFactory;
+import util.SimpleControllersFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -16,7 +17,7 @@ import javax.ws.rs.core.MediaType;
  * Created by David Szilagyi on 2017. 08. 01..
  */
 @Path("")
-public class UserService extends ControllersFactory {
+public class UserService extends SimpleControllersFactory {
     private final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     @POST

@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by David Szilagyi on 2017. 07. 07..
  */
-public interface UserFileDao {
+public interface UserFileDao{
     UserFile getUserFile(int id);
 
     int getPublicUserFile(String publicLink);

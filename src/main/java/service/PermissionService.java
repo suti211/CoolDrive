@@ -6,7 +6,7 @@ import controller.UserFileController;
 import dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ControllersFactory;
+import util.SimpleControllersFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -21,7 +21,7 @@ import java.util.List;
  * Created by David Szilagyi on 2017. 08. 07..
  */
 @Path("/share")
-public class PermissionService extends ControllersFactory {
+public class PermissionService extends SimpleControllersFactory {
 
     private final Logger LOG = LoggerFactory.getLogger(RegisterService.class);
 
