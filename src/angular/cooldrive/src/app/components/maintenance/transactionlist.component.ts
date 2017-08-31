@@ -19,9 +19,15 @@ export class TransactionList implements OnInit, FilterListener{
   transactions: Transaction[] = [];
   getTransactions: Observable<Transaction[]>;
   filteredTransactions: Transaction[] = [];
+  isResult = true;
 
   onFiltered(filter: string){
     this.filter(filter);
+    if(this.filteredTransactions.length == 0){
+      this.isResult = false;
+    } else {
+      this.isResult = true;
+    }
   }
 
   ngOnInit() {
