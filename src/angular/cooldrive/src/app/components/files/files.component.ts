@@ -170,7 +170,7 @@ export class FilesComponent implements OnInit {
         this.files.push(file);
         this.filteredFiles.push(file);
       }
-      console.log(this.files);
+      //console.log(this.files);
     });
   }
 
@@ -182,7 +182,7 @@ export class FilesComponent implements OnInit {
     getHomeStorageInfoOperation.subscribe((info: StorageInfo) => {
       this.homeFolderSize = info.usage;
       this.homeFolderMaxSize = info.quantity;
-      console.log(info);
+      //console.log(info);
     });
   }
 
@@ -204,7 +204,7 @@ export class FilesComponent implements OnInit {
     sharedWith = this.shareService.getShareInfo(token);
     sharedWith.subscribe((share: Share[]) => {
       this.sharedWith = share;
-      console.log(this.sharedWith);
+      //console.log(this.sharedWith);
     });
   }
 
@@ -215,12 +215,12 @@ export class FilesComponent implements OnInit {
     let sharedWith: Observable<Status>;
     sharedWith = this.shareService.changeAccess(share);
     sharedWith.subscribe((status: Status) => {
-      console.log(status);
+      //console.log(status);
     });
   }
 
   removeAccess(email: string) {
-    console.log("remove");
+    //console.log("remove");
     let token = this.creatToken(this.shareFileId);
     let share = new Share(email, false, token)
 
@@ -236,7 +236,7 @@ export class FilesComponent implements OnInit {
         }
         this.sharedWith.splice(index, 1);
         this.setSharePanelDisplay(status);
-        console.log(status);
+        //console.log(status);
       }
     });
   }
@@ -289,7 +289,7 @@ export class FilesComponent implements OnInit {
     let fetchTXTOperation: Observable<TextFile>;
     fetchTXTOperation = this.fileService.getTxtFileData(token);
     fetchTXTOperation.subscribe((txt: TextFile) => {
-      console.log(txt);
+      //console.log(txt);
       this.editTxtTitle = txt.name;
       this.editTxtContent = txt.content;
     });
@@ -406,7 +406,7 @@ export class FilesComponent implements OnInit {
 
   listUploadedFiles() {
     this.uploadedFilesList = document.getElementById("uploadedFiles")['files'];
-    console.log(this.uploadedFilesList);
+    //console.log(this.uploadedFilesList);
   }
 
   listFiles(id: number) {
@@ -423,7 +423,7 @@ export class FilesComponent implements OnInit {
         this.files.push(file);
         this.filteredFiles.push(file);
       }
-      console.log(this.files);
+      //console.log(this.files);
     });
   }
 
@@ -436,7 +436,7 @@ export class FilesComponent implements OnInit {
         this.getPublicLink(id);
       }
     });
-    console.log(id);
+    //console.log(id);
   }
 
   deletePublicLink(id: number) {

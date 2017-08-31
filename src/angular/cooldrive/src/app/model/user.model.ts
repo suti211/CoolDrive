@@ -1,10 +1,14 @@
 export class User{
-    
-    username: String;
-    password: String;
 
-    constructor(username:String, password:String){
-        this.username = username;
+    userName: String;
+    password: String;
+    email: String;
+    validated: boolean;
+    admin: boolean;
+    registerDate: String;
+
+    constructor(userName:String, password:String){
+        this.userName = userName;
         this.password = password;
     }
 }
