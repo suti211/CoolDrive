@@ -2,6 +2,7 @@ package controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import util.ConnectionUtil;
 import java.sql.Connection;
 
@@ -13,7 +14,7 @@ public class DatabaseController implements AutoCloseable {
     private final Logger LOG = LoggerFactory.getLogger(DatabaseController.class);
     protected Connection con = null;
     protected String DatabaseName;
-
+    @Autowired
     public DatabaseController(String database) {
         this.con = ConnectionUtil.getConnection(database);
         LOG.info("Connected to {}",database);
