@@ -1,21 +1,17 @@
 package util;
 
-import controller.PermissionsController;
-import controller.TransactionsController;
-import controller.UserController;
-import controller.UserFileController;
-import dao.PermissionsDao;
-import dao.TransactionsDao;
-import dao.UserDao;
-import dao.UserFileDao;
+import dao.SimplePermissionsDao;
+import dao.SimpleTransactionsDao;
+import dao.SimpleUserDao;
+import dao.SimpleUserFileDao;
 
 public interface ControllersFactory {
 
-    UserFileDao getUserFileController();
+    SimpleUserFileDao getUserFileController();
 
-    UserDao getUserController();
+    SimpleUserDao getUserController();
 
-    TransactionsDao getTransactionsController();
+    SimpleTransactionsDao getTransactionsController();
 
-    PermissionsDao getPermissionsController();
+    SimplePermissionsDao getPermissionsController();
 }

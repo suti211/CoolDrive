@@ -1,13 +1,9 @@
 package util;
 
-import controller.PermissionsController;
-import controller.TransactionsController;
-import controller.UserController;
-import controller.UserFileController;
-import dao.PermissionsDao;
-import dao.TransactionsDao;
-import dao.UserDao;
-import dao.UserFileDao;
+import dao.SimplePermissionsDao;
+import dao.SimpleTransactionsDao;
+import dao.SimpleUserDao;
+import dao.SimpleUserFileDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -16,36 +12,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SimpleControllersFactory implements ControllersFactory {
 
         private static SimpleControllersFactory instance = null;
-        private UserDao userDao;
-        private UserFileDao userFileDao;
-        private TransactionsDao transactionsDao;
-        private PermissionsDao permissionsDao;
+        private SimpleUserDao userDao;
+        private SimpleUserFileDao userFileDao;
+        private SimpleTransactionsDao transactionsDao;
+        private SimplePermissionsDao permissionsDao;
         @Override
-        public UserFileDao getUserFileController() {
+        public SimpleUserFileDao getUserFileController() {
                 return userFileDao;
         }
 
         @Override
-        public UserDao getUserController() {
+        public SimpleUserDao getUserController() {
                 return userDao;
         }
 
         @Override
-        public TransactionsDao getTransactionsController() {
+        public SimpleTransactionsDao getTransactionsController() {
                 return transactionsDao;
         }
 
         @Override
-        public PermissionsDao getPermissionsController() {
+        public SimplePermissionsDao getPermissionsController() {
                 return permissionsDao;
         }
         @Autowired
-        private SimpleControllersFactory(UserDao userDao, UserFileDao userFileDao, TransactionsDao transactionsDao, PermissionsDao permissionsDao) {
+
+        public SimpleControllersFactory(SimpleUserDao userDao, SimpleUserFileDao userFileDao, SimpleTransactionsDao transactionsDao, SimplePermissionsDao permissionsDao) {
                 this.userDao = userDao;
                 this.userFileDao = userFileDao;
                 this.transactionsDao = transactionsDao;
                 this.permissionsDao = permissionsDao;
         }
-
-
 }

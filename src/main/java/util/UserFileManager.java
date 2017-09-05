@@ -1,7 +1,7 @@
 package util;
 
-import controller.UserController;
-import controller.UserFileController;
+import dao.SimpleUserDao;
+import dao.SimpleUserFileDao;
 import dto.TXT;
 import dto.User;
 import dto.UserFile;
@@ -9,6 +9,8 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
@@ -22,16 +24,25 @@ import java.util.Map;
 /**
  * Created by David Szilagyi on 2017. 07. 18..
  */
-public class UserFileManager extends SimpleControllersFactory {
+public class UserFileManager {
+    private ControllersFactory controllersFactory;
+    private PropertiesHandler propertiesHandler;
     private final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
     private String folderName;
-    private Path rootPath = Paths.get(PropertiesHandler.Paths.ROOTPATH);
+    private Path rootPath = Paths.get(propertiesHandler.getROOTPATH());
+    @Autowired
+    public UserFileManager(ControllersFactory controllersFactory, PropertiesHandler propertiesHandler) {
+        this.controllersFactory = controllersFactory;
+        this.propertiesHandler = propertiesHandler;
+    }
+
+
 
     public void saveUserFile(MultipartFormDataInput input, String token, int parentId, boolean isFolder) {
-        try (UserController userController = getUserController();
-             UserFileController userFileController = getUserFileController()) {
-            User user = userController.getUser("token", token);
-            folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
+        try (SimpleUserDao simpleUserDao = controllersFactory.getUserController();
+             SimpleUserFileDao simpleUserFileDao = controllersFactory.getUserFileController()) {
+            User user = simpleUserDao.getUser("token", token);
+            folderName = simpleUserFileDao.getUserFile(user.getUserHomeId()).getFileName();
             Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
             List<InputPart> inputParts = uploadForm.get("input");
             Map<String, InputStream> streams = new HashMap<>();
@@ -118,11 +129,11 @@ public class UserFileManager extends SimpleControllersFactory {
     }
 
     private void setFileSize(File file, String filename) {
-        try (UserFileController userFileController = getUserFileController()) {
+        try (SimpleUserFileDao simpleUserFileDao = controllersFactory.getUserFileController()) {
             int fileId = Integer.valueOf(filename.substring(0, filename.lastIndexOf(".")));
             double size = ((double) file.length()) / 1024;
             size /= 1024;
-            userFileController.setFileSize(fileId, size);
+            simpleUserFileDao.setFileSize(fileId, size);
         }
     }
 
@@ -139,22 +150,22 @@ public class UserFileManager extends SimpleControllersFactory {
 
     public boolean createTXTFile(TXT txt, int parentId) {
         LOG.info("createTXTFile method called with parentId: {}, file: {}", parentId, txt.getName());
-        try (UserController userController = getUserController();
-             UserFileController userFileController = getUserFileController()) {
-            User user = userController.getUser("token", txt.getToken().getToken());
-            folderName = userFileController.getUserFile(user.getUserHomeId()).getFileName();
+        try (SimpleUserDao simpleUserDao = controllersFactory.getUserController();
+             SimpleUserFileDao simpleUserFileDao = controllersFactory.getUserFileController()) {
+            User user = simpleUserDao.getUser("token", txt.getToken().getToken());
+            folderName = simpleUserFileDao.getUserFile(user.getUserHomeId()).getFileName();
             String fileName = txt.getName() + ".txt";
             try {
-                int fileId = userFileController.checkUserFile(txt.getName(), ".txt", parentId);
+                int fileId = simpleUserFileDao.checkUserFile(txt.getName(), ".txt", parentId);
                 if (fileId <= 0) {
                     fileId = createUserFile(fileName, user, parentId, false);
                 } else {
-                    int parentFolder = userFileController.getUserFile(fileId).getParentId();
-                    UserFile userHome = userFileController.getUserFile(parentFolder);
+                    int parentFolder = simpleUserFileDao.getUserFile(fileId).getParentId();
+                    UserFile userHome = simpleUserFileDao.getUserFile(parentFolder);
                     if (userHome.getParentId() == 1) {
                         folderName = userHome.getFileName();
                     } else {
-                        folderName = userFileController.getUserFile(userHome.getParentId()).getFileName();
+                        folderName = simpleUserFileDao.getUserFile(userHome.getParentId()).getFileName();
                     }
                 }
                 writeTXTFile(txt, fileId + ".txt");
@@ -179,7 +190,7 @@ public class UserFileManager extends SimpleControllersFactory {
     }
 
     private int createUserFile(String fileName, User user, int parentId, boolean isFolder) throws IOException {
-        try (UserFileController userFileController = getUserFileController()) {
+        try (SimpleUserFileDao simpleUserFileDao = controllersFactory.getUserFileController()) {
             Path path = Paths.get(rootPath.toString(), folderName);
             String extension = "dir";
             String name = fileName;
@@ -188,7 +199,7 @@ public class UserFileManager extends SimpleControllersFactory {
                 name = fileName.substring(0, fileName.lastIndexOf("."));
             }
             UserFile userFile = new UserFile(path.toString(), 0, name, extension, isFolder, user.getId(), parentId);
-            return userFileController.addNewUserFile(userFile);
+            return simpleUserFileDao.addNewUserFile(userFile);
         }
     }
 
@@ -197,9 +208,9 @@ public class UserFileManager extends SimpleControllersFactory {
     }
 
     public File downloadUserFiles(int id) {
-        try (UserFileController userFileController = getUserFileController()) {
+        try (SimpleUserFileDao simpleUserFileDao = controllersFactory.getUserFileController()) {
             byte[] bytes = new byte[1024];
-            UserFile userFile = userFileController.getUserFile(id);
+            UserFile userFile = simpleUserFileDao.getUserFile(id);
             File downloadFile = new File(Paths.get(userFile.getPath() + "\\" + userFile.getId() + userFile.getExtension()).toString());
 //        Path temppath = Paths.get(tempPath + "\\" + userFile.getId() + userFile.getExtension());
 //        File tempFile = null;
@@ -261,10 +272,10 @@ public class UserFileManager extends SimpleControllersFactory {
 //    }
 
     private String[] getPathFromUserFiles(int[] userFileIds) {
-        try (UserFileController userFileController = getUserFileController()) {
+        try (SimpleUserFileDao simpleUserFileDao = controllersFactory.getUserFileController()) {
             String[] result = new String[userFileIds.length];
             for (int i = 0; i < userFileIds.length; i++) {
-                result[i] = userFileController.getUserFile(userFileIds[i]).getPath();
+                result[i] = simpleUserFileDao.getUserFile(userFileIds[i]).getPath();
             }
             return result;
         }

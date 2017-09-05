@@ -1,11 +1,13 @@
-package controller;
+package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dao.SimplePermissionsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,17 +15,23 @@ import com.mysql.cj.api.jdbc.Statement;
 
 import dao.TransactionsDao;
 import dto.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import util.ConnectionUtil;
+import util.PropertiesHandler;
 
 /**
  * Created by David Szilagyi on 2017. 07. 24..
  */
-public class TransactionsController extends DatabaseController implements TransactionsDao {
-
-    private final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
-
-    public TransactionsController(String  database) {
-        super(database);
+public class SimpleTransactionsDao implements TransactionsDao,AutoCloseable {
+    private ConnectionUtil connectionUtil;
+    private PropertiesHandler propertiesHandler;
+    private Connection con;
+    private final Logger LOG = LoggerFactory.getLogger(SimplePermissionsDao.class);
+    @Autowired
+    public SimpleTransactionsDao(ConnectionUtil connectionUtil, PropertiesHandler propertiesHandler) {
+        this.connectionUtil = connectionUtil;
+        this.propertiesHandler = propertiesHandler;
+        this.con = connectionUtil.getConnection(propertiesHandler.getDATABASENAME());
     }
 
     public Transaction getTransaction(int transactionId) {
@@ -126,5 +134,14 @@ public class TransactionsController extends DatabaseController implements Transa
         }
         LOG.debug("Add transaction to transactions is failed(userId: {}, bought {}, date: {})",transaction.getUserId(), transaction.getBought(), transaction.getBoughtDate());
         return -1;
+    }
+
+    @Override
+    public void close() {
+        try {
+            this.con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

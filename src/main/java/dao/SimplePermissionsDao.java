@@ -1,11 +1,14 @@
-package controller;
+package dao;
 
-import dao.PermissionsDao;
 import dto.Share;
 import dto.UserFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import util.ConnectionUtil;
+import util.PropertiesHandler;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,15 +19,20 @@ import java.util.List;
 /**
  * Created by David Szilagyi on 2017. 07. 11..
  */
-public class PermissionsController extends DatabaseController implements PermissionsDao {
-
-    private final Logger LOG = LoggerFactory.getLogger(PermissionsController.class);
+public class SimplePermissionsDao implements PermissionsDao,AutoCloseable {
+    private ConnectionUtil connectionUtil;
+    private PropertiesHandler propertiesHandler;
+    private Connection con;
+    private final Logger LOG = LoggerFactory.getLogger(SimplePermissionsDao.class);
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    public PermissionsController(String database) {
-        super(database);
+    @Autowired
+    public SimplePermissionsDao(ConnectionUtil connectionUtil, PropertiesHandler propertiesHandler) {
+        this.connectionUtil = connectionUtil;
+        this.propertiesHandler = propertiesHandler;
+        con = connectionUtil.getConnection(propertiesHandler.getDATABASENAME());
     }
 
+    @Override
     public boolean addFileToUser(int fileId, int userId, boolean readOnly) {
         try (PreparedStatement ps = con.prepareStatement("INSERT INTO Permissions(fileId, userId, readOnly) " +
                 "SELECT id, ?, ? FROM Files WHERE parentId = ? OR id = ?")) {
@@ -45,6 +53,7 @@ public class PermissionsController extends DatabaseController implements Permiss
         return false;
     }
 
+    @Override
     public boolean removeFileFromUser(int fileId, int userId) {
         try (PreparedStatement ps = con.prepareStatement("DELETE FROM Permissions " +
                 "WHERE fileId IN (SELECT id FROM Files WHERE parentId = ? OR id = ?) AND userId = ?")) {
@@ -63,6 +72,7 @@ public class PermissionsController extends DatabaseController implements Permiss
         return false;
     }
 
+    @Override
     public boolean changeAccess(int fileId, int userId, boolean readOnly) {
         try (PreparedStatement ps = con.prepareStatement("UPDATE Permissions SET readOnly = ? " +
                 "WHERE fileId IN (SELECT id from Files WHERE parentId = ? OR id = ?) AND userId = ?")) {
@@ -81,6 +91,7 @@ public class PermissionsController extends DatabaseController implements Permiss
         return false;
     }
 
+    @Override
     public List<UserFile> sharedFiles(String columnName, int value) {
         List<UserFile> userFiles = new ArrayList<>();
         String sql;
@@ -132,6 +143,7 @@ public class PermissionsController extends DatabaseController implements Permiss
         return shares;
     }
 
+    @Override
     public boolean checkAccess(int fileId, int userId) {
         try (PreparedStatement ps = con.prepareStatement("SELECT Permissions.* FROM Permissions JOIN Files " +
                 "ON(Files.id = Permissions.fileId) WHERE Permissions.fileId = ? " +
@@ -148,5 +160,14 @@ public class PermissionsController extends DatabaseController implements Permiss
             LOG.error("checkAccess is failed with Exception", e);
         }
         return false;
+    }
+
+    @Override
+    public void close(){
+        try {
+            this.con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

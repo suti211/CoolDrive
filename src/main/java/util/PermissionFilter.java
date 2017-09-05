@@ -12,8 +12,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
-import controller.UserController;
+import dao.SimpleUserDao;
 import dto.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by mudzso on 2017.08.07..
@@ -21,12 +22,17 @@ import dto.User;
 
 @PreMatching
 @Provider
-public class PermissionFilter extends SimpleControllersFactory implements ContainerRequestFilter{
+public class PermissionFilter  implements ContainerRequestFilter{
+    private ControllersFactory controllersFactory;
     List<String>whiteList = Arrays.asList("/login","/register","/verify","/public");
+    @Autowired
+    public PermissionFilter(ControllersFactory controllersFactory) {
+        this.controllersFactory = controllersFactory;
+    }
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
-        try (UserController userController = getUserController()) {
+        try (SimpleUserDao simpleUserDao = controllersFactory.getUserController()) {
             Iterator<String> iterator = whiteList.iterator();
             String whiteListItem;
             while (iterator.hasNext()) {
@@ -45,7 +51,7 @@ public class PermissionFilter extends SimpleControllersFactory implements Contai
                 token = authHeader.split(" ")[1];
             }
 
-            User user = userController.getUser("token", token);
+            User user = simpleUserDao.getUser("token", token);
             if (user == null) {
                 containerRequestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
                 return;
