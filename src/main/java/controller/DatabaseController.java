@@ -14,7 +14,7 @@ public class DatabaseController implements AutoCloseable {
     protected Connection con = null;
     protected String DatabaseName;
 
-    public DatabaseController(ConnectionUtil.DatabaseName database) {
+    public DatabaseController(String database) {
         this.con = ConnectionUtil.getConnection(database);
         LOG.info("Connected to {}",database);
     }

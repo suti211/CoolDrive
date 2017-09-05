@@ -9,7 +9,6 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
@@ -26,8 +25,7 @@ import java.util.Map;
 public class UserFileManager extends SimpleControllersFactory {
     private final Logger LOG = LoggerFactory.getLogger(UserFileManager.class);
     private String folderName;
-    private Path rootPath = Paths.get(PathUtil.ROOT_PATH);
-    private Path tempPath = Paths.get(PathUtil.TEMP_PATH);
+    private Path rootPath = Paths.get(PropertiesHandler.Paths.ROOTPATH);
 
     public void saveUserFile(MultipartFormDataInput input, String token, int parentId, boolean isFolder) {
         try (UserController userController = getUserController();

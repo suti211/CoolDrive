@@ -8,19 +8,10 @@ import java.sql.SQLException;
  * Created by mudzso on 2017.07.05..
  */
 public final class ConnectionUtil {
-
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
 //    private static final String DATABASE_HOST = "192.168.150.86";
 //    private static final String DATABASE_USER = "void";
 //    private static final String DATABASE_PASSWORD = "void";
-private static final String DATABASE_HOST = "redgyuf.servebeer.com";
-    private static final String DATABASE_USER = "admin";
-    private static final String DATABASE_PASSWORD = "admin";
-    private static final int DATABASE_PORT = 3306;
-    public enum DatabaseName{
-        CoolDrive,
-        CoolDrive_Test
-    }
 
     static {
         try {
@@ -30,12 +21,12 @@ private static final String DATABASE_HOST = "redgyuf.servebeer.com";
         }
     }
 
-    public static String getUrl(DatabaseName databaseName) {
+    public static String getUrl(String databaseName) {
         return String.format(
                 "jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=%s&serverTimezone=%s&useSSL=true",
-                DATABASE_HOST,
-                DATABASE_PORT,
-                databaseName == null ? "" : databaseName.name(),
+                PropertiesHandler.DATABASEHOST,
+                PropertiesHandler.DATABASEPORT,
+                databaseName == null ? "" : databaseName,
                 "UTF-8",
                 "Europe/Budapest");
     }
@@ -45,15 +36,15 @@ private static final String DATABASE_HOST = "redgyuf.servebeer.com";
         return getConnection(null);
     }
 
-    public static Connection getConnection(DatabaseName databaseName) {
+    public static Connection getConnection(String databaseName) {
         try {
-            return DriverManager.getConnection(getUrl(databaseName), DATABASE_USER, DATABASE_PASSWORD);
+            return DriverManager.getConnection(getUrl(databaseName), PropertiesHandler.DATABASENAME, PropertiesHandler.DATABASEPASSWORD);
         } catch (SQLException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public static Connection getConnection(DatabaseName databaseName,String user,String password) {
+    public static Connection getConnection(String databaseName,String user,String password) {
         try {
             return DriverManager.getConnection(getUrl(databaseName), user, password);
         } catch (SQLException e) {
