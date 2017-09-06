@@ -13,8 +13,8 @@ public final class ConnectionUtil {
 //    private static final String DATABASE_HOST = "192.168.150.86";
 //    private static final String DATABASE_USER = "void";
 //    private static final String DATABASE_PASSWORD = "void";
-private static final String DATABASE_HOST = "redgyuf.servebeer.com";
-    private static final String DATABASE_USER = "admin";
+private static final String DATABASE_HOST = "localhost";
+    private static final String DATABASE_USER = "root";
     private static final String DATABASE_PASSWORD = "admin";
     private static final int DATABASE_PORT = 3306;
     public enum DatabaseName{
