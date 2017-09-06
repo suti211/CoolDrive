@@ -95,6 +95,7 @@ export class SharedWithMeComponent implements OnInit, FilterListener {
 
     this.files.length = 0;
     this.filteredFiles.length = 0;
+    this.isEmptyFiles = null;
 
     let newToken = this.creatToken(this.currentFolderId);
     let getFilesOperation: Observable<File[]>;
