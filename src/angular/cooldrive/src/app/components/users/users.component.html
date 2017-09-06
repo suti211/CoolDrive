@@ -1,12 +1,12 @@
 <h1>User list:</h1>
 <hr>
 <div class="row">
-  <div class="col-md-10 col-sm-12 center">
+  <div class="col-md-10 col-sm-12 center" id="table">
     <div id="accordion" role="tablist" aria-multiselectable="true">
       <div class="card" *ngFor="let user of filteredUsers; let i = index">
         <div class="card-header" role="tab" [attr.id]="i">
           <h5 class="mb-0">
-            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" [attr.href]="'#collapse' + i" aria-expanded="false" [attr.aria-controls]="'collapse' + i">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" [attr.href]="'#collapse' + i" aria-expanded="false" [attr.aria-controls]="'collapse' + i" >
               <span class="glyphicon glyphicon-user"> </span> {{user.userName}} || <span class="glyphicon glyphicon-envelope"> </span> {{user.email}} || <strong> Validated: </strong>
               <span class="glyphicon glyphicon-ok" *ngIf="user.validated"></span><span class="glyphicon glyphicon-remove" *ngIf="!user.validated"></span>
             </a>
@@ -74,3 +74,4 @@
       <h3 style="margin: auto">No match found!</h3>
     </div>
   </div>
+

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from "@angular/core";
 import { slideInOutAnimation } from '../../_animations/slide/slide.animation';
 import { LogoutService } from '../../service/logout.service';
 import { Observable } from 'rxjs/Rx';

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, Input, OnInit, ViewChild} from "@angular/core";
 import {User} from "../../model/user.model";
 import {AdminService} from "../../service/admin.service";
 import {Observable} from "rxjs/Observable";

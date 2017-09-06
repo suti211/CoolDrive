@@ -35,6 +35,7 @@ import {LoggedInGuard} from "./guard/logged-in.guard";
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,9 +52,10 @@ import {LoggedInGuard} from "./guard/logged-in.guard";
     UnauthorizedComponent,
     UsersComponent,
     LandingPageComponent,
-    SharedWithMeComponent
+    SharedWithMeComponent,
   ],
   imports: [
+    ContextMenuModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
