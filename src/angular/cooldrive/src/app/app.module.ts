@@ -55,7 +55,6 @@ import {LoggedInGuard} from "./guard/logged-in.guard";
     SharedWithMeComponent,
   ],
   imports: [
-    ContextMenuModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
