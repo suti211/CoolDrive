@@ -31,6 +31,8 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
 import { ShareService } from "./service/share.service";
 import { SharedWithMeComponent } from './components/shared-with-me/shared-with-me.component';
 import {FilterService} from "./service/filter.service";
+import {ContextmenuComponent} from "./components/contextmenu/contextmenu.component";
+import {ContextMenuModule} from "ngx-contextmenu";
 
 
 
@@ -50,9 +52,11 @@ import {FilterService} from "./service/filter.service";
     UnauthorizedComponent,
     UsersComponent,
     LandingPageComponent,
-    SharedWithMeComponent
+    SharedWithMeComponent,
+    ContextmenuComponent
   ],
   imports: [
+    ContextMenuModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,

@@ -1,9 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, Input, OnInit, ViewChild} from "@angular/core";
 import {User} from "../../model/user.model";
 import {AdminService} from "../../service/admin.service";
 import {Observable} from "rxjs/Observable";
 import {FilterListener} from "../maintenance/filterlistener";
 import {FilterService} from "../../service/filter.service";
+import {ContextmenuComponent} from "../contextmenu/contextmenu.component";
+import {ContextMenuService} from "ngx-contextmenu";
 
 @Component({
   selector: "app-users",
