@@ -23,7 +23,7 @@
     </thead>
 
     <tbody id="FileListDisplay">
-    <tr *ngIf="filteredFiles != 0 && currentFolderId != -1">
+    <tr *ngIf="isEmptyFiles == false && currentFolderId != -1">
       <td>
         <div style="cursor: pointer" (dblclick)="openFolder(-1, '...')"><span
           class="glyphicon glyphicon-folder-close"></span> ...
@@ -75,12 +75,12 @@
 
   </table>
   <a id="back-no-files" (click)="openFolder(-1, '...');">
-    <div *ngIf="filteredFiles == 0 && currentFolderId != -1" class="alert alert-info" role="alert">
+    <div *ngIf="isEmptyFiles == true && currentFolderId != -1" class="alert alert-info" role="alert">
       <div class="no-files-found">No files found! Click <b>HERE</b> to return to the main folder
       </div>
     </div>
   </a>
-  <div *ngIf="filteredFiles == 0 && currentFolderId == -1" class="alert alert-info" role="alert">
+  <div *ngIf="isEmptyFiles == true && currentFolderId == -1" class="alert alert-info" role="alert">
     <div class="no-files-found">No files found!</div>
   </div>
 

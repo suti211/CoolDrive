@@ -41,6 +41,7 @@ export class FilesComponent implements OnInit, FilterListener{
   filteredFiles: File[] = [];
   homeFolderSize: number;
   homeFolderMaxSize: number;
+  isEmptyFiles: boolean;
 
   newFolderName: string;
   newFolderLabel: string;
@@ -455,12 +456,16 @@ export class FilesComponent implements OnInit, FilterListener{
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-
+    if(newFiles.length != 0) {
+      this.isEmptyFiles = false;
       for (let file of newFiles) {
         this.files.push(file);
         this.filteredFiles.push(file);
       }
       //console.log(this.files);
+    } else {
+      this.isEmptyFiles = true;
+    }
     });
   }
 

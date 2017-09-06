@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {File} from '../../model/file.model';
 import {Token} from "../../model/token.model";
 import {Observable} from "rxjs/Observable";
@@ -18,6 +18,7 @@ export class SharedWithMeComponent implements OnInit, FilterListener {
 
   files: File[];
   filteredFiles: File[] = [];
+  isEmptyFiles: boolean;
 
   currentFolderId: number;
   currentFolderName: string = "";
@@ -61,7 +62,7 @@ export class SharedWithMeComponent implements OnInit, FilterListener {
     this.fileService.downloadFile(fileId);
   }
 
-  listFiles(id: number){
+  listFiles(id: number) {
     this.files.length = 0;
     this.filteredFiles.length = 0;
 
@@ -70,11 +71,16 @@ export class SharedWithMeComponent implements OnInit, FilterListener {
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.shareService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-      for (let file of newFiles) {
-        this.files.push(file);
-        this.filteredFiles.push(file);
+      if (newFiles.length != 0) {
+        this.isEmptyFiles = false;
+        for (let file of newFiles) {
+          this.files.push(file);
+          this.filteredFiles.push(file);
+        }
+        console.log(this.files);
+      } else {
+        this.isEmptyFiles = true;
       }
-      console.log(this.files);
     });
   }
 
@@ -102,7 +108,7 @@ export class SharedWithMeComponent implements OnInit, FilterListener {
     });
   }
 
-  fetchEditTxtData(id: number, parentId: number){
+  fetchEditTxtData(id: number, parentId: number) {
     let token = this.creatToken(id);
     this.editTxtFileID = parentId;
 
@@ -115,7 +121,7 @@ export class SharedWithMeComponent implements OnInit, FilterListener {
     });
   }
 
-  editTxtFile(){
+  editTxtFile() {
     let token = this.creatToken(this.editTxtFileID);
     let txt = new TextFile(this.editTxtTitle, this.editTxtContent, true, token);
 
@@ -123,9 +129,9 @@ export class SharedWithMeComponent implements OnInit, FilterListener {
     createTXTOperation = this.fileService.uploadTextFile(txt);
     createTXTOperation.subscribe((status: Status) => {
       console.log(status.message);
-      if(status.success){
+      if (status.success) {
         document.getElementById('closeButton').click();
-      }else{
+      } else {
         console.log(status);
         window.alert("Text modify failed!");
       }
@@ -140,13 +146,13 @@ export class SharedWithMeComponent implements OnInit, FilterListener {
       for (let file of this.files) {
         this.filteredFiles.push(file);
       }
-    }else {
+    } else {
       for (let file of this.files) {
-        if(file.label === null) {
+        if (file.label === null) {
           if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1) {
             this.filteredFiles.push(file);
           }
-        }else {
+        } else {
           if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
             this.filteredFiles.push(file);
           }
