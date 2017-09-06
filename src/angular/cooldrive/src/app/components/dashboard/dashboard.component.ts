@@ -47,11 +47,7 @@ export class DashboardComponent implements OnInit, FilterListener{
   }
 
   sendSearchData(filt: string){
-    if(location.pathname === "/dashboard/files"){
-      this.filesComponent.filterFiles(filt);
-    } else {
-      this.filterService.filtered(filt);
-    }
+    this.filterService.filtered(filt);
   }
 
   matchUrlPath(url: String): boolean{
@@ -72,6 +68,10 @@ export class DashboardComponent implements OnInit, FilterListener{
       }
     });
     sessionStorage.clear();
+  }
+
+  goToFilesPage(){
+    this.router.navigate(['dashboard/files']);
   }
 
   storage(){

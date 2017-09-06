@@ -10,13 +10,15 @@ import {TextFile} from "../../model/text-file";
 import {ShareService} from "../../service/share.service";
 import {Share} from "../../model/shared";
 import {environment} from "../../../environments/environment";
+import {FilterListener} from "../maintenance/filterlistener";
+import {FilterService} from "../../service/filter.service";
 
 @Component({
   selector: 'app-files',
   templateUrl: './files.component.html',
   styleUrls: ['./files.component.css']
 })
-export class FilesComponent implements OnInit {
+export class FilesComponent implements OnInit, FilterListener{
 
   currentFolderId: number;
   currentFolderName: string = "";
@@ -65,10 +67,12 @@ export class FilesComponent implements OnInit {
 
   progressBarSytle: string = "progress-bar";
 
-  constructor(private fileService: FileService, private shareService: ShareService) {
+  constructor(private fileService: FileService, private shareService: ShareService, private filterService: FilterService) {
     this.currentFolderId = -1;
     this.currentFolderName = "Your files";
     this.fileService.currentFolderId = this.currentFolderId;
+
+    this.filterService.listener = this;
 
     this.files = fileService.getFilesArray();
     this.filteredFiles = fileService.getFilteredFilesArray();
@@ -121,7 +125,8 @@ export class FilesComponent implements OnInit {
 
   // Files list methods
 
-  filterFiles(filt: string) {
+
+  onFiltered(filt: string): void {
     let filter = filt.toLowerCase();
     this.filteredFiles.length = 0;
 
@@ -143,6 +148,29 @@ export class FilesComponent implements OnInit {
       }
     }
   }
+
+/*  filterFiles(filt: string) {
+    let filter = filt.toLowerCase();
+    this.filteredFiles.length = 0;
+
+    if (filt.length === 0) {
+      for (let file of this.files) {
+        this.filteredFiles.push(file);
+      }
+    } else {
+      for (let file of this.files) {
+        if (file.label === null) {
+          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1) {
+            this.filteredFiles.push(file);
+          }
+        } else {
+          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
+            this.filteredFiles.push(file);
+          }
+        }
+      }
+    }
+  }*/
 
 
   openFolder(id: number, name: string) {
