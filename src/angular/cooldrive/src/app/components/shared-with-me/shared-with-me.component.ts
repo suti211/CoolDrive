@@ -101,11 +101,16 @@ export class SharedWithMeComponent implements OnInit, FilterListener {
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.shareService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-      for (let file of newFiles) {
-        this.files.push(file);
-        this.filteredFiles.push(file);
+      if (newFiles.length != 0) {
+        this.isEmptyFiles = false;
+        for (let file of newFiles) {
+          this.files.push(file);
+          this.filteredFiles.push(file);
+        }
+        console.log(this.files);
+      } else {
+        this.isEmptyFiles = true;
       }
-      console.log(this.files);
     });
   }
 

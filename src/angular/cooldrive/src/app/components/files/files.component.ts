@@ -18,7 +18,7 @@ import {FilterService} from "../../service/filter.service";
   templateUrl: './files.component.html',
   styleUrls: ['./files.component.css']
 })
-export class FilesComponent implements OnInit, FilterListener{
+export class FilesComponent implements OnInit, FilterListener {
 
   currentFolderId: number;
   currentFolderName: string = "";
@@ -94,7 +94,7 @@ export class FilesComponent implements OnInit, FilterListener{
   setInfoPanelDisplay(text: string, show: boolean, type: string) {
     this.infoPanelDisplayed = show;
     this.infoPanelText = text;
-    if(type == 'success') {
+    if (type == 'success') {
       this.infoPanelStyle = 'alert alert-success';
     } else {
       this.infoPanelStyle = 'alert alert-danger';
@@ -150,28 +150,28 @@ export class FilesComponent implements OnInit, FilterListener{
     }
   }
 
-/*  filterFiles(filt: string) {
-    let filter = filt.toLowerCase();
-    this.filteredFiles.length = 0;
+  /*  filterFiles(filt: string) {
+   let filter = filt.toLowerCase();
+   this.filteredFiles.length = 0;
 
-    if (filt.length === 0) {
-      for (let file of this.files) {
-        this.filteredFiles.push(file);
-      }
-    } else {
-      for (let file of this.files) {
-        if (file.label === null) {
-          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1) {
-            this.filteredFiles.push(file);
-          }
-        } else {
-          if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
-            this.filteredFiles.push(file);
-          }
-        }
-      }
-    }
-  }*/
+   if (filt.length === 0) {
+   for (let file of this.files) {
+   this.filteredFiles.push(file);
+   }
+   } else {
+   for (let file of this.files) {
+   if (file.label === null) {
+   if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1) {
+   this.filteredFiles.push(file);
+   }
+   } else {
+   if (file.fileName.toLowerCase().indexOf(filter) > -1 || file.extension.toLowerCase().indexOf(filter) > -1 || file.label.toLowerCase().indexOf(filter) > -1) {
+   this.filteredFiles.push(file);
+   }
+   }
+   }
+   }
+   }*/
 
 
   openFolder(id: number, name: string) {
@@ -205,11 +205,16 @@ export class FilesComponent implements OnInit, FilterListener{
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-      for (let file of newFiles) {
-        this.files.push(file);
-        this.filteredFiles.push(file);
+      if (newFiles.length != 0) {
+        this.isEmptyFiles = false;
+        for (let file of newFiles) {
+          this.files.push(file);
+          this.filteredFiles.push(file);
+        }
+        //console.log(this.files);
+      } else {
+        this.isEmptyFiles = true;
       }
-      //console.log(this.files);
     });
   }
 
@@ -457,16 +462,16 @@ export class FilesComponent implements OnInit, FilterListener{
     let getFilesOperation: Observable<File[]>;
     getFilesOperation = this.fileService.getFiles(newToken);
     getFilesOperation.subscribe((newFiles: File[]) => {
-    if(newFiles.length != 0) {
-      this.isEmptyFiles = false;
-      for (let file of newFiles) {
-        this.files.push(file);
-        this.filteredFiles.push(file);
+      if (newFiles.length != 0) {
+        this.isEmptyFiles = false;
+        for (let file of newFiles) {
+          this.files.push(file);
+          this.filteredFiles.push(file);
+        }
+        //console.log(this.files);
+      } else {
+        this.isEmptyFiles = true;
       }
-      //console.log(this.files);
-    } else {
-      this.isEmptyFiles = true;
-    }
     });
   }
 
