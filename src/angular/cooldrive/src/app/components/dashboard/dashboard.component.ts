@@ -10,7 +10,6 @@ import {TokenService} from "../../service/token.service";
 import {FileService} from "../../service/files.service";
 import {FilterService} from "../../service/filter.service";
 import {FilterListener} from "../maintenance/filterlistener";
-import {ContextmenuComponent} from "../contextmenu/contextmenu.component";
 
 @Component({
   selector: 'app-dashboard',

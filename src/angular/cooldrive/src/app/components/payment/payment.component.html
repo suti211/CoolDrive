@@ -20,7 +20,7 @@
 
         <div class="input-group">
             <span class="input-group-addon fixed-size">Card number: </span>
-            <input type="number" name="cnumber" class="form-control" id="numberField" placeholder="Card number" [(ngModel)]="cardNumber">
+            <input type="number" maxlength="16" name="cnumber" class="form-control" id="numberField" placeholder="Card number" [(ngModel)]="cardNumber">
         </div>
 
         <div class="input-group">
@@ -29,7 +29,7 @@
         </div>
         <div class="input-group">
             <span class="input-group-addon fixed-size">CVT code: </span>
-            <input type="number" name="cvt" maxlength="3" class="form-control" id="cvtField" placeholder="3 number on the back of your card." [(ngModel)]="cvt">
+            <input type="number" name="cvt" min="100" max="999" class="form-control" id="cvtField" placeholder="3 number on the back of your card." [(ngModel)]="cvt">
         </div>
         <br>
         <div class="btn-group text-center" role="group">

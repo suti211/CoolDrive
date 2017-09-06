@@ -4,8 +4,6 @@ import {AdminService} from "../../service/admin.service";
 import {Observable} from "rxjs/Observable";
 import {FilterListener} from "../maintenance/filterlistener";
 import {FilterService} from "../../service/filter.service";
-import {ContextmenuComponent} from "../contextmenu/contextmenu.component";
-import {ContextMenuService} from "ngx-contextmenu";
 
 @Component({
   selector: "app-users",
