@@ -1,3 +1,4 @@
+
 <h1>{{currentFolderName}}
   <div class="progress">
     <div id="progress-bar" ngClass="{{progressBarSytle}}" role="progressbar" [style.width]="percentage+'%'">
@@ -17,7 +18,7 @@
       <th>Extension</th>
       <th>Size</th>
       <th>Upload Date</th>
-      <th>Label</th>
+      <th>Label <a (click)="download(6, 'teszt' + '.txt')">Download</a></th>
       <th>Functions</th>
     </tr>
     </thead>
@@ -61,7 +62,7 @@
             <a class="dropdown-item" *ngIf="file.extension == '.txt'" (click)="fetchEditTxtData(file.id)"
                data-toggle="modal" data-target="#editTxtModal">Open TextFile</a>
             <div *ngIf="file.extension == '.txt'" class="dropdown-divider"></div>
-            <a *ngIf="file.folder == false" class="dropdown-item" (click)="download(file.id)">Download</a>
+            <a *ngIf="file.folder == false" class="dropdown-item" (click)="download(file.id, 'file.fileName' + 'file.extension')">Download</a>
             <a class="dropdown-item" (click)="setShare(file)" data-toggle="modal"
                data-target="#shareFileModal">Share</a>
             <a class="dropdown-item" (click)="setSelectedFile(file)" data-toggle="modal" data-target="#fileModifyModal">Modify</a>

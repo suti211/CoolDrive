@@ -60,11 +60,21 @@ export class FileService {
       .catch((error: any) => Observable.throw('Server Error'));
   }
 
-  downloadFile(fileId: number) {
+  downloadFile(fileId: number, fileName: string) {
     this.http.get(this.filesUrl + 'download?id=' + fileId).toPromise()
       .then(function(response) {
-        window.location.href = response.url;
-      })
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        let blob = new Blob([(<any>response)._body], { type: 'application/octet-stream' });
+        let objectUrl = URL.createObjectURL(blob);
+        a.href = objectUrl;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(objectUrl);
+        a.remove()
+        // console.log(response);
+        // window.location.href = objectUrl;
+      });
   }
 
   modifyFile(file: File): Observable<Status>{
