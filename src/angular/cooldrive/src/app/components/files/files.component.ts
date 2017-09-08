@@ -377,8 +377,8 @@ export class FilesComponent implements OnInit, FilterListener {
 
   // File action methods
 
-  download(fileId: number, fileName: string) {
-    this.fileService.downloadFile(fileId, fileName);
+  download(fileId: number) {
+    this.fileService.downloadFile(fileId);
   }
 
   modifyFile() {
